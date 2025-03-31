@@ -1,0 +1,29 @@
+QMainWindow {
+    background-color: #f0f0f0;
+}
+
+QMenuBar, QMenu {
+    background-color: #e0e0e0;
+    color: #111;
+}
+
+QMenu::item:selected, QMenuBar::item:selected {
+    background-color: #cfcfcf;
+}
+
+QTableWidget {
+    background-color: #ffffff;
+    color: #111;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    gridline-color: #ddd;
+    font-size: 13px;
+}
+
+QHeaderView::section {
+    background-color: #eaeaea;
+    color: #333;
+    padding: 4px;
+    border: none;
+    border-radius: 5px;
+}
