@@ -1,5 +1,7 @@
 pyload einbauen
 layouts für andere slots
 darkmode und lightmode verbessern
-Home interface ? loaded lattice data information
-true text \beta etc 
+code absichern
+Homemenu visuell verfeinern
+true text \beta etc
+Home button

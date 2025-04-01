@@ -1,8 +1,9 @@
 from PySide6.QtWidgets import (
-    QMainWindow, QWidget,QHBoxLayout,QVBoxLayout,QTableWidget,QTableWidgetItem,QMenuBar,QMenu,QFrame,QStackedWidget, QSizePolicy
+    QMainWindow, QWidget,QHBoxLayout,QVBoxLayout,QTableWidget,QTableWidgetItem,QMenuBar,QMenu,QFrame,QStackedWidget, QSizePolicy, QFileDialog
     )
 from PySide6.QtGui import QAction, QColor
 from PySide6.QtCore import Qt
+from file_io.json_loader import load_file
 
 def load_stylesheet(path):
         with open(path,"r") as file :
@@ -18,8 +19,10 @@ class MainWindow(QMainWindow):
         self.stacked = QStackedWidget()
         self.setCentralWidget(self.stacked)
         self.views = {
+            "home": self.create_home_layout(),
             "lin" : self.create_lin_layout(),
             "parameters" : self.create_parameters_layout(),
+            
         }
         for view in self.views.values():
             self.stacked.addWidget(view)
@@ -31,13 +34,19 @@ class MainWindow(QMainWindow):
     def create_menu(self):
         menu_bar = QMenuBar(self)
     #Menus
+        home_menu = QMenu("home",self)
         file_menu = QMenu("&Datei", self)
         lattice_menu = QMenu("Lattice", self)
         linear_menu = QMenu("linear", self)
         nonlinear_menu = QMenu("nonlinear", self)
         settings_menu = QMenu("Settings",self)
     #Menu-actions
+        home_action = QAction("Startseite",self)
+        home_action.setShortcut("Ctrl+H")
+        home_action.triggered.connect(lambda: self.switch_view("home"))
+
         open_action = QAction("Load", self)
+        open_action.triggered.connect(self.load_lattice_file)
         save_action = QAction("Save", self)
         saveas_action = QAction("Save as...", self)
         export_action = QAction("Export",self)
@@ -54,6 +63,8 @@ class MainWindow(QMainWindow):
         theme_action = QAction("change theme", self)
         
     #Adding everything
+        home_menu.addActions([home_action])
+
         file_menu.addActions([open_action,save_action,saveas_action,export_action])
         
         lattice_menu.addActions([edit_action,parameter_action])
@@ -64,6 +75,7 @@ class MainWindow(QMainWindow):
 
         settings_menu.addActions([theme_action])
 
+        menu_bar.addMenu(home_menu)
         menu_bar.addMenu(file_menu)
         menu_bar.addMenu(lattice_menu)
         menu_bar.addMenu(linear_menu)
@@ -124,7 +136,7 @@ class MainWindow(QMainWindow):
         table = QTableWidget()
         table.setColumnCount(4)
         table.setHorizontalHeaderLabels(["Parameter", "Limit", "Wert", "Status"])
-        table.setRowCount(3)
+        table.setRowCount(8)
 
         self.limit_table = table  # falls du später darauf zugreifen willst
 
@@ -132,6 +144,13 @@ class MainWindow(QMainWindow):
             {"name": "Energy", "limit": 2.5},
             {"name": "Dipolstrength", "limit": 1},
             {"name": "Quadrupolstrength", "limit": 80},
+            {"name": "Sextupolestrength", "limit": 240},
+            {"name": "Magnetlength", "limit": 10},
+            {"name": "Emittance", "limit": 0.100},
+            {"name": "Mom. Comp.", "limit": 0.0001},
+            {"name": "Total Length", "limit": 365}
+            
+            
         ]
 
         for row, param in enumerate(self.limit_parameters):
@@ -177,16 +196,63 @@ class MainWindow(QMainWindow):
             if name in self.limit_violations:
                 del self.limit_violations[name]
 
+    def create_home_layout(self):
+        widget = QWidget()
+        layout = QHBoxLayout()
+        self.param_table = QTableWidget()
+        self.param_table.setColumnCount(1)
+        parameters = ["Name","Energy", "Emittance" ]
+        self.param_table.setRowCount(len(parameters))
+        self.param_table.setVerticalHeaderLabels(parameters)
+        self.param_table.horizontalHeader().setVisible(False)
 
+        self.lattice_table_widget = QTableWidget()
+        self.lattice_table_widget.setColumnCount(4)
+        self.lattice_table_widget.setRowCount(1)
+        self.lattice_table_widget.horizontalHeader().setVisible(False)
+        self.lattice_table_widget.verticalHeader().setVisible(False)
+
+        layout.addWidget(self.param_table,1)
+        layout.addWidget(self.lattice_table_widget,3)
+        widget.setLayout(layout)
+        return widget
 
 
     def create_nonlin_layout(self):
          widget = QWidget()
          layout = QVBoxLayout()
 
-         
+    def load_lattice_file(self):
+        file_path, _ = QFileDialog.getOpenFileName(self,"Datei öffnen", "", "JSON Files (*.json);; OPA Files (*.opa)")
+        if file_path:
+            sections, meta, elements = load_file(file_path)
+            self.show_lattice(sections,meta)
+            
+
     def switch_view(self,name:str):
         if name in self.views:
             self.stacked.setCurrentWidget(self.views[name])
         else:
             print(f"Ansicht '{name}' nicht gefunden")
+
+    def show_lattice(self,sections,meta):
+        table = self.lattice_table_widget
+        table.clearContents()
+        table.setRowCount(len(sections)//4 +1)
+        for index,section in enumerate(sections):
+            row =index//4
+            col = index %4
+            name_item = QTableWidgetItem(section)
+            name_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+
+            table.setItem(row,col,name_item)
+
+
+        param_table = self.param_table
+        param_table.clearContents()
+        values= meta["name"], meta["energy_GeV"], meta["emittance_m_rad"]
+        for row,value in enumerate(values):
+            item = QTableWidgetItem(str(value))
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+            param_table.setItem(row,0,item)
+            
