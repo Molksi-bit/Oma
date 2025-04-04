@@ -199,6 +199,8 @@ class MainWindow(QMainWindow):
     def create_home_layout(self):
         widget = QWidget()
         layout = QHBoxLayout()
+
+        
         self.param_table = QTableWidget()
         self.param_table.setColumnCount(1)
         parameters = ["Name","Energy", "Emittance" ]

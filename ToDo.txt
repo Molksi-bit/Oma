@@ -5,3 +5,8 @@ code absichern
 Homemenu visuell verfeinern
 true text \beta etc
 Home button
+constants library
+
+User guide
+Inside reading
+json einheiten declaration

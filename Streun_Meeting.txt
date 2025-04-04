@@ -1,0 +1,6 @@
+licensing
+comparing options
+file io for different depatements
+off momentum optics
+python 3.13 and up
+Hedgedog
