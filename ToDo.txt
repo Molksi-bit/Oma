@@ -5,3 +5,4 @@ code absichern
 Homemenu visuell verfeinern
 true text \beta etc
 Home button
+lattice in lattice handling

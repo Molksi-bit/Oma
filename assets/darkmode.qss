@@ -1,3 +1,7 @@
+* {
+    font-family: "DejaVu Sans",
+}
+
 QMainWindow {
     background-color: #2b2b2b;
 }
@@ -44,3 +48,10 @@ QTableCornerButton::section {
     border-radius: 8px;
     color: aaa;
 }
+QFrame {
+        background-color: #1e1e1e;
+        color: #aaa;
+        border: 1px solid #555;
+        border-radius: 8px;
+        font-size: 14px;
+    }

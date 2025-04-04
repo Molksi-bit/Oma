@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import (
-    QMainWindow, QWidget,QHBoxLayout,QVBoxLayout,QTableWidget,QTableWidgetItem,QMenuBar,QMenu,QFrame,QStackedWidget, QSizePolicy, QFileDialog
+    QMainWindow, QWidget,QHBoxLayout,QVBoxLayout,QTableWidget,QTableWidgetItem,QMenuBar,QMenu,QFrame,QStackedWidget, QSizePolicy, QFileDialog,QLabel,QListWidget, QListWidgetItem
     )
 from PySide6.QtGui import QAction, QColor
 from PySide6.QtCore import Qt
@@ -113,7 +113,8 @@ class MainWindow(QMainWindow):
         self.function_table.setFixedHeight(760)
         self.function_table.setFixedWidth(175)
         self.function_table.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.function_table.setVerticalHeaderLabels(["s [m]","beta_x [m]","alpha_x","beta_y [m]","alpha_y","Disp [m]","Disp' "])
+        self.function_table.setVerticalHeaderLabels(["s [m]","\u03B2\u2093 [m]","alpha_x","beta_y [m]","alpha_y","Disp [m]","Disp' "])
+        
 
         self.plot_area  = QFrame( )
         self.plot_area.setObjectName("plotframe")
@@ -199,6 +200,7 @@ class MainWindow(QMainWindow):
     def create_home_layout(self):
         widget = QWidget()
         layout = QHBoxLayout()
+        right_side = QVBoxLayout()
         self.param_table = QTableWidget()
         self.param_table.setColumnCount(1)
         parameters = ["Name","Energy", "Emittance" ]
@@ -211,9 +213,16 @@ class MainWindow(QMainWindow):
         self.lattice_table_widget.setRowCount(1)
         self.lattice_table_widget.horizontalHeader().setVisible(False)
         self.lattice_table_widget.verticalHeader().setVisible(False)
+        self.lattice_table_widget.cellClicked.connect(self.display_section_elements)
 
+        self.section_element_list = QListWidget()
+        self.section_element_list.setFlow(QListWidget.LeftToRight)
+        self.section_element_list.setWrapping(True)
+        
+        right_side.addWidget(self.lattice_table_widget,3)
+        right_side.addWidget(self.section_element_list,1)
         layout.addWidget(self.param_table,1)
-        layout.addWidget(self.lattice_table_widget,3)
+        layout.addLayout(right_side,3)
         widget.setLayout(layout)
         return widget
 
@@ -226,7 +235,11 @@ class MainWindow(QMainWindow):
         file_path, _ = QFileDialog.getOpenFileName(self,"Datei öffnen", "", "JSON Files (*.json);; OPA Files (*.opa)")
         if file_path:
             sections, meta, elements = load_file(file_path)
-            self.show_lattice(sections,meta)
+
+        self.lattice_data = {"sections": sections,
+                             "meta": meta,
+                             "elements": elements}
+        self.show_lattice(sections,meta)
             
 
     def switch_view(self,name:str):
@@ -239,7 +252,8 @@ class MainWindow(QMainWindow):
         table = self.lattice_table_widget
         table.clearContents()
         table.setRowCount(len(sections)//4 +1)
-        for index,section in enumerate(sections):
+        section_names = sections.keys()
+        for index,section in enumerate(section_names):
             row =index//4
             col = index %4
             name_item = QTableWidgetItem(section)
@@ -256,3 +270,25 @@ class MainWindow(QMainWindow):
             item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
             param_table.setItem(row,0,item)
             
+    def display_section_elements(self,row,col):
+        item = self.lattice_table_widget.item(row,col)
+        if not item:
+            return
+        
+        section_name = item.text()
+        section_elements = self.lattice_data["elements"].get(section_name, [])
+
+        self.section_element_list.clear()
+        for element in section_elements:
+
+            tooltip = f"Typ: {element.__class__.__name__}\nLänge: {element.length:.3f} m"
+            if hasattr(element, "k1"):
+                tooltip += f"\nk1: {element.k1:.3f}"
+            if hasattr(element, "k2"):
+                tooltip += f"\nk2: {element.k2:.3f}"
+            if hasattr(element,"angle"):
+                tooltip += f"\nangle: {element.angle:.3f}"
+            item = QListWidgetItem(element.name)
+            item.setToolTip(tooltip)
+            item.setData(Qt.UserRole, element)
+            self.section_element_list.addItem(item)
