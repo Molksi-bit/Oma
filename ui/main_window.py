@@ -102,9 +102,8 @@ class MainWindow(QMainWindow):
         self.lattice_table.setFixedWidth(187)
         self.lattice_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.lattice_table.horizontalHeader().setVisible(False)
-        self.lattice_table.setVerticalHeaderLabels(["Name", "Lenght", "Angle", "Abs. Angle", "Tune_x", "Tune_y","Chroma_x","Chroma_y",
-                                                     "Mom. Comp.", "Energy","Damp. J_x", "Damp. J_y","E-loss", "E-Spread","Emit._x", "Emit._y" ])
-
+        self.lattice_table.setVerticalHeaderLabels(["Name", "Lenght", "Angle", "Abs. Angle", "Tune\u2093", "Tune\u2094","Chroma\u2093","Chroma\u2094",
+                                                     "Mom. Comp.", "Energy","Damp. J\u2094", "Damp. J\u2094","E-loss", "E-Spread","\u03B5\u2093", "\u03B5\u2094" ])
         self.function_table =QTableWidget()
         self.function_table.setRowCount(7)
         self.function_table.setColumnCount(1)
@@ -113,7 +112,7 @@ class MainWindow(QMainWindow):
         self.function_table.setFixedHeight(760)
         self.function_table.setFixedWidth(175)
         self.function_table.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.function_table.setVerticalHeaderLabels(["s [m]","\u03B2\u2093 [m]","alpha_x","beta_y [m]","alpha_y","Disp [m]","Disp' "])
+        self.function_table.setVerticalHeaderLabels(["s [m]","\u03B2\u2093 [m]","\u03B1\u2093","\u03B2\u2094 [m]","\u03B1\u2094","Disp [m]","Disp' "])
         
 
         self.plot_area  = QFrame( )

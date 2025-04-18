@@ -3,10 +3,14 @@ layouts für andere slots
 darkmode und lightmode verbessern
 code absichern
 Homemenu visuell verfeinern
-true text \beta etc
 Home button
 constants library
+darkmode frame design anpassen 
+pytest
+workflow notation (student, teacher, design, optimization, analysis, comparison )
 
+
+mermaid.live
 User guide
 Inside reading
 json einheiten declaration

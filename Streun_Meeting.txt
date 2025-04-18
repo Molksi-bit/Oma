@@ -1,6 +1,22 @@
 licensing
 comparing options
-file io for different depatements
+file io for different departements
 off momentum optics
 python 3.13 and up
 Hedgedog
+
+comparison algorythym speed and usecase
+Felix andreas Bachelorthesis
+pyAt Iterations timing comparison implementing in opa comparison
+ray physics for UI
+
+floating point precision decision for certain parameters
+0 limits
+parameter list
+
+
+
+
+
+if not in schleife für lattice teile in elementsdarstellung ohne tooltip
+slider writing website 
