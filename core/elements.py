@@ -11,7 +11,7 @@ class Element:
 class Drift(Element):
     def matrix(self):
         L = self.length
-        return np.array([1,L],[0,1])
+        return np.array([[1,L],[0,1]])
 class Quadrupole(Element):
     def __init__(self, name, length, k1):
         super().__init__(name, length)
@@ -31,9 +31,9 @@ class Sextupole(Element):
 
     def matrix(self):
         L = self.length
-        return np.array([1,L],[0,1])
+        return np.array([[1,L],[0,1]])
 class Dipole(Element):
-    def __init__(self, name, length, angle, k1, entry_angle,exit_angle):
+    def __init__(self, name, length, angle, k1 = 0, entry_angle=0,exit_angle=0):
         super().__init__(name, length)
         self.angle = angle
         self.k1 = k1
@@ -52,4 +52,4 @@ class Multipole(Element):
 
     def matrix(self):
         L = self.length
-        return np.array([1,L],[0,1])
+        return np.array([[1,L],[0,1]])
