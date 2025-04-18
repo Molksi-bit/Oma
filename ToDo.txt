@@ -6,3 +6,4 @@ Homemenu visuell verfeinern
 true text \beta etc
 Home button
 lattice in lattice handling
+aus tabbelen raustabben farbanpassung
