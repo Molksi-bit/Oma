@@ -55,3 +55,19 @@ QFrame {
         border-radius: 8px;
         font-size: 14px;
     }
+#placeholder{
+    color: gray;
+    font-style: italic;
+    padding: 10px;
+}
+QWidget#gif{
+    background-color: black;
+    border: none;
+    border-radius: 0px;
+    padding: 0px;
+}
+QLabel#giflabel{
+    border: none;
+    margin: 0px;
+    padding: 0px;
+}

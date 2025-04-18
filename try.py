@@ -1,3 +1,7 @@
-from file_io.json_loader import load_file
 
-print(load_file(r"C:\Users\Kunde\Desktop\Masterarbeit\Lattice\jsons\ASTRID.json"))
+
+# print(load_file(r"C:\Users\Kunde\Desktop\Masterarbeit\Lattice\jsons\ASTRID.json"))
+
+import unicodedata
+print(unicodedata.unidata_version)
+print(unicodedata.lookup("SUBSCRIPT Y"))
