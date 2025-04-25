@@ -2,6 +2,7 @@
 import os
 import json
 from at import  elements as ele
+import at
 from file_io.elegant_loader import load_elegant
 from file_io.opa_loader import load_opa
 from file_io.madx_loader import load_madx
@@ -23,10 +24,12 @@ def load_file(path):
     sections = data.get("lattices",{})
     metadata = data.get("parameters", {})
     metadata["name"] = data.get("title")
-    elements = build_element_objects(data.get("elements", {}), data.get("lattices", {}))
+    energy = metadata.get("energy_GeV")
+    elements = build_element_objects(data.get("elements", {}), data.get("lattices", {}),energy =energy)
+    print(elements)
     return sections,metadata, elements
 
-def build_element_objects(elements, lattices):
+def build_element_objects(elements, lattices,energy):
     element_map = {}
     def resolve_element(name, reverse=False):
         # Ist es ein echtes Element?
@@ -73,6 +76,6 @@ def build_element_objects(elements, lattices):
         
         for name in element_names:
             section_elements.extend(resolve_element(name))
-        element_map[section_name] = section_elements
+        element_map[section_name] = at.Lattice(section_elements,energy= energy)
 
     return element_map
