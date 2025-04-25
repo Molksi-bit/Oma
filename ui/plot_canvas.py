@@ -2,7 +2,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.gridspec import GridSpec
 from matplotlib.patches import Rectangle
-import at 
+import at
+import numpy as np
 
 
 colors = {
@@ -21,9 +22,8 @@ def linear_plot(section, title= "Plot", x_label= "s[m]",y_label = "βₓ/βᵧ")
     ax2 = figure.add_subplot(gs[5:17,0],sharex = ax1)
     ax3 = figure.add_subplot(gs[17:,0],sharex = ax1)
     
-    lattice = at.Lattice(section, name = title,energy = 3e9)
-    refpts = list(range(len(lattice)))
-    _,_,twiss  = at.get_optics(lattice, refpts=refpts, get_chrom=False)
+    refpts = list(range(len(section)))
+    _,_,twiss  = at.get_optics(section, refpts=refpts, get_chrom=False)
     
     #ax1.set_title(title)
     ax1.tick_params(labelbottom = False)
@@ -39,7 +39,7 @@ def linear_plot(section, title= "Plot", x_label= "s[m]",y_label = "βₓ/βᵧ")
     ax2.plot(twiss.s_pos,twiss.beta[:,0], label = "βₓ", color = colors["beta_x"][0])
     ax2.plot(twiss.s_pos,twiss.beta[:,1], label = "βᵧ", color = colors["beta_y"][0])
     
-    plot_magnet_structure(ax3, lattice)
+    plot_magnet_structure(ax3, section)
     ax2.legend()
     ax3.get_xaxis().set_visible(False)
     ax3.get_yaxis().set_visible(False)
@@ -51,8 +51,42 @@ def linear_plot(section, title= "Plot", x_label= "s[m]",y_label = "βₓ/βᵧ")
     return canvas
 
 
-def nonlinear_plot():
-    pass
+def nonlinear_plot(lattice):
+    refpts = list(range(len(lattice)))
+    _,_,elemdata = at.get_optics(lattice, )
+    s = elemdata.s_pos
+    beta_x = elemdata.beta[:,0]
+    beta_y = elemdata.beta[:,1]
+    disp = elemdata.dispersion[:,0]
+    dbeta_x = elemdata.dbeta[:,0]
+    dbeta_y = elemdata.dbeta[:,1]
+    ddisp = elemdata.ddisperion[:,0]
+
+    k1_array = np.zeros_like(s)
+    k2_array = np.zeros_like(s)
+    bend_array = np.zeros_like(s)
+    for elem in lattice:
+        if elem.__class__.__name__ == "Quadrupole":
+            idx = (s >= elem.s_start) & (s <= elem.s_end)
+            k1_array[idx] = elem.K
+        elif elem.__class__.__name__ == "Sextupole":
+            idx = (s >= elem.s_start) & (s <= elem.s_end)
+            k1_array[idx] = elem.H
+
+    chrom1_x = k1_array*beta_x
+    chrom1_y = k1_array*beta_y
+
+    chrom1_x_sext = k2_array*beta_x*disp
+    chrom1_y_sext = k2_array*beta_y*disp
+
+    chrom2_x = k1_array*dbeta_x/2
+    chrom2_y = k1_array*dbeta_y/2
+
+    chrom2_x_sext = k2_array*dbeta_x*disp +k2_array*beta_x*ddisp/2
+    chrom2_x_sext = k2_array*dbeta_y*disp +k2_array*beta_y*ddisp/2
+
+
+
 
 def plot_magnet_structure(ax, lattice):
     """

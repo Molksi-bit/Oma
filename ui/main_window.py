@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
-    QMainWindow, QWidget,QHBoxLayout,QVBoxLayout,QTableWidget,QTableWidgetItem,QMenuBar,QMenu,QFrame,QStackedWidget, QSizePolicy, QFileDialog,QLabel,QListWidget, QListWidgetItem,QMessageBox
-    )
+    QMainWindow, QWidget,QHBoxLayout,QVBoxLayout,QTableWidget,QTableWidgetItem,QMenuBar,QMenu,QFrame,QStackedWidget, QSizePolicy, QFileDialog,QLabel,QListWidget, QListWidgetItem,QMessageBox,
+    QPushButton)
 from PySide6.QtGui import QAction, QColor, QIcon
 from PySide6.QtCore import Qt
 from file_io.json_loader import load_file
@@ -25,7 +25,8 @@ class MainWindow(QMainWindow):
             "lin" : self.create_lin_layout(),
             "parameters" : self.create_parameters_layout(),
             "rdt": self.create_rdt_layout(),
-            "chroma": self.create_chroma_layout()
+            "chroma": self.create_chroma_layout(),
+            "nonlin": self.create_nonlin_layout()
             
         }
         for view in self.views.values():
@@ -66,6 +67,7 @@ class MainWindow(QMainWindow):
         linopt_action.triggered.connect(lambda: self.plot_beta())
 
         nonlinopt_action = QAction("Nonlinear design",self)
+        nonlinopt_action.triggered.connect(lambda: self.switch_view("nonlin"))
         rdts_action = QAction("RDTs",self)
         rdts_action.triggered.connect(lambda: self.switch_view("rdt"))
         magnet_contribution_action = QAction("Magnet contribution",self)
@@ -258,8 +260,31 @@ class MainWindow(QMainWindow):
 
 
     def create_nonlin_layout(self):
-         widget = QWidget()
-         layout = QVBoxLayout()
+        widget = QWidget()
+        layout = QVBoxLayout()
+
+        button_area =QFrame()
+        button_area.setObjectName("nonlinButtonArea")
+        button_layout = QHBoxLayout()
+        chroma1_button = QPushButton("1st Chroma")
+        chroma1_button.setToolTip("Plots the first order Chromaticity without Sextupoles")
+        chroma2_button = QPushButton("2nd Chroma")
+        alpha_button = QPushButton("α contributions")
+
+        button_layout.addWidget(chroma1_button)
+        button_layout.addWidget(chroma2_button)
+        button_layout.addWidget(alpha_button)
+        button_layout.setSpacing(20)
+        button_area.setLayout(button_layout)
+
+        plot_area = QFrame()
+        plot_area.setObjectName("nonlinPlotArea")
+        plot_area.setLayout(QVBoxLayout())
+
+        layout.addWidget(button_area,1)
+        layout.addWidget(plot_area,8)
+        widget.setLayout(layout)
+        return widget
 
     def create_rdt_layout(self):
         widget = QWidget()
@@ -345,11 +370,15 @@ class MainWindow(QMainWindow):
 
         param_table = self.param_table
         param_table.clearContents()
-        values= meta["name"], meta["energy_GeV"], meta["emittance_m_rad"], meta["horizontal_tune"], meta["vertical_tune"],  meta["natural_chromaticity_x"],meta["natural_chromaticity_y"], meta["rf_frequency_MHz"], meta["rf_voltage_kV"]
-        for row,value in enumerate(values):
+        fields = [
+        "name", "energy_GeV", "emittance_m_rad", "horizontal_tune", "vertical_tune",
+        "natural_chromaticity_x", "natural_chromaticity_y", "rf_frequency_MHz", "rf_voltage_kV"
+        ]
+        for row, key in enumerate(fields):
+            value = meta.get(key, "")
             item = QTableWidgetItem(str(value))
             item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
-            param_table.setItem(row,0,item)
+            param_table.setItem(row, 0, item)
             
     def display_section_elements(self,row,col):
         item = self.lattice_table_widget.item(row,col)
@@ -358,7 +387,6 @@ class MainWindow(QMainWindow):
         
         section_name = item.text()
         section_elements = self.lattice_data["elements"].get(section_name, [])
-
         self.section_element_list.clear()
         for element in section_elements:
 
