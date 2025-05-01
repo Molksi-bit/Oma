@@ -1,6 +1,6 @@
 # 🧠 Funktionsübersicht
 
-> Diese Tabelle enthält alle geplanten und implementierten Funktionen inklusive ihrer Verfügbarkeit, und geschätzten Laufzeit.  
+> Diese Tabelle enthält alle geplaten und implementierten Funktionen inklusive ihrer Verfügbarkeit, und geschätzten Laufzeit.  
 > Bitte bei Änderungen im Projekt diese Tabelle aktuell halten. Pull Requests willkommen 😊
 
 | Funktion                      | Verfügbar   | Laufzeit (Opa) | Laufzeit (pyAT)  |numerical acceptance| Letztes Update | Kommentar                        |
@@ -17,7 +17,6 @@
 | Chromaticity calculation      |  Nein       | –              | –                |-                   | –              |                                  |
 | Higher Order Chromaticity     |  Nein       | –              | –                |-                   | –              |                                  |
 | RDTs calculation              |  Nein       | –              | –                |-                   | –              |                                  |
-
 | Off momentum tuneshift        |  Nein       | –              | –                |-                   | –              |                                  |
 | Off Momentum Beta             |  Nein       | –              | –                |-                   | –              |                                  |
 | Off Momentum dispersion       |  Nein       | –              | –                |-                   | –              |                                  |
@@ -25,15 +24,24 @@
 | Off Momentum Emittance        |  Nein       | –              | –                |-                   | –              |                                  |
 | Off Momentum Energy loss      |  Nein       | –              | –                |-                   | –              |                                  |
 | Off Momentum Energy Spread    |  Nein       | –              | –                |-                   | –              |                                  |
-
 | Chromaticity Matching         |  Nein       | –              | –                |-                   | –              |                                  |
 | Tune Matching                 |  Nein       | –              | –                |-                   | –              |                                  |
 | Beta Matching                 |  Nein       | –              | –                |-                   | –              |                                  |
-| Chromaticity Matching         |  Nein       | –              | –                |-                   | –              |                                  |
-| Chromaticity Matching         |  Nein       | –              | –                |-                   | –              |                                  |
-| Chromaticity Matching         |  Nein       | –              | –                |-                   | –              |                                  |
-| Chromaticity Matching         |  Nein       | –              | –                |-                   | –              |                                  |
-| Chromaticity Matching         |  Nein       | –              | –                |-                   | –              |                                  |
+| Multi Lattice plotting        |  Nein       | –              | –                |-                   | –              |                                  |
+| HO Chromaticity calc          |  Nein       | –              | –                |-                   | –              |                                  |
+| HO alpha calc                 |  Nein       | –              | –                |-                   | –              |                                  |
+| Plot export                   |  Nein       | –              | –                |-                   | –              |                                  |
+| Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
+| Magnet contribution           |  Nein       | –              | –                |-                   | –              |                                  |
+| file I/O opa                  |  Nein       | –              | –                |-                   | –              |                                  |
+| file I/O pyat                 |  Nein       | –              | –                |-                   | –              |                                  |
+| file I/O madx                 |  Nein       | –              | –                |-                   | –              |                                  |
+| file I/O ...                  |  Nein       | –              | –                |-                   | –              |                                  |
+| Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
+| Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
+| Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
+| Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
+| Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
 
 ---
 
