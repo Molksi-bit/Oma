@@ -1,0 +1,151 @@
+{
+    "title": "ALS",
+    "info": "Advanced Light Source",
+    "parameters": {
+        "energy_GeV": 1.5,
+        "horizontal_tune": 14.281,
+        "vertical_tune": 8.199,
+        "momentum_compaction": 0.0016,
+        "emittance_nm_rad": 3.37,
+        "natural_chromaticity_x": -24.58,
+        "natural_chromaticity_y": -27.69,
+        "rf_frequency_MHz": 499.7,
+        "rf_voltage_kV": 1000.0
+    },
+    "variables":{
+
+    },
+    "elements": {
+        "QF": {
+            "type": "quadrupole",
+            "length": 0.172,
+            "k1": 2.23695543
+        },
+        "QD": {
+            "type": "quadrupole",
+            "length": 0.0935,
+            "k1": -2.2542799
+        },
+        "QF1": {
+            "type": "quadrupole",
+            "length": 0.224,
+            "k1": 2.8883478
+        },
+        "BU": {
+            "type": "dipole",
+            "length": 0.43257,
+            "angle": 0.087266,
+            "e1": 0.05236,
+            "e2": 0,
+            "k2": -0.81
+        },
+        "BD": {
+            "type": "dipole",
+            "length": 0.43257,
+            "angle": 0.087266,
+            "e1": 0.0,
+            "e2": 0.05236,
+            "k2": -0.81
+        },
+        "SD": {
+            "type": "sextupole",
+            "length": 0.203,
+            "k2": 0.0
+        },
+        "SF": {
+            "type": "sextupole",
+            "length": 0.203,
+            "k2": 0.0
+        },
+        "L1": {
+            "type": "drift",
+            "length":3.3786950
+        },
+        "L2": {
+            "type": "drift",
+            "length":0.4345
+        },
+        "L3": {
+            "type": "drift",
+            "length":0.3486980
+        },
+        "LSDA": {
+            "type": "drift",
+            "length": 0.2156993
+        },
+        "LSFA": {
+            "type": "drift",
+            "length": 0.1245
+        },
+        "LSDB": {
+            "type": "drift",
+            "length":0.3245
+        },
+        "LSFB": {
+            "type": "drift",
+            "length":0.6906981
+        }
+    },
+    "lattices": {
+        "SDD": [
+            "LSDA",
+            "SD",
+            "LSDB"
+        ],
+        "SFF": [
+            "LSFA",
+            "SF",
+            "LSFB"
+        ],
+        "SPRU": [
+            "L1",
+            "QF",
+            "QF",
+            "L2",
+            "QD",
+            "QD",
+            "L3",
+            "BU",
+            "BD",
+            "SDD",
+            "QF1",
+            "QF1",
+            "SFF",
+            "BU"
+        ],
+        "SPRD":[
+            "BD",
+            "-SFF",
+            "QF1",
+            "QF1",
+            "-SDD",
+            "BU",
+            "BD",
+            "L3",
+            "QD",
+            "QD",
+            "L2",
+            "QF",
+            "QF",
+            "L1"
+        ],
+        "SPR":[
+            "SPRU",
+            "SPRD"
+        ],
+        "ring": [
+            "SPR",
+            "SPR",
+            "SPR",
+            "SPR",
+            "SPR",
+            "SPR",
+            "SPR",
+            "SPR",
+            "SPR",
+            "SPR",
+            "SPR",
+            "SPR"
+        ]
+    }
+}

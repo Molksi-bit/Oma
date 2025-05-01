@@ -1,0 +1,114 @@
+{
+    "title": "PSI SLS",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 2.0,
+        "superperiodicity": 2,
+        "horizontal_tune": 20.2,
+        "vertical_tune": 5.4,
+        "momentum_compaction": 0.000582,
+        "emittance_nm_rad": 3.14,
+        "natural_chromaticity_x": -53.68,
+        "natural_chromaticity_y": -21.75,
+        "rf_frequency_MHz": 499.7,
+        "rf_voltage_kV": 1000.0
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -0.6012
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.4817
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -1.3824
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.7429
+        },
+        "Q5": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -0.9904
+        },
+        "Q6": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.0606
+        },
+        "Q7": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -1.1848
+        },
+        "Q8": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.3422
+        },
+        "Q9": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -0.7027
+        },
+        "B1": {
+            "type": "dipole",
+            "length": 1.44,
+            "angle": 0.5236
+        },
+        "B2": {
+            "type": "dipole",
+            "length": 1.44,
+            "angle": 0.5236
+        },
+        "RFC": {
+            "type": "rf_cavity",
+            "voltage_kV": 3000.0,
+            "harmonic_number": 480
+        },
+        "D1": {
+            "type": "drift",
+            "length": 0.25
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.28
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.35
+        },
+        "D4": {
+            "type": "drift",
+            "length": 0.3
+        }
+    },
+    "lattices": {
+        "CELL": [
+            "D1",
+            "Q1",
+            "Q2",
+            "D2",
+            "Q3",
+            "Q4",
+            "D3",
+            "B1",
+            "B2",
+            "D4",
+            "Q5",
+            "Q6",
+            "Q7",
+            "Q8",
+            "Q9",
+            "RFC"
+        ]
+    }
+}

@@ -1,0 +1,292 @@
+{
+    "title": "BEPC",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 2.2,
+        "superperiodicity": 2,
+        "horizontal_tune": 9.380,
+        "vertical_tune": 5.14,
+        "momentum_compaction": 0.0141,
+        "emittance_nm_rad": 76.1,
+        "natural_chromaticity_x": -14.43,
+        "natural_chromaticity_y": -8.21,
+        "rf_frequency_MHz": 199.5,
+        "rf_voltage_kV": 1000.0
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.6,
+            "k1": -0.317479
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.6,
+            "k1": 0.60999
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -0.633169
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.254268
+        },
+        "Q5": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -0.828727
+        },
+        "Q6": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.320607
+        },
+        "Q7": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -0.899746
+        },
+        "Q8": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.027619
+        },
+        "Q10": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.180929
+        },
+        "Q12": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.480949
+        },
+        "Q14": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.034729
+        },
+        "Q15": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -0.33469
+        },
+        "Q16": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -1.06191
+        },
+        "Q17": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.056958
+        },
+
+        "BL": {
+            "type": "dipole",
+            "length": 0.49567,
+            "angle": 0.023943404,
+            "e1": 0.011971702,
+            "e2": 0.011971702
+        },
+        "BB": {
+            "type": "dipole",
+            "length": 1.59745,
+            "angle": 0.154685006,
+            "e1":0.077342503,
+            "e2": 0.077342503
+            
+        },
+        "RFC": {
+            "type": "rf_cavity",
+            "voltage_kV": 200.0,
+            "harmonic_number": 120
+        },
+        "L1": {
+            "type": "drift",
+            "length": 2.5
+        },
+        "L2": {
+            "type": "drift",
+            "length": 1.0
+        },
+        "L3": {
+            "type": "drift",
+            "length": 3.3575
+        },
+        "L4": {
+            "type": "drift",
+            "length": 0.6425
+        },
+        "L5": {
+            "type": "drift",
+            "length": 3.2348
+        },
+        "L6": {
+            "type": "drift",
+            "length": 0.9652
+        },
+        "L7": {
+            "type": "drift",
+            "length": 0.25216
+        },
+        "L8": {
+            "type": "drift",
+            "length": 0.35344
+        },
+        "L9": {
+            "type": "drift",
+            "length": 0.301281
+        },
+        "L10": {
+            "type": "drift",
+            "length": 0.219997
+        },
+        "L11": {
+            "type": "drift",
+            "length": 1.049999
+        },
+        "L12": {
+            "type": "drift",
+            "length": 1.060001
+        },
+        "L13": {
+            "type": "drift",
+            "length": 2.139996
+        },
+        "L14": {
+            "type": "drift",
+            "length": 2.344276
+        },
+        "L15": {
+            "type": "drift",
+            "length": 0.757
+        },
+        "L16": {
+            "type": "drift",
+            "length": 0.2999999
+        },
+        "L17": {
+            "type": "drift",
+            "length": 0.700001
+        },
+        "L18": {
+            "type": "drift",
+            "length": 1.549999
+        },
+        "L0A": {
+            "type": "drift",
+            "length": 0.22
+        },
+        "L0B": {
+            "type": "drift",
+            "length": 0.58127
+        },
+        "L0C": {
+            "type": "drift",
+            "length": 0.15
+        },
+        "L0D": {
+            "type": "drift",
+            "length": 0.65127
+        },
+        "L0E": {
+            "type": "drift",
+            "length": 2.55
+        },
+        "S1": {
+            "type": "sextupole",
+            "length": 0.2,
+            "k2": 1.536
+        },
+        "S2": {
+            "type": "sextupole",
+            "length": 0.2,
+            "k2": -1.2
+        },
+        "S3": {
+            "type": "sextupole",
+            "length": 0.2,
+            "k2": 1.03
+        },
+        "S4": {
+            "type": "sextupole",
+            "length": 0.2,
+            "k2": -0.93
+        }
+
+    },
+    "lattices": {
+        "Lin":[
+            "L1",
+            "Q1",
+            "L2",
+            "Q2",
+            "L3",
+            "L4",
+            "Q3",
+            "L5",
+            "L6",
+            "Q4",
+            "L7",
+            "BL",
+            "L8",
+            "BB",
+            "L9",
+            "Q5",
+            "L0A",
+            "S1",
+            "L0B",
+            "BB",
+            "L9",
+            "Q6",
+            "L0C",
+            "S2",
+            "L0D",
+            "BB",
+            "L9",
+            "Q7",
+            "L0A",
+            "S3",
+            "L0B",
+            "BB",
+            "L9",
+            "Q8",
+            "L0C",
+            "S4",
+            "L0E",
+            "Q7",
+            "L0A",
+            "S1",
+            "L0B",
+            "BB",
+            "L9",
+            "Q1O",
+            "L10",
+            "S2",
+            "L0B",
+            "BB",
+            "L9",
+            "Q7",
+            "L0A",
+            "S3",
+            "L0B",
+            "BB",
+            "L9",
+            "Q12",
+            "L0A",
+            "S4",
+            "L0B","BB","L9","Q7","L0A","S1","L0B","BB","L9","Q14","L11","L12","L13","Q15","L9","BB","L14","L15","Q16","L16","Q17","L17","L16","L18"
+
+        ],
+        "BEPC": [
+            "Lin",
+            "-Lin",
+            "Lin",
+            "-Lin"
+        ]
+    }
+}

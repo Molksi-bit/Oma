@@ -1,0 +1,53 @@
+{
+    "title": "KSR",
+    "info": "Kyoto Synchrotron Radiation Facility Lattice",
+    "parameters": {
+      "energy_GeV": 0.3,
+      "superperiodicity": 2,
+      "horizontal_tune": 2.750,
+      "vertical_tune": 1.250,
+      "momentum_compaction": 0.108,
+      "emittance_nm_rad": 74.1,
+      "natural_chromaticity_x": -2.71,
+      "natural_chromaticity_y": -7.62,
+      "rf_frequency_MHz": 116.7,
+      "rf_voltage_kV": 30
+    },
+    "variables":{
+
+    },
+    "elements": {
+      "QF": {"type": "quadrupole", "length": 0.20, "k1": 6.1094},
+      "QD": {"type": "quadrupole", "length": 0.20, "k1": -6.4346},
+      "QF1": {"type": "quadrupole", "length": 0.20, "k1": 4.07292},
+      "DR1": {"type": "drift", "length": 0.305},
+      "DR2": {"type": "drift", "length": 0.34},
+      "DR3": {"type": "drift", "length": 1.80925},
+      "DR4": {"type": "drift", "length": 0.360},
+      "DR5": {"type": "drift", "length": 0.50},
+      "DR6": {"type": "drift", "length": 0.130},
+      "DR7": {"type": "drift", "length": 0.100},
+      "DR8": {"type": "drift", "length": 0.335},
+      "DR9": {"type": "drift", "length": 0.065},
+      "D1": {
+        "type": "dipole",
+        "length": 0.87441,
+        "angle": 1.04720,
+        "e1": 0.0,
+        "e2": 0.0,
+        "fint": 0.45,
+        "hgap": 0.0275,
+        "k2": 0.0
+      },
+      "S1": {"type": "sextupole", "length": 0.065, "k2": -35.95},
+      "S2": {"type": "sextupole", "length": 0.065, "k2": 63.0}
+    },
+    "lattices": {
+      "L1": ["D1", "DR1", "S1", "DR6", "QF1", "DR7", "S2", "DR8", "D1", "DR1", "DR9", "DR6", "QF1", "DR7", "DR9", "DR8", "D1"],
+      "L2": ["DR2", "QD", "DR4", "QF", "DR5", "DR5", "DR3"],
+      "Cell1": ["-L2","L1", "L2"],
+      "RING":["Cell1","Cell1"]
+    }
+  }
+  
+  

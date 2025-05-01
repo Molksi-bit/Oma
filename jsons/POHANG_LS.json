@@ -1,0 +1,154 @@
+{
+    "title": "POHANG LIGHT SOURCE",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 2.0,
+        "superperiodicity": 12,
+        "horizontal_tune": 14.28,
+        "vertical_tune": 8.18,
+        "momentum_compaction": 0.00181,
+        "emittance_nm_rad": 12.1,
+        "natural_chromaticity_x": -23.36,
+        "natural_chromaticity_y": -18.17,
+        "rf_frequency_MHz": 500.1,
+        "rf_voltage_kV": 1800.0
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.24,
+            "k1": -0.64177618
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.53,
+            "k1": 1.51772681
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.35,
+            "k1": -1.69278925
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 0.35,
+            "k1": -1.45439552
+        },
+        "Q5": {
+            "type": "quadrupole",
+            "length": 0.53,
+            "k1": 1.81955515
+        },
+        "Q6": {
+            "type": "quadrupole",
+            "length": 0.24,
+            "k1": -0.794745539
+        },
+        "BD": {
+            "type": "dipole",
+            "length": 1.1,
+            "angle": 0.1745329245236,
+            "e1": 0.087266462,
+            "e2":0.087266462
+        },
+        "SF": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "SD": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "D1": {
+            "type": "drift",
+            "length": 3.4
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.32
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.42
+        },
+        "D4": {
+            "type": "drift",
+            "length": 0.6
+        },
+        "D5": {
+            "type": "drift",
+            "length": 0.5
+        },
+        "D6": {
+            "type": "drift",
+            "length": 0.25
+        },
+        "D7": {
+            "type": "drift",
+            "length": 0.34
+        },
+        "D8": {
+            "type": "drift",
+            "length": 1.3
+        }
+    },
+    "lattices": {
+        "FSUP": [
+            "D1",
+            "Q1",
+            "D2",
+            "Q2",
+            "D3",
+            "Q3",
+            "D4",
+            "BD",
+            "D5",
+            "SD",
+            "D6",
+            "Q4",
+            "D7",
+            "Q5",
+            "D6",
+            "SF",
+            "D8",
+            "Q6",
+            "D3",
+            "BD",
+            "D3",
+            "Q6",
+            "D8",
+            "SF",
+            "D6",
+            "Q5",
+            "D7",
+            "Q4",
+            "D6",
+            "SD",
+            "D5",
+            "BD",
+            "D4",
+            "Q3",
+            "D3",
+            "Q2",
+            "D2",
+            "Q1",
+            "D1"
+        ],
+        "RING":[
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP"
+        ]
+    }
+}

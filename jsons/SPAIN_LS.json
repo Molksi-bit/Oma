@@ -1,0 +1,137 @@
+{
+    "title": "Spain Light Source",
+    "info": "Lattice extracted from Databook",
+    "parameters": {
+        "energy_GeV": 2.5,
+        "superperiodicity": 12,
+        "horizontal_tune": 14.199,
+        "vertical_tune": 8.3,
+        "momentum_compaction": 0.00194,
+        "emittance_nm_rad": 8.29,
+        "natural_chromaticity_x": -24.65,
+        "natural_chromaticity_y": -25.26,
+        "rf_frequency_MHz": 500.0,
+        "rf_voltage_kV": 1750.0
+    },
+    "variables":{
+
+    },
+    "elements": {
+        "QH1": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": 1.707401186749
+        },
+        "QHD": {
+            "type": "quadrupole",
+            "length": 0.2,
+            "k1": -0.7136133006
+        },
+        "QHF": {
+            "type": "quadrupole",
+            "length": 0.2,
+            "k1": 1.366084220682
+        },
+        "BEN": {
+            "type": "dipole",
+            "length": 1.44,
+            "angle": 0.17453292,
+            "e1": 0.0872664 ,
+            "e2": 0.0872664,
+            "k1": -0.4
+        },
+        "S1": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 56.186577818287
+        },
+        "S2": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": -35.253570929001
+        },
+        "LID": {
+            "type": "drift",
+            "length": 4.05833
+        },
+        "D2A": {
+            "type": "drift",
+            "length": 0.2
+        },
+        "D2B": {
+            "type": "drift",
+            "length": 0.3
+        },
+        "LS": {
+            "type": "drift",
+            "length": 0.5
+        },
+        "D1A": {
+            "type": "drift",
+            "length": 0.575
+        },
+        "D1B": {
+            "type": "drift",
+            "length": 0.2
+        }
+    },
+    "lattices": {
+        "Q1":[
+            "QH1",
+            "QH1"
+        ],
+        "QF":[
+            "QHF",
+            "QHF"
+        ],
+        "QD":[
+            "QHD",
+            "QHD"
+        ],
+        "ACHROMAT": [
+            "BEN",
+            "D2A",
+            "S2",
+            "D2B",
+            "Q1",
+            "D1B",
+            "S1",
+            "D1A",
+            "BEN",
+            "D1A",
+            "S1",
+            "D1B",
+            "Q1",
+            "D2B",
+            "S2",
+            "D2A",
+            "BEN"
+        ],
+        "INSREG": [
+            "LID",
+            "QF",
+            "LS",
+            "QD",
+            "LS"
+        ],
+        "CELDA": [
+            "INSREG",
+            "ACHROMAT",
+            "-INSREG"
+        ],
+        "MACHINE": [
+            "CELDA",
+            "CELDA",
+            "CELDA",
+            "CELDA",
+            "CELDA",
+            "CELDA",
+            "CELDA",
+            "CELDA",
+            "CELDA",
+            "CELDA",
+            "CELDA",
+            "CELDA"
+        ]
+    }
+}

@@ -1,0 +1,350 @@
+{
+    "title": "KEK PHOTON FACTORY",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 2.5,
+        "superperiodicity": 2,
+        "horizontal_tune": 10.826,
+        "vertical_tune": 4.225,
+        "momentum_compaction": 0.00431,
+        "emittance_nm_rad": 27.5,
+        "natural_chromaticity_x": -15.94,
+        "natural_chromaticity_y": -14.3,
+        "rf_frequency_MHz": 500.0,
+        "rf_voltage_kV": 1700.0
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.75,
+            "k1": -0.78148
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.75,
+            "k1": 1.00235
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.5,
+            "k1": -1.22600
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 1.0,
+            "k1": 1.37471
+        },
+        "Q5A": {
+            "type": "quadrupole",
+            "length": 0.6,
+            "k1": -0.73256
+        },
+        "Q6A": {
+            "type": "quadrupole",
+            "length": 0.6,
+            "k1": 1.02562
+        },
+        "Q8A": {
+            "type": "quadrupole",
+            "length": 0.5,
+            "k1": 0.44289
+        },
+        "Q5B": {
+            "type": "quadrupole",
+            "length": 0.6,
+            "k1": -0.73469
+        },
+        "Q6B": {
+            "type": "quadrupole",
+            "length": 0.6,
+            "k1": 1.05496
+        },
+        "Q8B": {
+            "type": "quadrupole",
+            "length": 0.5,
+            "k1": 0.51060
+        },
+        "QAA": {
+            "type": "quadrupole",
+            "length": 0.5,
+            "k1": -1.18281
+        },
+        "Q9A": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.45140
+        },
+        "Q10A": {
+            "type": "quadrupole",
+            "length": 0.5,
+            "k1": 0.54475
+        },
+        "QBA": {
+            "type": "quadrupole",
+            "length": 0.25,
+            "k1": -2.1016
+        },
+        "QAB": {
+            "type": "quadrupole",
+            "length": 0.5,
+            "k1": -1.26881
+        },
+        "Q9B": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.69415
+        },
+        "Q10B": {
+            "type": "quadrupole",
+            "length": 0.5,
+            "k1": 0.36412
+        },
+        "QFA": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 2.03787
+        },
+        "QDB": {
+            "type": "quadrupole",
+            "length": 0.25,
+            "k1": -1.82047
+        },
+        "QFB": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 2.12169
+        },
+        "QD": {
+            "type": "quadrupole",
+            "length": 0.25,
+            "k1": -2.23865
+        },
+        "QF": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 2.43245
+        },
+        "BM": {
+            "type": "dipole",
+            "length": 1.9440760,
+            "angle": 0.2243994753,
+            "e1": 0.1121997376,
+            "e2": 0.1121997376
+        },
+        "SF": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "SD": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "D180": {
+            "type": "drift",
+            "length": 0.18
+        },
+        "D450": {
+            "type": "drift",
+            "length": 0.45
+        },
+        "D210": {
+            "type": "drift",
+            "length": 0.21
+        },
+        "D190": {
+            "type": "drift",
+            "length": 0.19
+        },
+        "D525": {
+            "type": "drift",
+            "length": 0.525
+        },
+        "D725": {
+            "type": "drift",
+            "length": 0.725
+        },
+        "D500": {
+            "type": "drift",
+            "length": 0.5
+        },
+        "D200": {
+            "type": "drift",
+            "length": 0.2
+        },
+        "D150": {
+            "type": "drift",
+            "length": 0.15
+        },
+        "D575": {
+            "type": "drift",
+            "length": 0.575
+        },
+        "D425": {
+            "type": "drift",
+            "length": 0.425
+        },
+        "D400": {
+            "type": "drift",
+            "length": 0.4
+        },
+        "D625": {
+            "type": "drift",
+            "length": 0.625
+        },
+        "D700": {
+            "type": "drift",
+            "length": 0.7
+        },
+        "D4.2": {
+            "type": "drift",
+            "length": 4.23
+        },
+        "D3.8": {
+            "type": "drift",
+            "length": 3.8
+        },
+
+        "D275": {
+            "type": "drift",
+            "length": 0.275
+        },
+        "D250": {
+            "type": "drift",
+            "length": 0.250
+        },
+        "D225": {
+            "type": "drift",
+            "length": 0.225
+        },
+        "D2.5": {
+            "type": "drift",
+            "length": 2.5
+        },
+        "D1.7": {
+            "type": "drift",
+            "length": 1.735
+        },
+        "D3.6": {
+            "type": "drift",
+            "length": 3.55
+        },
+        "D300": {
+            "type": "drift",
+            "length": 0.3
+        }
+    },
+    "lattices": {
+        "CELL": [
+            "QF",
+            "D200",
+            "SF",
+            "D300",
+            "BM",
+            "D300",
+            "QD",
+            "D200",
+            "SD",
+            "D700"
+        ],
+        "HSUP":[
+            "D2.5",
+            "Q1",
+            "D180",
+            "Q2",
+            "D1.7",
+            "BM",
+            "D725",
+            "Q3",
+            "D180",
+            "Q4",
+            "D180",
+            "Q3",
+            "D725",
+            "BM",
+            "D725",
+            "Q5B",
+            "D180",
+            "Q6B",
+            "D4.2",
+            "Q8B",
+            "D725",
+            "BM",
+            "D575",
+            "D500",
+            "QAB",
+            "D450",
+            "Q9B",
+            "D3.8",
+            "Q10B",
+            "D300",
+            "SF",
+            "D625",
+            "BM",
+            "D300",
+            "QDB",
+            "D200",
+            "SD",
+            "D700",
+            "QFB",
+            "D200",
+            "SF",
+            "D300",
+            "BM",
+            "D300",
+            "QD",
+            "D200",
+            "SD",
+            "D700",
+            "CELL",
+            "CELL",
+            "CELL",
+            "CELL",
+            "QFA",
+            "D200",
+            "SF",
+            "D300",
+            "BM",
+            "D300",
+            "QBA",
+            "D200",
+            "SD",
+            "D425",
+            "Q10A",
+            "D3.6",
+            "Q9A",
+            "D450",
+            "D500",
+            "QAA",
+            "D575",
+            "BM",
+            "D725",
+            "Q8A",
+            "D4.2",
+            "Q6A",
+            "D180",
+            "Q5A",
+            "D725",
+            "BM",
+            "D725",
+            "Q3",
+            "D180",
+            "Q4",
+            "D180",
+            "Q3",
+            "D725",
+            "BM",
+            "D1.7",
+            "Q2",
+            "D180",
+            "Q1",
+            "D2.5"
+
+        ],
+        "RING":[
+            "HSUP",
+            "HSUP"
+        ]
+    }
+}

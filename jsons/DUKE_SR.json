@@ -1,0 +1,72 @@
+{
+    "title": "DUKE STORAGE RING",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 1.0,
+        "superperiodicity": 2,
+        "horizontal_tune": 9.11,
+        "vertical_tune": 4.18,
+        "momentum_compaction": 0.0086,
+        "emittance_nm_rad": 18,
+        "natural_chromaticity_x": -10.0,
+        "natural_chromaticity_y": -9.78,
+        "rf_frequency_MHz": 178.5,
+        "rf_voltage_kV": 850.0
+    },
+    "elements": {
+        "QF": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": 1.451
+        },
+        "QD": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": -1.451
+        },
+        "BM1": {
+            "type": "dipole",
+            "length": 0.703,
+            "angle": 0.7854
+        },
+        "BM2": {
+            "type": "dipole",
+            "length": 0.703,
+            "angle": 0.7854
+        },
+        "RFC": {
+            "type": "rf_cavity",
+            "voltage_kV": 30.0,
+            "harmonic_number": 100
+        },
+        "D1": {
+            "type": "drift",
+            "length": 0.35
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.3
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.22
+        },
+        "D4": {
+            "type": "drift",
+            "length": 0.32
+        }
+    },
+    "lattices": {
+        "CELL": [
+            "D1",
+            "QF",
+            "D2",
+            "QD",
+            "D3",
+            "BM1",
+            "BM2",
+            "D4",
+            "RFC"
+        ]
+    }
+}

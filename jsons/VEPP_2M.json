@@ -1,0 +1,83 @@
+{
+    "title": "VEPP 2M",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 0.7,
+        "superperiodicity": 4,
+        "horizontal_tune": 3.058,
+        "vertical_tune": 3.061,
+        "momentum_compaction": 0.166,
+        "emittance_nm_rad": 204,
+        "natural_chromaticity_x": -6.10,
+        "natural_chromaticity_y": -9.16,
+        "rf_frequency_MHz": 201.2,
+        "rf_voltage_kV": 100.0
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.1587,
+            "k1": -28.434125
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.1285,
+            "k1": 28.77066
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.095,
+            "k1": -4.5422
+        },
+        "B": {
+            "type": "dipole",
+            "length": 0.96,
+            "angle": 0.7853981
+        },
+        "D1": {
+            "type": "drift",
+            "length": 0.5528
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.032
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.1205
+        },
+        "D4": {
+            "type": "drift",
+            "length": 0.1875
+        },
+        "D5": {
+            "type": "drift",
+            "length": 0.2825
+        }
+    },
+    "lattices": {
+        "HSUP": [
+            "D1",
+            "Q1",
+            "D2",
+            "Q2",
+            "D3",
+            "B",
+            "D4",
+            "Q3",
+            "D5",
+            "B",
+            "D3",
+            "Q2",
+            "D2",
+            "Q1",
+            "D1"
+        ],
+        "RING": [
+            "HSUP",
+            "HSUP",
+            "HSUP",
+            "HSUP"
+        ]
+    }
+}

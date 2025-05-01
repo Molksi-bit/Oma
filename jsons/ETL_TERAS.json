@@ -1,0 +1,108 @@
+{
+    "title": "ETL TERAS",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 0.8,
+        "superperiodicity": 4,
+        "horizontal_tune": 2.28,
+        "vertical_tune": 1.28,
+        "momentum_compaction": 0.12,
+        "emittance_nm_rad": 505,
+        "natural_chromaticity_x": -2.95,
+        "natural_chromaticity_y": -3.44,
+        "rf_frequency_MHz": 171.6,
+        "rf_voltage_kV": 65.0
+    },
+    "elements": {
+        "QF": {
+            "type": "quadrupole",
+            "length": 0.115,
+            "k1": 4.0733478
+        },
+        "QD": {
+            "type": "quadrupole",
+            "length": 0.115,
+            "k1": -4.8488417
+        },
+        "BU": {
+            "type": "dipole",
+            "length": 0.78025,
+            "angle": 0.3926990817,
+            "e1": 0.2042035225
+        },
+        "BD": {
+            "type": "dipole",
+            "length": 0.78025,
+            "angle": 0.3926990817,
+            "e2":0.2042035225
+        },
+        "RFC": {
+            "type": "rf_cavity",
+            "voltage_kV": 0.065,
+            "length" : 0.5,
+            "harmonic_number": 18
+        },
+        "L1": {
+            "type": "drift",
+            "length": 0.905
+        },
+        "L2": {
+            "type": "drift",
+            "length": 0.2175
+        },
+        "L3": {
+            "type": "drift",
+            "length": 0.3425
+        },
+        "L4": {
+            "type": "drift",
+            "length": 0.405
+        }
+    },
+    "lattices": {
+        "SS1":[
+            "BU",
+            "BD",
+            "L2",
+            "L2",
+            "QF",
+            "QF",
+            "L2",
+            "L2",
+            "BU",
+            "BD"
+        ],
+        "SS2":[
+            "QD",
+            "L3",
+            "L3",
+            "QF",
+            "QF",
+            "L2",
+            "L2",
+            "BU",
+            "BD"
+        ],
+        "TQA":[
+            "SS1",
+            "SS2"
+        ],
+        "HRING": [
+            "L1",
+            "TQA",
+            "L1"
+        ],
+        "RFCELL":[
+            "L1",
+            "TQA",
+            "RFC",
+            "L4"
+        ],
+        "SRING":[
+            "HRING",
+            "HRING",
+            "HRING",
+            "RFCELL"
+        ]
+    }
+}

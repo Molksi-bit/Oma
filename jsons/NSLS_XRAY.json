@@ -1,0 +1,129 @@
+{
+    "title": "NSLS XRAY",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 2.584,
+        "superperiodicity": 8,
+        "horizontal_tune": 9.75,
+        "vertical_tune": 5.59,
+        "momentum_compaction": 0.00383,
+        "emittance_nm_rad": 49.7,
+        "natural_chromaticity_x": -26.81,
+        "natural_chromaticity_y": -20.48,
+        "rf_frequency_MHz": 52.9,
+        "rf_voltage_kV": 1000.0
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.45,
+            "k1": -1.382666
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.8,
+            "k1": 1.363880
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.45,
+            "k1": -1.457938
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 0.225,
+            "k1": 1.381258
+        },
+        "B": {
+            "type": "dipole",
+            "length": 2.7,
+            "angle": 0.392699,
+            "e1": 0.1963495,
+            "e2": 0.1963495,
+            "k1": 0.0045082
+        },
+        "SF": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "SD": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "D1": {
+            "type": "drift",
+            "length": 2.25
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.685
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.33
+        },
+        "D4": {
+            "type": "drift",
+            "length": 0.69
+        },
+        "D5": {
+            "type": "drift",
+            "length": 0.9
+        },
+        "D6": {
+            "type": "drift",
+            "length": 0.25
+        }
+    },
+    "lattices": {
+        "HSUP": [
+            "D1",
+            "Q1",
+            "D2",
+            "Q2",
+            "D3",
+            "Q3",
+            "D4",
+            "B",
+            "D5",
+            "SD",
+            "D5",
+            "SF",
+            "D6",
+            "Q4"
+        ],
+        "MHSUP":[
+            "Q4",
+            "D6",
+            "SF",
+            "D5",
+            "SD",
+            "D5",
+            "B",
+            "D4",
+            "Q3",
+            "D3",
+            "Q2",
+            "D2",
+            "Q1",
+            "D1"
+
+        ],
+        "SECTOR":[
+            "HSUP",
+            "MHSUP"
+        ],
+        "RING":[
+            "SECTOR",
+            "SECTOR",
+            "SECTOR",
+            "SECTOR",
+            "SECTOR",
+            "SECTOR",
+            "SECTOR",
+            "SECTOR"
+        ]
+    }
+}

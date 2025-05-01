@@ -1,4 +1,26 @@
 import math
+import re
+def resolve_param(val, parameters, _rec=0, _max_rec=10):
+    """
+    Ermittelt Wert von 'val' rekursiv, inklusive einfacher Ausdrücke.
+    """
+    val = val.strip()
+    try:
+        return float(val)
+    except ValueError:
+        pass
+    if val in parameters and _rec < _max_rec:
+        return resolve_param(parameters[val], parameters, _rec+1, _max_rec)
+    expr = val
+    pattern = r'\b[a-zA-Z_]\w*\b'
+    for var in re.findall(pattern, expr):
+        if var in parameters:
+            repl = str(resolve_param(parameters[var], parameters, _rec+1, _max_rec))
+            expr = re.sub(rf'\b{var}\b', repl, expr)
+    try:
+        return float(eval(expr))
+    except Exception:
+        return expr
 
 def load_opa(opa_path):
     with open(opa_path, "r") as file:
@@ -31,7 +53,6 @@ def load_opa(opa_path):
         if "=" in line:
             key, val = line.replace(";", "").split("=")
             parameters[key.strip()] = val.strip()
-
     # Elemente
     elements = {}
     magnet_map = {
@@ -49,7 +70,7 @@ def load_opa(opa_path):
         parts = [part.strip().rstrip(";") for part in line.split(":", 1)]
         name, params = parts[0], parts[1]
         params_list = [p.strip() for p in params.split(",") if p.strip()]
-        elem_type = params_list[0]
+        args = {}
         key_map = {
         "l": "length",
         "k": "k1",
@@ -57,10 +78,15 @@ def load_opa(opa_path):
         "t1": "EntranceAngle",
         "t2": "ExitAngle"
         }
-        args = {
-            key_map.get(p.split("=")[0].strip(), p.split("=")[0].strip()): float(p.split("=")[1])
-            for p in params_list[1:] if "=" in p
-        }
+        for p in params_list[1:]:
+            if "=" in p:
+                key, val = p.split("=")
+                key=key_map.get(key.strip(),key.strip())
+                val=val.strip()
+                val_resolved =resolve_param(val,parameters)
+                args[key] = val_resolved
+        elem_type = params_list[0]
+        
         if elem_type in ["bending", "combined"]:
             args["angle"] = math.radians(args.get("angle", 0.0))
         typ = magnet_map.get(elem_type.lower(), elem_type.lower())
@@ -85,5 +111,5 @@ def load_opa(opa_path):
         "parameters": parameters,
         "title": title
     }
-    print(data_dict["elements"])
+    
     return data_dict

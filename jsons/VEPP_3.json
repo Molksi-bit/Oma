@@ -1,0 +1,209 @@
+{
+    "title": "VEPP 3",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 2.0,
+        "superperiodicity": 1,
+        "horizontal_tune": 5.202,
+        "vertical_tune": 5.127,
+        "momentum_compaction": 0.0707,
+        "emittance_nm_rad": 291,
+        "natural_chromaticity_x": -5.3,
+        "natural_chromaticity_y": -6.14,
+        "rf_frequency_MHz": 72.5,
+        "rf_voltage_kV": 600
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.28,
+            "k1": -2.6
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.28,
+            "k1": 2.6
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.612,
+            "k1": -2.387
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 0.612,
+            "k1": 2.387
+        },
+        "B1": {
+            "type": "dipole",
+            "length": 0.888,
+            "angle": 0.14476
+        },
+        "B2": {
+            "type": "dipole",
+            "length": 0.509,
+            "angle": 0.05084,
+            "k1": -1.6114
+        },
+        "B3": {
+            "type": "dipole",
+            "length": 1.038,
+            "angle": 0.1692
+        },
+        "B4": {
+            "type": "dipole",
+            "length": 0.482,
+            "angle": 0.02791,
+            "k1": 1.654
+        },
+        "B5": {
+            "type": "dipole",
+            "length": 0.7636,
+            "angle": 0.19635
+        },
+        "D1": {
+            "type": "drift",
+            "length": 0.029
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.025
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.15
+        },
+        "D4": {
+            "type": "drift",
+            "length": 0.1
+        },
+        "D5": {
+            "type": "drift",
+            "length": 0.607
+        },
+        "D6": {
+            "type": "drift",
+            "length": 0.19
+        },
+        "D7": {
+            "type": "drift",
+            "length": 0.4754
+        },
+        "D8": {
+            "type": "drift",
+            "length": 0.055
+        },
+        "D9": {
+            "type": "drift",
+            "length": 1.721
+        },
+        "D10": {
+            "type": "drift",
+            "length": 2.729
+        },
+        "D11": {
+            "type": "drift",
+            "length": 0.2376
+        },
+        "D12": {
+            "type": "drift",
+            "length": 1.6088
+        },
+        "D13": {
+            "type": "drift",
+            "length": 1.6468
+        },
+        "D14": {
+            "type": "drift",
+            "length": 0.2518
+        },
+        "D15": {
+            "type": "drift",
+            "length": 0.1458
+        }
+    },
+    "lattices": {
+        "S!": [
+            "B1",
+            "D1",
+            "B2",
+            "D1",
+            "B3",
+            "D2",
+            "B4",
+            "D3"
+        ],
+        "S2":[
+            "B5",
+            "D4",
+            "Q1",
+            "D5",
+            "B5",
+            "D4",
+            "Q2",
+            "D6"
+        ],
+        "S3":[
+            "D7",
+            "Q3",
+            "D8",
+            "Q4",
+            "D9",
+            "Q3",
+            "D8",
+            "Q4",
+            "D10",
+            "Q3",
+            "D8",
+            "Q4",
+            "D9",
+            "Q3",
+            "D8",
+            "Q4",
+            "D11"
+        ],
+        "S4":[
+            "D12",
+            "Q3",
+            "D8",
+            "Q4",
+            "D9",
+            "Q3",
+            "D8",
+            "Q4",
+            "D13",
+            "Q3",
+            "D8",
+            "Q4",
+            "D9",
+            "Q3",
+            "D8",
+            "Q4",
+            "D14"
+        ],
+        "S5":[
+            "D15"
+        ],
+        "RING":[
+            "S2",
+            "S1",
+            "S1",
+            "S1",
+            "S1",
+            "S1",
+            "S1",
+            "S1",
+            "S3",
+            "S1",
+            "S1",
+            "S1",
+            "S1",
+            "S1",
+            "S1",
+            "S1",
+            "S5",
+            "S2",
+            "S4"
+        ]
+    }
+}

@@ -26,22 +26,27 @@ def load_file(path):
     metadata["name"] = data.get("title")
     energy = metadata.get("energy_GeV")
     elements = build_element_objects(data.get("elements", {}), data.get("lattices", {}),energy =energy)
-    print(elements)
     return sections,metadata, elements
 
 def build_element_objects(elements, lattices,energy):
     element_map = {}
     def resolve_element(name, reverse=False):
         # Ist es ein echtes Element?
+        
         if name.startswith("-"):
             base_name = name[1:]
             if base_name in lattices:
                 return resolve_element(base_name, reverse=not reverse)
+            elif base_name in elements:
+                return resolve_element(base_name)
+        if "*" in name:
+            n, base_name = name.split("*",1)
+            n =int(n.strip())
+            return sum([resolve_element(base_name.strip(),reverse =reverse) for _ in range(n)], [])
         if name in elements:
             data = elements[name]
             elem_type = data.get("type", "").lower()
             length = data.get("length", 0.0)
-
             if elem_type == "drift":
                 
                 return [ele.Drift(family_name=name, length=length)]
@@ -49,14 +54,16 @@ def build_element_objects(elements, lattices,energy):
                 
                 return [ele.Quadrupole(family_name=name, length=length, k=data.get("k1", 0.0))]
             elif elem_type == "sextupole":
-                
-                return [ele.Sextupole(family_name=name, length=length, h=data.get("k2", 0.0))]
+                hval =data.get("k2")
+                if hval is None:
+                    hval = data.get("k1",0.0)
+                return [ele.Sextupole(family_name=name, length=length, h=hval)]
             elif elem_type == "dipole":
                 
-                return [ele.Dipole(family_name=name, length=length, BendingAngle=data.get("angle", 0.0), k = data.get("k",0.0))]
+                return [ele.Dipole(family_name=name, length=length, BendingAngle=data.get("angle", 0.0), k = data.get("k1",0.0))]
             elif elem_type == "marker":
                 
-                return [ele.Marker(name=name)]
+                return [ele.Marker(family_name=name)]
             elif elem_type == "rf_cavity":
                 
                 return[ele.RFCavity(family_name=name, length=length, voltage= data.get("voltage_kV",0.0)*1000,frequency=data.get("rf_frequency",0.0), harmonic_number= data.get("harmonic_number",0.0),energy=data.get("energy",0.0))]
@@ -70,6 +77,10 @@ def build_element_objects(elements, lattices,energy):
             for n in names:
                 section.extend(resolve_element(n, reverse=reverse))
             return section
+        elif "=" in name:
+            return []
+        print(f"Warnung: Element oder Section '{name}' nicht gefunden!")
+        return []
         
     for section_name, element_names in lattices.items():
         section_elements = []

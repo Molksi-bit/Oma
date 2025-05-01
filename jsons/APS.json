@@ -1,0 +1,183 @@
+{
+    "title": "APS",
+    "info": "Advanced Photon Source",
+    "parameters": {
+        "energy_GeV": 7.0,
+        "horizontal_tune": 35.216,
+        "vertical_tune": 14.299,
+        "momentum_compaction": 0.000228,
+        "emittance_nm_rad": 8.22,
+        "natural_chromaticity_x": -64.73,
+        "natural_chromaticity_y": -26.65,
+        "rf_frequency_MHz": 351.9,
+        "rf_voltage_kV": 9500.0
+    },
+    "variables":{
+
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.5,
+            "k1": -0.45435995
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.8,
+            "k1": 0.639333739
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.5,
+            "k1": -0.41158941
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 0.5,
+            "k1": -0.80954550
+        },
+        "Q5": {
+            "type": "quadrupole",
+            "length": 0.6,
+            "k1": 0.780136057
+        },
+        "M": {
+            "type": "dipole",
+            "length": 3.06,
+            "angle": 0.07854,
+            "e1": 0.03927,
+            "e2": 0.03927
+        },
+        "L0":{
+            "type": "drift",
+            "length": 3.36
+        },
+        "L1":{
+            "type": "drift",
+            "length": 0.66
+        },
+        "L2":{
+            "type": "drift",
+            "length": 0.17365
+        },
+        "L3":{
+            "type": "drift",
+            "length": 0.17365
+        },
+        "L4":{
+            "type": "drift",
+            "length": 0.83365
+        },
+        "L5":{
+            "type": "drift",
+            "length": 0.22365
+        },
+        "L6":{
+            "type": "drift",
+            "length": 0.22365
+        },
+        "L7":{
+            "type": "drift",
+            "length": 0.78365
+        },
+        "L8":{
+            "type": "drift",
+            "length": 0.35
+        },
+        "L9":{
+            "type": "drift",
+            "length": 0.17365
+        },
+        "S1": {
+            "type": "sextupole",
+            "length": 0.2527,
+            "k2": 5.14
+        },
+        "S2": {
+            "type": "sextupole",
+            "length": 0.2527,
+            "k2": -11.47
+        },
+        "S3": {
+            "type": "sextupole",
+            "length": 0.2527,
+            "k2": -16.5150
+        },
+        "S4": {
+            "type": "sextupole",
+            "length": 0.2527,
+            "k2": 15.1194
+        }
+
+    },
+    "lattices": {
+        "HSECTOR": [
+            "L0",
+            "Q1",
+            "L1",
+            "Q2",
+            "L2",
+            "S1",
+            "L3",
+            "Q3",
+            "L4",
+            "S2",
+            "L5",
+            "M",
+            "L6",
+            "S3",
+            "L7",
+            "Q4",
+            "L8",
+            "Q5",
+            "L9"
+        ],
+        "sector": [
+            "HSECTOR",
+            "S4",
+            "-HSECTOR"
+        ],
+        "ring": [
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector",
+            "sector"
+        ]
+    }
+}

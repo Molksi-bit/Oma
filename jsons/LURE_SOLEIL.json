@@ -1,0 +1,258 @@
+{
+    "title": "LURE SOLEIL",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 2.15,
+        "superperiodicity": -4,
+        "horizontal_tune": 18.297,
+        "vertical_tune": 8.381,
+        "momentum_compaction": 0.000379,
+        "emittance_nm_rad": 2.7,
+        "natural_chromaticity_x": -54.57,
+        "natural_chromaticity_y": -24.3,
+        "rf_frequency_MHz": 499.7,
+        "rf_voltage_kV": 3000.0
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.32,
+            "k1": -1.09072
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.46,
+            "k1": 1.76116
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.32,
+            "k1": -1.0792
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 0.32,
+            "k1": -1.19257
+        },
+        "Q5": {
+            "type": "quadrupole",
+            "length": 0.32,
+            "k1": 1.92088
+        },
+        "Q6": {
+            "type": "quadrupole",
+            "length": 0.32,
+            "k1": -1.34686
+        },
+        "Q7": {
+            "type": "quadrupole",
+            "length": 0.46,
+            "k1": 2.30939
+        },
+        "Q8": {
+            "type": "quadrupole",
+            "length": 0.32,
+            "k1": -1.74943
+        },
+        "B1": {
+            "type": "dipole",
+            "length": 0.904975,
+            "angle": 0.19635
+        },
+        "H1": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": -1.23023
+        },
+        "H2": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 3.03648
+        },
+        "H3": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 3.5156
+        },
+        "H4": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": -5.08275
+        },
+        "H5": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 2.89026
+        },
+        "H6": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": -2.7834
+        },
+        "H7": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 4.10348
+        },
+        "H8": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": -3.46153
+        },
+        "D1": {
+            "type": "drift",
+            "length": 7.04
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.39
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.2
+        },
+        "D6": {
+            "type": "drift",
+            "length": 0.79
+        },
+        "D7": {
+            "type": "drift",
+            "length": 0.44
+        },
+        "D9": {
+            "type": "drift",
+            "length": 0.46
+        },
+        "D10": {
+            "type": "drift",
+            "length": 0.47
+        },
+        "D12": {
+            "type": "drift",
+            "length": 3.69
+        }
+    },
+    "lattices": {
+        "BL1":[
+            "D1",
+            "Q1",
+            "D2"
+        ],
+        "BL2":[
+            "D3",
+            "Q2",
+            "D13",
+            "Q3",
+            "D3"
+        ],
+        "BL3":[
+            "D6",
+            "B1",
+            "D7",
+            "Q4",
+            "D3"
+        ],
+        "BL4":[
+            "D9",
+            "Q5",
+            "D10"
+        ],
+        "BL5":[
+            "D10",
+            "Q5",
+            "D9"
+        ],
+        "BL6":[
+            "D3",
+            "Q4",
+            "D7",
+            "B1",
+            "D7",
+            "Q6",
+            "D3"
+        ],
+        "BL7":[
+            "D2",
+            "Q7",
+            "D3"
+        ],
+        "BL8":[
+            "D2",
+            "Q8",
+            "D12"
+        ],
+        "BL9":[
+            "D3",
+            "Q4",
+            "D7",
+            "B1",
+            "D7",
+            "Q6",
+            "D3"
+        ],
+        "BL10":[
+            "D2",
+            "Q7",
+            "D3"
+        ],
+        "BL11":[
+            "D2",
+            "Q8",
+            "D12"
+        ],
+        "CELL1": [
+            "BL1",
+            "H1",
+            "BL2",
+            "H2",
+            "BL3",
+            "H3",
+            "BL4",
+            "H4",
+            "BL5",
+            "H3"
+        ],
+        "CELL2": [
+            "BL6",
+            "H5",
+            "BL7",
+            "H6",
+            "BL8"
+        ],
+        "CELL3": [
+            "-BL8",
+            "H8",
+            "-BL7",
+            "H7",
+            "-BL6",
+            "H3",
+            "-BL5",
+            "H4",
+            "-BL4",
+            "H3"
+        ],
+        "CELL4": [
+            "BL9",
+            "H7",
+            "BL10",
+            "H8",
+            "BL11"
+        ],
+        "MAIL":[
+            "CELL1",
+            "CELL2",
+            "CELL3",
+            "CELL4"
+        ],
+        "PER":[
+            "MAIL",
+            "-MAIL"
+        ],
+        "RING":[
+            "PER",
+            "PER",
+            "PER",
+            "PER"
+        ]
+    }
+}

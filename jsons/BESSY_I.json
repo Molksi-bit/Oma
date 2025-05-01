@@ -1,0 +1,167 @@
+{
+    "title": "BESSY I",
+    "info": "Lattice extracted from Databook",
+    "parameters": {
+        "energy_GeV": 0.8,
+        "superperiodicity": -2,
+        "horizontal_tune": 5.553,
+        "vertical_tune": 3.254,
+        "momentum_compaction": 0.0166,
+        "emittance_nm_rad": 55.8,
+        "natural_chromaticity_x": -13.47,
+        "natural_chromaticity_y": -8.53,
+        "rf_frequency_MHz": 499.7,
+        "rf_voltage_kV": 200.0
+    },
+    "variables":{
+
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.44,
+            "k1": -1.888
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.44,
+            "k1": 3.033
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.44,
+            "k1": 3.26
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 0.44,
+            "k1": -1.525
+        },
+        "Q1T": {
+            "type": "quadrupole",
+            "length": 0.44,
+            "k1": -3.363
+        },
+        "Q2T": {
+            "type": "quadrupole",
+            "length": 0.44,
+            "k1": 4.562
+        },
+        "Q3T": {
+            "type": "quadrupole",
+            "length": 0.25,
+            "k1": -2.874
+        },
+        "S1": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "S2": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "HB": {
+            "type": "dipole",
+            "length": 0.934,
+            "angle": 0.523598775,
+            "e1": 0.261799387 ,
+            "e2":0.261799387
+        },
+        "RF": {
+            "type": "rf_cavity",
+            "voltage_kV": 200.0,
+            "harmonic_number": 104
+        },
+        "D1": {
+            "type": "drift",
+            "length": 1.634
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.25
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.835
+        },
+        "D4": {
+            "type": "drift",
+            "length": 0.475
+        },
+        "D5": {
+            "type": "drift",
+            "length": 0.11
+        },
+        "D6": {
+            "type": "drift",
+            "length": 1.634
+        },
+        "D7": {
+            "type": "drift",
+            "length": 0.6
+        },
+        "D8": {
+            "type": "drift",
+            "length": 0.235
+        }
+    },
+    "lattices": {
+        "DUB": [
+            "D3",
+            "Q2",
+            "D2",
+            "Q1",
+            "D1"
+        ],
+        "TRI": [
+            "D6",
+            "Q1T",
+            "D2",
+            "Q2T",
+            "D5",
+            "Q3T",
+            "D4"
+        ],
+        "AC1": [
+            "D7",
+            "S1",
+            "D8",
+            "Q3",
+            "D2",
+            "Q4",
+            "D3"
+        ],
+        "AC2": [
+            "D7",
+            "S2",
+            "D8",
+            "Q4",
+            "D2",
+            "Q3",
+            "D3"
+        ],
+        "ACH": [
+            "HB",
+            "AC1",
+            "HB",
+            "AC2",
+            "HB"
+        ],
+        "BE4": [
+            "TRI",
+            "ACH",
+            "DUB"
+        ],
+        "BE2": [
+            "BE4",
+            "-BE4"
+        ],
+        "BE1": [
+            "BE2",
+            "BE2",
+            "RF"
+        ]
+    }
+}

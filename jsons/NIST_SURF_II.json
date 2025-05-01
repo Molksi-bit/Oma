@@ -1,0 +1,29 @@
+{
+    "title": "NIST SURF II",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 0.3,
+        "superperiodicity": 1,
+        "horizontal_tune": 0.640,
+        "vertical_tune": 0.768,
+        "momentum_compaction": 2.44,
+        "emittance_nm_rad": 350,
+        "natural_chromaticity_x": -1.79,
+        "natural_chromaticity_y": 1.49,
+        "rf_frequency_MHz": 113.8,
+        "rf_voltage_kV": 10.0
+    },
+    "elements": {
+        "B": {
+            "type": "dipole",
+            "length": 5.26656,
+            "angle": 6.2832,
+            "k1": -0.8397
+        }
+    },
+    "lattices": {
+        "RING": [
+            "B"
+        ]
+    }
+}

@@ -1,0 +1,71 @@
+{
+    "title": "NIJI III SEI",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 0.6,
+        "superperiodicity": 2,
+        "horizontal_tune": 2.346,
+        "vertical_tune": 1.368,
+        "momentum_compaction": 0.0874,
+        "emittance_nm_rad": 341,
+        "natural_chromaticity_x": -3.01,
+        "natural_chromaticity_y": -5.14,
+        "rf_frequency_MHz": 158.7,
+        "rf_voltage_kV": 60.0
+    },
+    "elements": {
+        "QD": {
+            "type": "quadrupole",
+            "length": 0.095,
+            "k1": -5.559
+        },
+        "QF1": {
+            "type": "quadrupole",
+            "length": 0.19,
+            "k1": 5.513
+        },
+        "QF2": {
+            "type": "quadrupole",
+            "length": 0.24,
+            "k1": 4.924
+        },
+        "BD": {
+            "type": "dipole",
+            "length": 0.785398,
+            "angle": 1.5707963
+        },
+        "D1": {
+            "type": "drift",
+            "length": 1.35
+        },
+        "D2": {
+            "type": "drift",
+            "length": 1.06
+        },
+        "D3": {
+            "type": "drift",
+            "length": 1.123
+        }
+    },
+    "lattices": {
+        "HSUP": [
+            "QD",
+            "D1",
+            "QF1",
+            "D2",
+            "BD",
+            "D3",
+            "QF2",
+            "D3",
+            "BD",
+            "D2",
+            "QF1",
+            "D1",
+            "QD"
+        ],
+        "RING":[
+            "HSUP",
+            "HSUP"
+        ]
+    }
+}

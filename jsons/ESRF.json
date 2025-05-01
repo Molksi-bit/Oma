@@ -1,0 +1,76 @@
+{
+    "title": "example",
+    "info": "This is an example json file",
+    "parameters": {
+      "energy_GeV": 6.0,
+      "superperiodicity": -16,
+      "horizontal_tune": 36.438,
+      "vertical_tune": 11.399,
+      "momentum_compaction": 0.000199,
+      "emittance_nm_rad": 3.99,
+      "natural_chromaticity_x": -123.7,
+      "natural_chromaticity_y": -34.84,
+      "rf_frequency_MHz": 352.3,
+      "rf_voltage_kV": 8000.0
+    },
+    "variables": {
+
+    },
+    "elements": {
+        "QD1": {"type": "quadrupole", "length": 0.4347, "k1": -0.28927},
+        "QF1": {"type": "quadrupole", "length": 0.9412, "k1": 0.507214},
+        "QD2": {"type": "quadrupole", "length": 0.5368, "k1": -0.5008},
+        "QF2": {"type": "quadrupole", "length": 0.52, "k1": 0.742974},
+        "QD3": {"type": "quadrupole", "length": 0.4234, "k1": -0.647612},
+        "QD4": {"type": "quadrupole", "length": 0.5182, "k1": -0.771698},
+        "QF3": {"type": "quadrupole", "length": 0.9198, "k1": 0.799801},
+        "QD5": {"type": "quadrupole", "length": 0.4324, "k1": -0.49683},
+        "DR1": {"type": "drift", "length": 0.305},
+        "M1": {
+            "type": "dipole",
+            "length": 2.15728,
+            "angle": 0.092324,
+            "e1": 0.0490873,
+            "e2": 0.043237,
+            "fint": 0.0,
+            "hgap": 0.0,
+            "k2": 0.0
+          },
+          "M2": {
+            "type": "dipole",
+            "length": 0.292710,
+            "angle": 0.00585,
+            "e1": -0.0432374,
+            "e2": 0.0490873,
+            "fint": 0.0,
+            "hgap": 0.0,
+            "k2": 0.0
+          },
+          "M3": {
+            "type": "dipole",
+            "length": 0.292710,
+            "angle": 0.092324,
+            "e1": 0.0490873,
+            "e2": 0.043237,
+            "fint": 0.0,
+            "hgap": 0.0,
+            "k2": 0.0
+          },
+          "M4": {
+            "type": "dipole",
+            "length": 2.15728,
+            "angle": 0.092324,
+            "e1": 0.0490873,
+            "e2": 0.043237,
+            "fint": 0.0,
+            "hgap": 0.0,
+            "k2": 0.0
+          },
+          "S1": {"type": "sextupole", "length": 0.0, "k2": 0.0}
+        },
+    "lattices": {
+          "L1": ["D1", "DR1", "S1", "DR6", "QF1", "DR7", "S2", "DR8", "D1", "DR1", "DR9", "DR6", "QF1", "DR7", "DR9", "DR8", "D1"],
+          "L2": ["DR2", "QD", "DR4", "QF", "DR5", "DR5", "DR3"],
+          "Cell1": ["-L2","L1", "L2"]
+        }
+}

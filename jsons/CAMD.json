@@ -1,0 +1,122 @@
+{
+    "title": "CAMD",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 1.5,
+        "superperiodicity": 4,
+        "horizontal_tune": 3.26,
+        "vertical_tune": 1.168,
+        "momentum_compaction": 0.0332,
+        "emittance_nm_rad": 342,
+        "natural_chromaticity_x": -4.54,
+        "natural_chromaticity_y": -3.79,
+        "rf_frequency_MHz": 499.7,
+        "rf_voltage_kV": 350.0
+    },
+    "elements": {
+        "QF": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": 1.909478
+        },
+        "QD": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": -1.466674
+        },
+        "QA": {
+            "type": "quadrupole",
+            "length": 0.15,
+            "k1": 2.682152
+        },
+        "SD": {
+            "type": "sextupole",
+            "length": 0.1,
+            "k2": -25.31921
+        },
+        "SF": {
+            "type": "sextupole",
+            "length": 0.1,
+            "k2": 17.34186
+        },
+        "BEND": {
+            "type": "dipole",
+            "length": 2.3,
+            "angle": 0.7853981634
+        },
+        "RFC": {
+            "type": "rf_cavity",
+            "voltage_kV": 60.0,
+            "harmonic_number": 74
+        },
+        "D1": {
+            "type": "drift",
+            "length": 1.6
+        },
+        "D1X": {
+            "type": "drift",
+            "length": 1.35
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.4
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.45
+        },
+        "D4": {
+            "type": "drift",
+            "length": 0.4
+        },
+        "D5": {
+            "type": "drift",
+            "length": 0.6
+        },
+        "D6": {
+            "type": "drift",
+            "length": 0.2
+        }
+    },
+    "lattices": {
+        "HAFSUP": [
+            "D1",
+            "QF",
+            "D2",
+            "QD",
+            "D3",
+            "BEND",
+            "D4",
+            "SD",
+            "D5",
+            "SF",
+            "D6",
+            "QA"
+        ],
+        "HAFSUPX":[
+            "D1X",
+            "QF",
+            "D2",
+            "QD",
+            "D3",
+            "BEND",
+            "D4",
+            "SD",
+            "D5",
+            "SF",
+            "D6",
+            "QA"
+        ],
+        "SUP":[
+            "-HAFSUP",
+            "HAFSUP"
+        ],
+        "RING":[
+            "-HAFSUPX",
+            "HAFSUPX",
+            "SUP",
+            "SUP",
+            "SUP"
+        ]
+    }
+}

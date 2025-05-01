@@ -1,0 +1,62 @@
+{
+"title": "ETL_NIJI_IV",
+    "info": "ETL_NIJI_IV",
+    "parameters": {
+      "energy_GeV": 0.5,
+      "superperiodicity": 2,
+      "horizontal_tune": 2.297,
+      "vertical_tune": 1.285,
+      "momentum_compaction": 0.0897,
+      "emittance_nm_rad": 119,
+      "natural_chromaticity_x": -2.64,
+      "natural_chromaticity_y": -5.59,
+      "rf_frequency_MHz": 164.3,
+      "rf_voltage_kV": 0.02
+    },
+    "variables":{
+
+    },
+    "elements": {
+        "QF": {"type": "quadrupole", "length": 0.23, "k1": 4.136867},
+        "QD": {"type": "quadrupole", "length": 0.23, "k1": -3.9666242},
+        "QFA": {"type": "quadrupole", "length": 0.23, "k1": 6.1950457},
+        "L1": {"type": "drift", "length": 0.30},
+        "L2": {"type": "drift", "length": 3.5245},
+        "L3": {"type": "drift", "length": 3.0245},
+
+        "BU": {
+            "type": "dipole",
+            "length": 0.6285,
+            "angle": 0.5235987756,
+            "e1": 0.2809980096,
+            "e2": 0.0,
+            "fint": 0.0,
+            "hgap": 0.0,
+            "k2": 0.0
+          },
+        "BD": {
+            "type": "dipole",
+            "length": 0.6285,
+            "angle": 0.5235987756,
+            "e1": 0.0,
+            "e2": 0.2809980096,
+            "fint": 0.0,
+            "hgap": 0.0,
+            "k2": 0.0
+          },
+         "RFC":{
+          "type": "rf_cavity",
+          "length": 0.5,
+          "voltage_kV": 0.02,
+          "harmonic_number": 16
+         }
+        },
+    "lattices": {
+          "SS1": ["QF", "L1", "QD", "L1", "BU", "BD", "L1", "QFA", "L1", "BU"],
+          "SS2": ["BD", "L1", "QFA", "L1", "BU", "BD", "L1","QD", "L1", "QF"],
+          "TBA": ["SS1","SS2"],
+          "HRING":["L2","TBA","L2"],
+          "RFCELL":["L2","TBA","RFC","L3"],
+          "SRING":["HRING","RFCELL"]
+        }
+}
