@@ -1,0 +1,90 @@
+{
+    "title": "CANADA LIGHT SOURCE",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 2.5,
+        "superperiodicity": 12,
+        "horizontal_tune": 10.22,
+        "vertical_tune": 3.298,
+        "momentum_compaction": 0.00393,
+        "emittance_nm_rad": 13.7,
+        "natural_chromaticity_x": -16.3,
+        "natural_chromaticity_y": -13.44,
+        "rf_frequency_MHz": 476.0,
+        "rf_voltage_kV": 2000.0
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -1.306
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.614
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -2.123
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 2.284
+        },
+        "Q5": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -2.035
+        },
+        "B1": {
+            "type": "dipole",
+            "length": 1.45,
+            "angle": 0.5236
+        },
+        "B2": {
+            "type": "dipole",
+            "length": 1.45,
+            "angle": 0.5236
+        },
+        "RFC": {
+            "type": "rf_cavity",
+            "voltage_kV": 1800.0,
+            "harmonic_number": 280
+        },
+        "D1": {
+            "type": "drift",
+            "length": 0.32
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.28
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.36
+        },
+        "D4": {
+            "type": "drift",
+            "length": 0.3
+        }
+    },
+    "lattices": {
+        "CELL": [
+            "D1",
+            "Q1",
+            "Q2",
+            "D2",
+            "Q3",
+            "Q4",
+            "D3",
+            "B1",
+            "B2",
+            "D4",
+            "Q5",
+            "RFC"
+        ]
+    }
+}

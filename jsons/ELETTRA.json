@@ -1,0 +1,150 @@
+{
+    "title": "Elettra",
+    "info": "Lattice extracted from Databook",
+    "parameters": {
+        "energy_GeV": 2.0,
+        "superperiodicity": 12,
+        "horizontal_tune": 14.294,
+        "vertical_tune": 8.201,
+        "momentum_compaction": 0.00161,
+        "emittance_nm_rad": 7.01,
+        "natural_chromaticity_x": -40.92,
+        "natural_chromaticity_y": -13.95,
+        "rf_frequency_MHz": 499.7,
+        "rf_voltage_kV": 1800.0
+    },
+    "variables":{
+
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.26,
+            "k1": -1.952436
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.498,
+            "k1": 2.235991
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.26,
+            "k1": -1.277189
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 0.409,
+            "k1": 2.22747
+        },
+        "Q5": {
+            "type": "quadrupole",
+            "length": 0.13,
+            "k1": -1.4
+        },
+        "BD": {
+            "type": "dipole",
+            "length": 1.456,
+            "angle": 0.261799,
+            "k2": -0.430418,
+            "e1": 0.130899693,
+            "e2": 0.130899693
+        },
+        "SF": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 8.406257
+        },
+        "SD": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": -7.223313
+        },
+        "S1": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 2.2
+        },
+        "D1": {
+            "type": "drift",
+            "length": 3.116
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.281
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.34
+        },
+        "D4": {
+            "type": "drift",
+            "length": 0.251
+        },
+        "D5": {
+            "type": "drift",
+            "length": 0.507
+        },
+        "D6": {
+            "type": "drift",
+            "length": 0.4725
+        },
+        "D7": {
+            "type": "drift",
+            "length": 0.3755
+        },
+        "D8": {
+            "type": "drift",
+            "length": 2.074
+        },
+        "D9": {
+            "type": "drift",
+            "length": 0.37
+        },
+        "RF": {
+            "type": "rf_cavity",
+            "voltage_kV": 1800.0,
+            "harmonic_number": 500
+        }
+    },
+    "lattices": {
+        "HSUP": [
+            "D1",
+            "Q1",
+            "D2",
+            "S1",
+            "D3",
+            "Q2",
+            "D4",
+            "Q3",
+            "D5",
+            "BD",
+            "D6",
+            "Q4",
+            "D7",
+            "SF",
+            "D8",
+            "SD",
+            "D9",
+            "Q5"
+        ],
+        "FSUP": [
+            "HSUP",
+            "-HSUP"
+        ],
+        "RING": [
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP"
+        ]
+    }
+}

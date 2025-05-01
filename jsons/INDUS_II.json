@@ -1,0 +1,131 @@
+{
+    "title": "Indus II",
+    "info": "Lattice extracted from Databook",
+    "parameters": {
+        "energy_GeV": 2.0,
+        "superperiodicity": 8,
+        "horizontal_tune": 9.197,
+        "vertical_tune": 5.201,
+        "momentum_compaction": 0.00516,
+        "emittance_nm_rad": 44.1,
+        "natural_chromaticity_x": -16.22,
+        "natural_chromaticity_y": -8.91,
+        "rf_frequency_MHz": 189.7,
+        "rf_voltage_kV": 1500.0
+    },
+    "variables":{
+
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": -0.9
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.55,
+            "k1": 1.400256
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -1.39194
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.875615
+        },
+        "Q5": {
+            "type": "quadrupole",
+            "length": 0.2,
+            "k1": -1.45
+        },
+        "MAG": {
+            "type": "dipole",
+            "length": 2.17948,
+            "angle": 0.39269908,
+            "e1":0.19634954 ,
+            "e2":0.19634954
+        },
+        "S1": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "S2": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "S3": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "S4": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "D1": {
+            "type": "drift",
+            "length": 2.28
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.35
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.55
+        },
+        "D4": {
+            "type": "drift",
+            "length": 0.6
+        },
+        "D5": {
+            "type": "drift",
+            "length": 1.2079011
+        }
+    },
+    "lattices": {
+        "HALFSEC": [
+            "D1",
+            "Q1",
+            "D2",
+            "S1",
+            "D2",
+            "Q2",
+            "D2",
+            "S2",
+            "D2",
+            "Q3",
+            "D3",
+            "MAG",
+            "D4",
+            "Q4",
+            "D2",
+            "S3",
+            "D5",
+            "S4",
+            "D2",
+            "Q5"
+        ],
+        "SECTOR": [
+            "HALF",
+            "-HALF"
+        ],
+        "RING": [
+            "SECTOR",
+            "SECTOR",
+            "SECTOR",
+            "SECTOR",
+            "SECTOR",
+            "SECTOR",
+            "SECTOR",
+            "SECTOR"
+        ]
+    }
+}

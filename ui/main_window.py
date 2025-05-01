@@ -4,8 +4,9 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QAction, QColor, QIcon
 from PySide6.QtCore import Qt
 from file_io.json_loader import load_file
-from ui.plot_canvas import linear_plot
-
+from ui.plot_canvas import linear_plot, nonlinear_plot, calculate_nonlin, get_max_contribution
+from matplotlib.figure import Figure
+import os
 
 def load_stylesheet(path):
         with open(path,"r") as file :
@@ -33,9 +34,15 @@ class MainWindow(QMainWindow):
             self.stacked.addWidget(view)
         self.lattice_data = None
         self.selected_section = None
+        self.nonlin_cache = {}
+        self.lin_cache = {}
+        self.needs_recalc = True
+        self.active_plot = None
+        self.saved_plots = []
         
         self.create_menu()
-
+    def lattice_change(self):
+        self.needs_recalc = True
     
     def create_menu(self):
         menu_bar = QMenuBar(self)
@@ -45,6 +52,7 @@ class MainWindow(QMainWindow):
         linear_menu = QMenu("linear", self)
         nonlinear_menu = QMenu("nonlinear", self)
         settings_menu = QMenu("Settings",self)
+        plot_menu = QMenu("Plot", self)
     #Menu-actions
         home_action = QAction(QIcon("assets/icons/haus.png"),"",self)
         home_action.setShortcut("Ctrl+H")
@@ -68,6 +76,7 @@ class MainWindow(QMainWindow):
 
         nonlinopt_action = QAction("Nonlinear design",self)
         nonlinopt_action.triggered.connect(lambda: self.switch_view("nonlin"))
+        nonlinopt_action.triggered.connect(lambda: self.plot_nonlin("chrom1"))
         rdts_action = QAction("RDTs",self)
         rdts_action.triggered.connect(lambda: self.switch_view("rdt"))
         magnet_contribution_action = QAction("Magnet contribution",self)
@@ -75,6 +84,11 @@ class MainWindow(QMainWindow):
         chroma_action.triggered.connect(lambda: self.switch_view("chroma"))
 
         theme_action = QAction("change theme", self)
+
+        save_plot_action = QAction("Save Plot",self)
+        save_plot_action.triggered.connect(lambda: self.export_active_plot())
+        save_all_plots_action = QAction("Save all Plots", self)
+        save_all_plots_action.triggered.connect(lambda: self.export_all_plots())
 
         
     #Adding everything
@@ -89,12 +103,15 @@ class MainWindow(QMainWindow):
 
         settings_menu.addActions([theme_action])
 
+        plot_menu.addActions([save_plot_action, save_all_plots_action])
+
         menu_bar.addAction(home_action)
         menu_bar.addMenu(file_menu)
         menu_bar.addMenu(lattice_menu)
         menu_bar.addMenu(linear_menu)
         menu_bar.addMenu(nonlinear_menu)
         menu_bar.addMenu(settings_menu)
+        menu_bar.addMenu(plot_menu)
 
         # Shortcuts
         linopt_action.setShortcut("Ctrl+1")
@@ -266,23 +283,54 @@ class MainWindow(QMainWindow):
         button_area =QFrame()
         button_area.setObjectName("nonlinButtonArea")
         button_layout = QHBoxLayout()
-        chroma1_button = QPushButton("1st Chroma")
-        chroma1_button.setToolTip("Plots the first order Chromaticity without Sextupoles")
-        chroma2_button = QPushButton("2nd Chroma")
-        alpha_button = QPushButton("α contributions")
+        self.chroma1_button = QPushButton("X1")
+        self.chroma1_button.clicked.connect(lambda: self.plot_nonlin("chrom1"))
+        self.chroma1_sext_button = QPushButton("X1 + Sext")
+        self.chroma1_sext_button.clicked.connect(lambda: self.plot_nonlin("chrom1_sext"))
+        self.chroma1_button.setToolTip("Plots the first order Chromaticity without Sextupoles")
+        self.chroma2_button = QPushButton("X2")
+        self.chroma2_button.clicked.connect(lambda: self.plot_nonlin("chrom2"))
+        self.chroma2_sext_button = QPushButton("X2 + Sext")
+        self.chroma2_sext_button.clicked.connect(lambda: self.plot_nonlin("chrom2_sext"))
+        self.alpha0_button = QPushButton("α0")
+        self.alpha0_button.clicked.connect(lambda: self.plot_nonlin("alpha0"))
+        self.alpha1_1_button = QPushButton("α1_1")
+        self.alpha1_1_button.clicked.connect(lambda: self.plot_nonlin("alpha1_1"))
+        self.alpha1_2_button = QPushButton("α1_2")
+        self.alpha1_2_button.clicked.connect(lambda: self.plot_nonlin("alpha1_2"))
 
-        button_layout.addWidget(chroma1_button)
-        button_layout.addWidget(chroma2_button)
-        button_layout.addWidget(alpha_button)
+        button_layout.addWidget(self.chroma1_button)
+        button_layout.addWidget(self.chroma1_sext_button)
+        button_layout.addWidget(self.chroma2_button)
+        button_layout.addWidget(self.chroma2_sext_button)
+        button_layout.addWidget(self.alpha0_button)
+        button_layout.addWidget(self.alpha1_1_button)
+        button_layout.addWidget(self.alpha1_2_button)
         button_layout.setSpacing(20)
         button_area.setLayout(button_layout)
 
-        plot_area = QFrame()
-        plot_area.setObjectName("nonlinPlotArea")
-        plot_area.setLayout(QVBoxLayout())
+        self.bottom_frame = QFrame()
+        self.bottom_layout = QHBoxLayout()
+
+
+        self.nonlin_table = QTableWidget()
+        self.nonlin_table.setColumnCount(1)
+        self.nonlin_table.setRowCount(4)
+        self.nonlin_table.horizontalHeader().setVisible(False)
+        self.nonlin_table.setVerticalHeaderLabels(["Magnet","Value", "Position [m]", "Field"])
+
+
+        self.nonlin_plot_area = QFrame()
+        self.nonlin_plot_area.setObjectName("nonlinPlotArea")
+        self.nonlin_plot_layout = QVBoxLayout()
+        self.nonlin_plot_area.setLayout(self.nonlin_plot_layout)
+
+        self.bottom_layout.addWidget(self.nonlin_plot_area,5)
+        self.bottom_layout.addWidget(self.nonlin_table)
+        self.bottom_frame.setLayout(self.bottom_layout)
 
         layout.addWidget(button_area,1)
-        layout.addWidget(plot_area,8)
+        layout.addWidget(self.bottom_frame,8)
         widget.setLayout(layout)
         return widget
 
@@ -391,12 +439,12 @@ class MainWindow(QMainWindow):
         for element in section_elements:
 
             tooltip = f"Typ: {element.__class__.__name__}\nLänge: {element.Length:.3f} m"
-            if hasattr(element, "K"):
+            if hasattr(element, "K") :#and element.K != 0
                 tooltip += f"\nk1: {element.K:.3f}"
-            if hasattr(element, "H"):
+            if hasattr(element, "H"):#and  element.H != 0
                 tooltip += f"\nk2: {element.H:.3f}"
-            if hasattr(element,"Angle"):
-                tooltip += f"\nangle: {element.Angle:.3f}"
+            if hasattr(element,"BendingAngle"):
+                tooltip += f"\nangle: {element.BendingAngle:.3f}"
             item = QListWidgetItem(element.FamName)
             item.setToolTip(tooltip)
             item.setData(Qt.UserRole, element)
@@ -438,14 +486,83 @@ class MainWindow(QMainWindow):
         if self.lattice_data:
             elements = self.lattice_data["elements"].get(self.selected_section)
             canvas = linear_plot(elements)
+            if isinstance(canvas.figure, Figure):
+                self.active_plot = canvas.figure
+                self.saved_plots.append({
+                "figure": canvas.figure,  
+                "type": "linear",       
+                "section": self.selected_section 
+            })
             for i in reversed(range(self.plot_canvas_layout.count())):
                 widget = self.plot_canvas_layout.itemAt(i).widget()
                 if widget:
                     widget.setParent(None)
             self.plot_canvas_layout.addWidget(canvas)
-            self.lattice_table = self.lattice_table.clearContents()
+            #self.lattice_table = self.lattice_table.clearContents()
+
+    def plot_nonlin(self,function):
+        if not self.lattice_data or not self.selected_section:
+            return
+        section = self.selected_section
+        if section not in self.nonlin_cache or self.needs_recalc:
+            elements = self.lattice_data["elements"].get(section)
+            data = calculate_nonlin(elements)
+            self.nonlin_cache[section] = data
+            self.needs_recalc =False
+        else:
+            data = self.nonlin_cache[section]
+            elements = self.lattice_data["elements"].get(section)
+        canvas = nonlinear_plot(data,function,elements)
+        if isinstance(canvas.figure, Figure):
+            self.active_plot = canvas.figure
+            self.saved_plots.append({
+                "figure": canvas.figure,  
+                "type": function,       
+                "section": self.selected_section 
+            })
+        magnets = get_max_contribution(data, function,elements)
+        for i,value in enumerate(magnets[0]):
+            item = QTableWidgetItem(str(value))
+            self.nonlin_table.setItem(i,0,item)
+        for i in reversed(range(self.nonlin_plot_layout.count())):
+            widget = self.nonlin_plot_layout.itemAt(i).widget()
+            if widget:
+                widget.setParent(None)
+        self.nonlin_plot_layout.addWidget(canvas)
+
 
     def on_section_cell_clicked(self,row,col):
         item = self.lattice_table_widget.item(row,col)
         if item:
             self.selected_section = item.text()
+
+    def export_active_plot(self):
+        if hasattr(self, "active_plot") and self.active_plot:
+            file_path, _ = QFileDialog.getSaveFileName(self, "Plot speichern", "", "PNG (*.png);;PDF (*.pdf)")
+            if file_path:
+                self.active_plot.savefig(file_path, dpi=300)
+        else:
+            QMessageBox.warning(self, "Fehler", "Kein aktiver Plot vorhanden.")
+
+    def export_all_plots(self):
+        if not self.saved_plots:
+            QMessageBox.warning(self, "Keine Plots", "Es wurden noch keine Plots generiert.")
+            return
+
+        folder = QFileDialog.getExistingDirectory(self, "Exportverzeichnis wählen")
+        if not folder:
+            return
+
+        for i, plot_data in enumerate(self.saved_plots):
+            fig = plot_data["figure"]
+            section = plot_data.get("section", f"plot_{i}")
+            plot_type = plot_data.get("type", "plot")
+            filename = f"{i:02d}_{section}_{plot_type}.png"
+            save_path = os.path.join(folder, filename)
+            fig.savefig(save_path, dpi=300)
+        
+        QMessageBox.information(self, "Export abgeschlossen", f"{len(self.saved_plots)} Plots gespeichert.")
+
+        
+    def clear_saved_plots(self):
+        self.saved_plots.clear()

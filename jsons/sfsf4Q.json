@@ -1,0 +1,17 @@
+{
+    "title": "MyLattice",
+    "info":"A 6-Bend Achromat lattice with 4 Quadrupoles in the end cell ",
+    "elements": {
+      "Q1" : {"type": "quadrupole", "length": 0.4, "k1": 1.2},
+      "D1": {"type": "drift", "length": 1.0},
+      "B1" :{"type": "dipole", "length": 2.0, "angle": 0.1}
+    },
+    "variables":{
+
+    },
+    "lattices": {
+    "cell": ["Q1", "D1", "B1", "D1", "Q1"],
+    "ring": ["cell","cell","cell", "cell"]
+    }
+  }
+  

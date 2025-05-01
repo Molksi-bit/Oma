@@ -1,0 +1,96 @@
+{
+    "title": "ETL NIJI II",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 0.6,
+        "superperiodicity": 2,
+        "horizontal_tune": 1.372,
+        "vertical_tune": 0.684,
+        "momentum_compaction": 0.557,
+        "emittance_nm_rad": 445,
+        "natural_chromaticity_x": -0.32,
+        "natural_chromaticity_y": 0.14,
+        "rf_frequency_MHz": 160.5,
+        "rf_voltage_kV": 25.0
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.145,
+            "k1": 0.9
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.145,
+            "k1": 0.025
+        },
+        "BU": {
+            "type": "dipole",
+            "length": 1.0995,
+            "angle": 0.7853981634,
+            "e1": 0.2792526903
+        },
+        "BD": {
+            "type": "dipole",
+            "length": 1.0995,
+            "angle": 0.7853981634,
+            "e2": 0.2792526903
+        },
+        "L1": {
+            "type": "drift",
+            "length":1.02
+        },
+        "L2": {
+            "type": "drift",
+            "length":0.32
+        },
+        "L3": {
+            "type": "drift",
+            "length":0.23
+        },
+        "L4": {
+            "type": "drift",
+            "length":0.52
+        },
+        "RFC": {
+            "type": "rf_cavity",
+            "voltage_kV": 20.0,
+            "harmonic_number": 16
+        }
+    },
+    "lattices": {
+        "SS1":[
+            "Q1",
+            "Q1",
+            "L3",
+            "BU",
+            "BD",
+            "L2",
+            "Q2"
+
+
+        ],
+        "SS2":[
+            "Q2",
+            "L2",
+            "BU",
+            "BD",
+            "L3",
+            "Q1",
+            "Q1"
+
+
+        ],
+        "SRING": [
+            "L1",
+            "SS1",
+            "SS2",
+            "L1",
+            "L1",
+            "SS1",
+            "SS2",
+            "RFC",
+            "L4"
+        ]
+    }
+}

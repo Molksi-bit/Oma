@@ -1,0 +1,51 @@
+{
+    "title": "SIBERIA I",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 0.45,
+        "superperiodicity": 2,
+        "horizontal_tune": 0.793,
+        "vertical_tune": 0.895,
+        "momentum_compaction": 1.64,
+        "emittance_nm_rad": 860,
+        "natural_chromaticity_x": -1.82,
+        "natural_chromaticity_y": 1.42,
+        "rf_frequency_MHz": 34.5,
+        "rf_voltage_kV": 15.0
+    },
+    "elements": {
+        "Q": {
+            "type": "quadrupole",
+            "length": 0.1,
+            "k1": -2.0
+        },
+        "B": {
+            "type": "dipole",
+            "length": 1.57,
+            "angle": 1.570796,
+            "k1": -0.5
+        },
+        "D1": {
+            "type": "drift",
+            "length": 0.25
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.6
+        }
+    },
+    "lattices": {
+        "SIB1": [
+            "D1",
+            "Q",
+            "D1",
+            "B",
+            "D2",
+            "B"
+        ],
+        "RING":[
+            "SIB1",
+            "SIB1"
+        ]
+    }
+}

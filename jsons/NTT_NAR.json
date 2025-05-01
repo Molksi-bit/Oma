@@ -1,0 +1,88 @@
+{
+    "title": "NTT NAR",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 0.8,
+        "superperiodicity": 4,
+        "horizontal_tune": 3.25,
+        "vertical_tune": 1.25,
+        "momentum_compaction": 0.022,
+        "emittance_nm_rad": 146,
+        "natural_chromaticity_x": -3.79,
+        "natural_chromaticity_y": -5.4,
+        "rf_frequency_MHz": 125.0,
+        "rf_voltage_kV": 60.0
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.35,
+            "k1": 1.48371
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.2,
+            "k1": -1.39191
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.2,
+            "k1": 2.31052
+        },
+        "BD": {
+            "type": "dipole",
+            "length": 1.4537772,
+            "angle": 0.78539816,
+            "e1":0.3926990 ,
+            "e2":0.3926990
+        },
+        "SF": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "SD": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "D1": {
+            "type": "drift",
+            "length": 1.85
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.45
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.65
+        },
+        "D4": {
+            "type": "drift",
+            "length": 1.4425
+        }
+    },
+    "lattices": {
+        "HSUP": [
+            "D1",
+            "Q1",
+            "D2",
+            "Q2",
+            "D3",
+            "BD",
+            "D4",
+            "Q3"
+        ],
+        "SECTOR":[
+            "HSUP",
+            "-HSUP"
+        ],
+        "RING":[
+            "SECTOR",
+            "SECTOR",
+            "SECTOR",
+            "SECTOR"
+        ]
+    }
+}

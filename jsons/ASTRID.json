@@ -1,0 +1,89 @@
+{
+    "title": "ASTRID",
+    "info": "ASTRID Synchrotron Radiation Facility, Aarhus",
+    "parameters": {
+        "energy_GeV": 0.6,
+        "superperiodicity": 4,
+        "horizontal_tune": 2.29,
+        "vertical_tune": 2.802,
+        "momentum_compaction": 0.0534,
+        "emittance_m_rad": 150,
+        "natural_chromaticity_x": -3.41,
+        "natural_chromaticity_y": -7.51,
+        "rf_frequency_MHz": 104.9,
+        "rf_voltage_kV": 80.0
+    },
+    "variables":{
+
+    },
+    "elements": {
+        "QF": {
+            "type": "quadrupole",
+            "length": 0.45,
+            "k1": 1.4652
+        },
+        "QD": {
+            "type": "quadrupole",
+            "length": 0.45,
+            "k1": -2.33993
+        },
+        "BH": {
+            "type": "dipole",
+            "length": 0.9488,
+            "angle": 0.7853982,
+            "hgap": 0.032
+        },
+        "XF": {
+            "type": "sextupole",
+            "length": 0.36,
+            "k2": 1.46
+        },
+        "XD": {
+            "type": "sextupole",
+            "length": 0.36,
+            "k2": -2.91
+        },
+        "SL": {
+            "type": "drift",
+            "length": 0.68
+        },
+        "SS": {
+            "type": "drift",
+            "length": 0.6386
+        },
+        "S": {
+            "type": "drift",
+            "length": 0.099
+        },
+        "SD": {
+            "type": "drift",
+            "length": 0.1356
+        }
+    },
+    "lattices": {
+        "OCT": [
+            "SL",
+            "SL",
+            "XF",
+            "S",
+            "QF",
+            "S",
+            "XD",
+            "S",
+            "QD",
+            "SS",
+            "BH",
+            "SD"
+        ],
+        "sector":[
+            "OCT",
+            "-OCT"
+        ],
+        "ring": [
+            "sector",
+            "sector",
+            "sector",
+            "sector"
+        ]
+    }
+}

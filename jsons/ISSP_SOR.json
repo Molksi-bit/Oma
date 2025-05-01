@@ -1,0 +1,68 @@
+{
+    "title": "ISSP_SOR",
+    "info": "ISSP Synchrotron Optical Radiation, Tokyo",
+    "parameters": {
+        "energy_GeV": 0.38,
+        "horizontal_tune": 1.28,
+        "vertical_tune": 1.23,
+        "momentum_compaction": 0.636,
+        "emittance_nm_rad": 317,
+        "natural_chromaticity_x": -1.9,
+        "natural_chromaticity_y": 0.23,
+        "rf_frequency_MHz": 120.7,
+        "rf_voltage_kV": 22.0
+    },
+    "variables":{
+
+    },
+    "elements": {
+        "QF": {
+            "type": "quadrupole",
+            "length": 0.1,
+            "k1": 6.08691786
+        },
+        "QD": {
+            "type": "quadrupole",
+            "length": 0.1,
+            "k1": -6.2452322
+        },
+        "BD": {
+            "type": "dipole",
+            "length": 0.863937,
+            "angle": 0.785398,
+            "k2" : -0.3719008
+        },
+        "D1": {
+            "type": "drift",
+            "length": 0.655
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.325
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.13
+        }
+    },
+    "lattices": {
+        "cell": [
+            "D1",
+            "BD",
+            "D2",
+            "QF",
+            "D3",
+            "QD"
+        ],
+        "sector": [
+            "cell",
+            "-cell"
+        ],
+        "Lattice": [
+            "sector",
+            "sector",
+            "sector",
+            "sector"
+        ]
+    }
+}

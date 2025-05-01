@@ -1,0 +1,206 @@
+{
+    "title": "SSRL SPEAR",
+    "info": "Lattice extracted from Databook",
+    "parameters": {
+        "energy_GeV": 3.0,
+        "superperiodicity": 2,
+        "horizontal_tune": 7.17,
+        "vertical_tune": 5.283,
+        "momentum_compaction": 0.0151,
+        "emittance_m_rad": 1.3e-07,
+        "natural_chromaticity_x": -11.88,
+        "natural_chromaticity_y": -13.88,
+        "rf_frequency_MHz": 358.5,
+        "rf_voltage_kV": 1600.0
+    },
+    "variables":{
+
+    },
+    "elements": {
+        "Q1H": {
+            "type": "quadrupole",
+            "length": 0.25917,
+            "k1": -0.25958
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 1.34274,
+            "k1": 0.079009
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 1.0,
+            "k1": 0.0
+        },
+        "QFA": {
+            "type": "quadrupole",
+            "length": 0.51834,
+            "k1": 0.793115
+        },
+        "QDAH": {
+            "type": "quadrupole",
+            "length": 0.25917,
+            "k1": -0.654627
+        },
+        "QFB": {
+            "type": "quadrupole",
+            "length": 0.51834,
+            "k1": 0.51696
+        },
+        "QDH": {
+            "type": "quadrupole",
+            "length": 0.25917,
+            "k1": -0.6734
+        },
+        "QF": {
+            "type": "quadrupole",
+            "length": 0.51834,
+            "k1": 0.45249
+        },
+        "BB": {
+            "type": "dipole",
+            "length": 2.3545,
+            "angle": 10.6
+        },
+        "B": {
+            "type": "dipole",
+            "length": 1.17725,
+            "angle": 5.3
+        },
+        "SF": {
+            "type": "sextupole",
+            "length": 0.23335,
+            "k2": -3.64
+        },
+        "SDA": {
+            "type": "sextupole",
+            "length": 0.23335,
+            "k2": 2.85
+        },
+        "SDB": {
+            "type": "sextupole",
+            "length": 0.23335,
+            "k2": 2.85
+        },
+        "D1": {
+            "type": "drift",
+            "length": 1.3448
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.86
+        },
+        "D3": {
+            "type": "drift",
+            "length": 6.41318
+        },
+        "DXX": {
+            "type": "drift",
+            "length": 0.000004
+        },
+        "D4": {
+            "type": "drift",
+            "length": 2.8237
+        },
+        "D6": {
+            "type": "drift",
+            "length": 0.190577
+        },
+        "DS1": {
+            "type": "drift",
+            "length": 0.151205
+        },
+        "DS2": {
+            "type": "drift",
+            "length": 0.227335
+        },
+        "DS3": {
+            "type": "drift",
+            "length": 0.229935
+        },
+        "DS4": {
+            "type": "drift",
+            "length": 0.229948
+        },
+        "D8": {
+            "type": "drift",
+            "length": 0.23335
+        },
+        "D10": {
+            "type": "drift",
+            "length": 2.98166
+        },
+        "D12": {
+            "type": "drift",
+            "length": 0.005233
+        },
+        "RF": {
+            "type": "rf_cavity",
+            "voltage_kV": 1600.0,
+            "harmonic_number": 358
+        }
+    },
+    "lattices": {
+        "INSERT": [
+            "D1",
+            "Q3",
+            "D2",
+            "Q2",
+            "D3",
+            "Q1H"
+        ],
+        "MATCH1": [
+            "Q1H",
+            "DXX",
+            "BB",
+            "D8",
+            "D8",
+            "D12",
+            "BB",
+            "D4",
+            "QFA",
+            "B",
+            "SF",
+            "SDA",
+            "QDAH"
+        ],
+        "MATCH2": [
+            "QDAH",
+            "B",
+            "SDA",
+            "SF",
+            "QFB",
+            "D10",
+            "QF",
+            "B",
+            "D8",
+            "SDB",
+            "QDH"
+        ],
+        "CEL": [
+            "QDH",
+            "B",
+            "SDB",
+            "SF",
+            "QF",
+            "D10",
+            "QF",
+            "B",
+            "SDA",
+            "QDH"
+        ],
+        "SUPER": [
+            "INSERT",
+            "MATCH1",
+            "MATCH2",
+            "CEL",
+            "-CEL"
+        ],
+        "RING": [
+            "SUPER",
+            "-SUPER",
+            "SUPER",
+            "-SUPER"
+        ]
+    }
+}

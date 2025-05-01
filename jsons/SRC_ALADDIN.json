@@ -1,0 +1,149 @@
+{
+    "title": "SRC ALLADIN",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 0.8,
+        "superperiodicity": 4,
+        "horizontal_tune": 7.137,
+        "vertical_tune": 7.234,
+        "momentum_compaction": 0.0336,
+        "emittance_nm_rad": 97.9,
+        "natural_chromaticity_x": -11.88,
+        "natural_chromaticity_y": -22.09,
+        "rf_frequency_MHz": 50.6,
+        "rf_voltage_kV": 80.0
+    },
+    "elements": {
+        "QF": {
+            "type": "quadrupole",
+            "length": 0.25,
+            "k1": 5.307852
+        },
+        "QD": {
+            "type": "quadrupole",
+            "length": 0.25,
+            "k1": -5.5776
+        },
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.25,
+            "k1": 4.682208
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.25,
+            "k1": -5.596923
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.25,
+            "k1": 4.651721
+        },
+        "BD": {
+            "type": "dipole",
+            "length": 1.0908308,
+            "angle": 0.5235987,
+            "e1": 0.2617993,
+            "e2": 0.2617993
+        },
+        "SF": {
+            "type": "sextupole",
+            "length": 0.1,
+            "k2": 30.09040
+        },
+        "SD": {
+            "type": "sextupole",
+            "length": 0.1,
+            "k2": -59.04413
+        },
+        "D1": {
+            "type": "drift",
+            "length": 2.0
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.44857
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.87339
+        },
+        "D4": {
+            "type": "drift",
+            "length": 1.73123
+        },
+        "D5": {
+            "type": "drift",
+            "length": 0.25
+        },
+        "D6": {
+            "type": "drift",
+            "length": 0.5
+        },
+        "D7": {
+            "type": "drift",
+            "length": 1.55
+        },
+        "D8": {
+            "type": "drift",
+            "length": 0.1
+        },
+        "D9": {
+            "type": "drift",
+            "length": 0.3
+        },
+        "D10": {
+            "type": "drift",
+            "length": 1.83123
+        }
+    },
+    "lattices": {
+        "FSUP": [
+            "D1",
+            "Q3",
+            "D2",
+            "Q2",
+            "D3",
+            "Q1",
+            "D4",
+            "QF",
+            "D5",
+            "QD",
+            "D6",
+            "BD",
+            "D7",
+            "SF",
+            "D8",
+            "QF",
+            "D5",
+            "QD",
+            "D8",
+            "SD",
+            "D9",
+            "BD",
+            "D7",
+            "SF",
+            "D8",
+            "QF",
+            "D5",
+            "QD",
+            "D8",
+            "SD",
+            "D9",
+            "BD",
+            "D10",
+            "Q1",
+            "D3",
+            "Q2",
+            "D2",
+            "Q3",
+            "D1"
+        ],
+        "RING":[
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP"
+        ]
+    }
+}

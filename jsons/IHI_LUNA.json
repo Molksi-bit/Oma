@@ -1,0 +1,74 @@
+{
+    "title": "IHI LUNA",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 0.8,
+        "superperiodicity": 4,
+        "horizontal_tune": 1.75,
+        "vertical_tune": 0.75,
+        "momentum_compaction": 0.284,
+        "emittance_nm_rad": 807,
+        "natural_chromaticity_x": -1.09,
+        "natural_chromaticity_y": -1.53,
+        "rf_frequency_MHz": 0.0,
+        "rf_voltage_kV": 0.0
+    },
+    "elements": {
+        "QF": {
+            "type": "quadrupole",
+            "length": 0.2,
+            "k1": 4.605521
+        },
+        "QD": {
+            "type": "quadrupole",
+            "length": 0.2,
+            "k1": -4.110435
+        },
+        "BD1": {
+            "type": "dipole",
+            "length": 0.1706059,
+            "angle": 0.0872664626
+        },
+        "BD2": {
+            "type": "dipole",
+            "length": 1.1942415,
+            "angle": 0.6108660866
+        },
+        "BD3": {
+            "type": "dipole",
+            "length": 1.5354534,
+            "angle": 0.7853981634
+        },
+        "D1": {
+            "type": "drift",
+            "length": 1.414
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.32
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.674
+        }
+    },
+    "lattices": {
+        "HSUP": [
+            "BD1",
+            "BD1",
+            "BD2",
+            "BD3",
+            "D1",
+            "QF",
+            "D2",
+            "QD",
+            "D3"
+        ],
+        "RING":[
+            "HSUP",
+            "HSUP",
+            "HSUP",
+            "HSUP"
+        ]
+    }
+}

@@ -1,0 +1,99 @@
+{
+    "title": "LNLS UVX",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 1.15,
+        "superperiodicity": 6,
+        "horizontal_tune": 5.27,
+        "vertical_tune": 2.17,
+        "momentum_compaction": 0.00831,
+        "emittance_nm_rad": 67.2,
+        "natural_chromaticity_x": -13.99,
+        "natural_chromaticity_y": 19.91,
+        "rf_frequency_MHz": 476.0,
+        "rf_voltage_kV": 500.0
+    },
+    "elements": {
+        "QF": {
+            "type": "quadrupole",
+            "length": 0.25,
+            "k1": 2.7265
+        },
+        "QD": {
+            "type": "quadrupole",
+            "length": 0.25,
+            "k1": -2.497497
+        },
+        "QFC": {
+            "type": "quadrupole",
+            "length": 0.25,
+            "k1": 2.1132645
+        },
+        "BD": {
+            "type": "dipole",
+            "length": 1.432,
+            "angle": 0.52359877,
+            "e1":0.26179938 ,
+            "e2":0.26179938
+        },
+        "D1": {
+            "type": "drift",
+            "length": 2.39867
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.39
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.84
+        },
+        "D4": {
+            "type": "drift",
+            "length": 0.715
+        },
+        "D5": {
+            "type": "drift",
+            "length": 0.31
+        },
+        "D6": {
+            "type": "drift",
+            "length": 0.782
+        },
+        "SF": {
+            "type": "sextupole",
+            "length": 0.05,
+            "k2": 0.0
+        },
+        "SD": {
+            "type": "sextupole",
+            "length": 0.1,
+            "k2": 0.0
+        }
+
+    },
+    "lattices": {
+        "HSUP": [
+            "D1",
+            "QF",
+            "D2",
+            "QD",
+            "D3",
+            "BD",
+            "D4",
+            "SD",
+            "D5",
+            "QFC",
+            "D6",
+            "SF"
+        ],
+        "RING":[
+            "HSUP",
+            "HSUP",
+            "HSUP",
+            "HSUP",
+            "HSUP",
+            "HSUP"
+        ]
+    }
+}

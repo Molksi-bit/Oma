@@ -12,7 +12,18 @@ colors = {
     "dispersion": ["#2ca02c", "#98df8a", "#006400"]
 }
 
+def on_click(event):
+    if event.inaxes:
+        for line in event.inaxes.lines:
+            if getattr(line, "_is_marker", False):
+                line.remove()
 
+        marker = event.inaxes.axvline(x=event.xdata, color='black', linestyle='--', lw = 1 )
+        marker._is_marker = True  
+        event.canvas.draw()
+
+def calculate_linear(section):
+    pass
 def linear_plot(section, title= "Plot", x_label= "s[m]",y_label = "βₓ/βᵧ"):
     figure = Figure(figsize=(6,4))
     gs = GridSpec(20,1,figure =figure)
@@ -22,9 +33,13 @@ def linear_plot(section, title= "Plot", x_label= "s[m]",y_label = "βₓ/βᵧ")
     ax2 = figure.add_subplot(gs[5:17,0],sharex = ax1)
     ax3 = figure.add_subplot(gs[17:,0],sharex = ax1)
     
-    refpts = list(range(len(section)))
-    _,_,twiss  = at.get_optics(section, refpts=refpts, get_chrom=False)
     
+
+    section = section.slice(slices= 700)
+    refpts = list(range(len(section)))
+    #calculation part
+    _,_,twiss  = at.get_optics(section, refpts= refpts, get_chrom=False)
+    #
     #ax1.set_title(title)
     ax1.tick_params(labelbottom = False)
     ax1.set_xlabel("")
@@ -44,34 +59,35 @@ def linear_plot(section, title= "Plot", x_label= "s[m]",y_label = "βₓ/βᵧ")
     ax3.get_xaxis().set_visible(False)
     ax3.get_yaxis().set_visible(False)
     ax3.set_frame_on(False)
-    
 
     canvas = FigureCanvas(figure)
-    
+    canvas.mpl_connect("button_press_event", on_click)
     return canvas
 
-
-def nonlinear_plot(lattice):
+def calculate_nonlin(lattice):
+    lattice = lattice.slice(slices = 700)
     refpts = list(range(len(lattice)))
-    _,_,elemdata = at.get_optics(lattice, )
+    _,_,elemdata = at.get_optics(lattice,refpts=refpts,get_w = True )
     s = elemdata.s_pos
     beta_x = elemdata.beta[:,0]
     beta_y = elemdata.beta[:,1]
     disp = elemdata.dispersion[:,0]
+    dsdisp = elemdata.dispersion[:,1]
     dbeta_x = elemdata.dbeta[:,0]
     dbeta_y = elemdata.dbeta[:,1]
-    ddisp = elemdata.ddisperion[:,0]
+    ddisp = elemdata.ddispersion[:,0]
 
     k1_array = np.zeros_like(s)
     k2_array = np.zeros_like(s)
     bend_array = np.zeros_like(s)
-    for elem in lattice:
+    bend_array += 0.01
+    for i, elem in enumerate(lattice):
         if elem.__class__.__name__ == "Quadrupole":
-            idx = (s >= elem.s_start) & (s <= elem.s_end)
-            k1_array[idx] = elem.K
+            k1_array[i] = getattr(elem, "K",0.0)
         elif elem.__class__.__name__ == "Sextupole":
-            idx = (s >= elem.s_start) & (s <= elem.s_end)
-            k1_array[idx] = elem.H
+            k2_array[i] = getattr(elem,"H", 0.0)
+        elif elem.__class__.__name__ == "Dipole":
+            bend_array[i] = getattr(elem, "BendingAngle", 0.0)
 
     chrom1_x = k1_array*beta_x
     chrom1_y = k1_array*beta_y
@@ -83,7 +99,55 @@ def nonlinear_plot(lattice):
     chrom2_y = k1_array*dbeta_y/2
 
     chrom2_x_sext = k2_array*dbeta_x*disp +k2_array*beta_x*ddisp/2
-    chrom2_x_sext = k2_array*dbeta_y*disp +k2_array*beta_y*ddisp/2
+    chrom2_y_sext = k2_array*dbeta_y*disp +k2_array*beta_y*ddisp/2
+
+    alpha0 = disp/bend_array
+    alpha1_1 = (dsdisp**2)/2
+    alpha1_2 = ddisp/bend_array
+
+    data_dict = {"s":s,
+                 "chrom1": [[chrom1_x,chrom1_y],["X1ₓ","X1ᵧ"]],
+                 "chrom1_sext": [[chrom1_x_sext,chrom1_y_sext],["X1Sₓ","X1Sᵧ"]],
+                 "chrom2":[[chrom2_x,chrom2_y],["X2ₓ","X2ᵧ"]],
+                 "chrom2_sext":[[chrom2_x_sext,chrom2_y_sext],["X2Sₓ","X2Sᵧ"]],
+                 "alpha0": [[alpha0],["α0"]],
+                 "alpha1_1": [[alpha1_1], ["α1 ds"]],
+                 "alpha1_2": [[alpha1_2], [ "α1 dE"]]
+                 }
+    return data_dict
+
+def nonlinear_plot(data,function,lattice, y_label = " - "):
+    figure = Figure(figsize=(6,4))
+    gs = GridSpec(20,1,figure =figure)
+    ax1 = figure.add_subplot(gs[0:19,0])
+    ax2 = figure.add_subplot(gs[19:,0],sharex = ax1)
+
+    ax1.tick_params(labelbottom = False)
+    ax1.set_xlabel("")
+    ax1.set_ylabel(y_label)
+
+    s = data.get("s", [])
+
+    if len(s) > 1:
+        ax1.set_xlim(0, max(s))
+    else:
+        ax1.set_xlim(0, 1)
+
+    figure.subplots_adjust(left=0.07, right=0.98, top=0.96, bottom=0.02,hspace=0)
+    ax2.get_xaxis().set_visible(False)
+    ax2.get_yaxis().set_visible(False)
+    ax2.set_frame_on(False)
+    if len(s) > 1:
+        for i in range(len(data[function][0])):
+            ax1.plot(s, data[function][0][i], label=data[function][1][i])
+        ax1.legend()
+    else:
+        ax1.text(0.5, 0.5, "Keine Daten", ha="center", va="center", transform=ax1.transAxes)
+    plot_magnet_structure(ax2, lattice)
+    canvas = FigureCanvas(figure)
+    
+    canvas.mpl_connect("button_press_event", on_click)
+    return canvas
 
 
 
@@ -117,3 +181,36 @@ def plot_magnet_structure(ax, lattice):
 
         s_pos += length
     ax.set_xlim(0, s_pos)
+
+def get_max_contribution(data,function,lattice,top_n=1):
+    y = np.array(data[function][0][0])
+    #z = np.array(data[function][0][1])
+    s = np.array(data["s"])
+    
+    top_indices = np.argsort(y)[-top_n:][::-1]
+    #top_indices.append(np.argsort(z)[-top_n:][::-1])
+
+    results = []
+    for idx in top_indices:
+        s_pos = s[idx]
+        value = y[idx]
+        magnet = find_magnet_at_s(lattice, s_pos)
+        magnet_name = getattr(magnet, "FamName")
+        magnet_value ={}
+        if hasattr(magnet,"Bendingangle"):
+            magnet_value = magnet.Bendingangle
+        elif hasattr(magnet,"K"):
+            magnet_value = magnet.K
+        elif hasattr(magnet,"H"):
+            magnet_value = magnet.H
+        results.append(( magnet_name,value,s_pos,  magnet_value))
+    return results
+
+def find_magnet_at_s(lattice, s_pos):
+    """Findet das Magnet-Element im Lattice, das s_pos abdeckt."""
+    spos = np.cumsum([elem.Length for elem in lattice])
+    start_spos = np.concatenate(([0], spos[:-1]))
+    for elem, s_start, s_end in zip(lattice, start_spos, spos):
+        if s_start <= s_pos < s_end:
+            return elem
+    return None

@@ -1,0 +1,154 @@
+{
+    "title": "Zelenograd",
+    "info": "Lattice extracted from Databook",
+    "parameters": {
+        "energy_GeV": 1.5,
+        "superperiodicity": 6,
+        "horizontal_tune": 7.717,
+        "vertical_tune": 7.694,
+        "momentum_compaction": 0.0865,
+        "emittance_nm_rad": 275,
+        "natural_chromaticity_x": -23.93,
+        "natural_chromaticity_y": -23.85,
+        "rf_frequency_MHz": 181.3,
+        "rf_voltage_kV": 400.0
+    },
+    "variables":{
+
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": 2.63517
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": -3.2238
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": 3.9784
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": -3.6894
+        },
+        "Q5": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 4.11095
+        },
+        "Q6": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": -3.9353
+        },
+        "B1": {
+            "type": "dipole",
+            "length": 0.23,
+            "angle": 0.011719
+        },
+        "B2": {
+            "type": "dipole",
+            "length": 1.227,
+            "angle": 0.250086
+        },
+        "S1": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "S2": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "D1": {
+            "type": "drift",
+            "length": 0.9
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.1
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.3
+        },
+        "D4": {
+            "type": "drift",
+            "length": 0.1
+        },
+        "D5": {
+            "type": "drift",
+            "length": 0.33
+        },
+        "D6": {
+            "type": "drift",
+            "length": 0.365
+        },
+        "D7": {
+            "type": "drift",
+            "length": 0.365
+        },
+        "D8": {
+            "type": "drift",
+            "length": 0.31
+        },
+        "D9": {
+            "type": "drift",
+            "length": 0.28
+        },
+        "D10": {
+            "type": "drift",
+            "length": 0.39
+        },
+        "D11": {
+            "type": "drift",
+            "length": 1.39
+        }
+    },
+    "lattices": {
+        "HSUP": [
+            "D1",
+            "S1",
+            "D2",
+            "Q1",
+            "D3",
+            "Q2",
+            "D4",
+            "S2",
+            "D5",
+            "B1",
+            "B2",
+            "D6",
+            "Q3",
+            "D7",
+            "B2",
+            "B1",
+            "D8",
+            "Q4",
+            "D9",
+            "Q5",
+            "D10",
+            "Q6",
+            "D11"
+        ],
+        "FSUP": [
+            "HSUP",
+            "-HSUP"
+        ],
+        "RING": [
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP"
+        ]
+    }
+}

@@ -1,0 +1,137 @@
+{
+    "title": "HEFEI NSRL",
+    "info": "Lattice extracted from Databook (based on diagram title match)",
+    "parameters": {
+        "energy_GeV": 0.8,
+        "superperiodicity": 4,
+        "horizontal_tune": 3.58,
+        "vertical_tune": 2.58,
+        "momentum_compaction": 0.048,
+        "emittance_nm_rad": 137,
+        "natural_chromaticity_x": -6.21,
+        "natural_chromaticity_y": -6.19,
+        "rf_frequency_MHz": 204.0,
+        "rf_voltage_kV": 80.0
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": 1.569180
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": -0.955667
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": -2.267100
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": 3.070800
+        },
+        "Q5": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": 3.070800
+        },
+        "Q6": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": -2.267100
+        },
+        "Q7": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": -0.955667
+        },
+        "Q8": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": 1.569180
+        },
+        "B": {
+            "type": "dipole",
+            "length": 1.1635,
+            "angle": 0.05235987756,
+            "e1": 0.2617993878,
+            "e2": 0.2617993878
+        },
+        "SF": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 1.46
+        },
+        "SD": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": -1.5
+        },
+        "DL": {
+            "type": "drift",
+            "length": 1.6811
+        },
+        "DQ": {
+            "type": "drift",
+            "length": 0.32
+        },
+        "DBQ": {
+            "type": "drift",
+            "length": 1.0
+        },
+        "DSB": {
+            "type": "drift",
+            "length": 0.72
+        },
+        "DQS": {
+            "type": "drift",
+            "length": 0.28
+        }
+    },
+    "lattices": {
+        "HSUP": [
+            "DL",
+            "Q1",
+            "DQ",
+            "Q2",
+            "DBQ",
+            "B",
+            "DSB",
+            "SD",
+            "DQS",
+            "Q3",
+            "DQ",
+            "Q4",
+            "DQS",
+            "SF",
+            "DSB",
+            "B",
+            "DSB",
+            "SF",
+            "DQS",
+            "Q5",
+            "DQ",
+            "Q6",
+            "DQS",
+            "SD",
+            "DSB",
+            "B",
+            "DBQ",
+            "Q7",
+            "DQ",
+            "Q8",
+            "DL"
+            
+        ],
+        "RING":[
+            "HSUP",
+            "-HSUP",
+            "HSUP",
+            "-HSUP"
+        ]
+    }
+}

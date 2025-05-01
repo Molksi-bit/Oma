@@ -1,0 +1,86 @@
+{
+    "title": "SRS II",
+    "info": "Lattice extracted from Databook",
+    "parameters": {
+        "energy_GeV": 2.0,
+        "superperiodicity": 16,
+        "horizontal_tune": 6.25,
+        "vertical_tune": 3.25,
+        "momentum_compaction": 0.0289,
+        "emittance_nm_rad": 108,
+        "natural_chromaticity_x": -10.29,
+        "natural_chromaticity_y": -5.38,
+        "rf_frequency_MHz": 0.0,
+        "rf_voltage_kV": 0.0
+    },
+    "variables":{
+
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.3,
+            "k1": -1.5633944
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.5,
+            "k1": 1.2782629
+        },
+        "BD": {
+            "type": "dipole",
+            "length": 2.188001,
+            "angle": 0.392699
+        },
+        "SF": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "SD": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "D1": {
+            "type": "drift",
+            "length": 0.4725
+        },
+        "D2": {
+            "type": "drift",
+            "length": 2.167
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.3725
+        }
+    },
+    "lattices": {
+        "FSUP": [
+            "D1",
+            "Q1",
+            "D2",
+            "Q2",
+            "D3",
+            "BD"
+        ],
+        "RING": [
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP",
+            "FSUP"
+        ]
+    }
+}

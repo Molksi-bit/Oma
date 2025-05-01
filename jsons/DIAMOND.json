@@ -1,0 +1,223 @@
+{
+    "title": "Diamond",
+    "info": "Lattice extracted from Databook",
+    "parameters": {
+        "energy_GeV": 3.0,
+        "superperiodicity": 2,
+        "horizontal_tune": 18.73,
+        "vertical_tune": 6.86,
+        "momentum_compaction": 0.000831,
+        "emittance_nm_rad": 14.7,
+        "natural_chromaticity_x": -56.78,
+        "natural_chromaticity_y": -26.71,
+        "rf_frequency_MHz": 499.7,
+        "rf_voltage_kV": 5000.0
+    },
+    "variables":{
+
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -0.83895
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.6,
+            "k1": 1.306257
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -0.9689
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -0.541851
+        },
+        "Q5": {
+            "type": "quadrupole",
+            "length": 0.6,
+            "k1": 1.47457
+        },
+        "Q6": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -1.06217
+        },
+        "Q8": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 1.31013
+        },
+        "Q7": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -0.91025
+        },
+        "Q9": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": 0.513758
+        },
+        "Q10": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -1.32386
+        },
+        "Q11": {
+            "type": "quadrupole",
+            "length": 0.6,
+            "k1": 1.25454
+        },
+        "Q12": {
+            "type": "quadrupole",
+            "length": 0.4,
+            "k1": -0.65258
+        },
+        "BB": {
+            "type": "dipole",
+            "length": 1.4,
+            "angle": 0.19635,
+            "e1": 0.098174,
+            "e2": 0.098174
+        },
+        "S1": {
+            "type": "sextupole",
+            "length": 0.3,
+            "k2": 25.909
+        },
+        "S2": {
+            "type": "sextupole",
+            "length": 0.2,
+            "k2": -22.483
+        },
+        "DK": {
+            "type": "drift",
+            "length": 2.92
+        },
+        "DQ": {
+            "type": "drift",
+            "length": 0.71
+        },
+        "DQR": {
+            "type": "drift",
+            "length": 0.56
+        },
+        "DLR": {
+            "type": "drift",
+            "length": 0.5
+        },
+        "DL": {
+            "type": "drift",
+            "length": 0.5
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.5
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.52
+        },
+        "D4A": {
+            "type": "drift",
+            "length": 0.3
+        },
+        "D5": {
+            "type": "drift",
+            "length": 0.3
+        },
+        "D4B": {
+            "type": "drift",
+            "length": 0.15
+        },
+        "MD4": {
+            "type": "drift",
+            "length": 0.3
+        },
+        "MD5": {
+            "type": "drift",
+            "length": 0.5
+        },
+        "MDK": {
+            "type": "drift",
+            "length": 9.97
+        },
+        "RF": {
+            "type": "rf_cavity",
+            "voltage_kV": 5000.0,
+            "harmonic_number": 576
+        }
+    },
+    "lattices": {
+        "ACHROMAT": [
+            "BB",
+            "D3",
+            "Q7",
+            "D4A",
+            "S2",
+            "D4B",
+            "Q8",
+            "D5",
+            "S1",
+            "D5",
+            "Q8",
+            "D4B",
+            "S2",
+            "D4A",
+            "Q7",
+            "D3",
+            "BB"
+        ],
+        "HIGHBETA": [
+            "DK",
+            "Q1",
+            "DL",
+            "Q2",
+            "DQ",
+            "Q3",
+            "D2"
+        ],
+        "LOWBETA": [
+            "DK",
+            "Q4",
+            "DL",
+            "Q5",
+            "DQ",
+            "Q6",
+            "D2"
+        ],
+        "RACEBETA":[
+            "MDK",
+            "Q12",
+            "DLR",
+            "Q11",
+            "DQR",
+            "Q10",
+            "MD4",
+            "Q9",
+            "MD5"
+        ],
+        "BASIC": [
+            "RACEBETA",
+            "ACHROMAT",
+            "-LOWBETA",
+            "LOWBETA",
+            "ACHROMAT",
+            "-HIGHBETA",
+            "HIGHBETA",
+            "ACHROMAT",
+            "-LOWBETA",
+            "LOWBETA",
+            "ACHROMAT",
+            "-HIGHBETA"
+        ],
+        "RING": [
+            "BASIC",
+            "-BASIC"
+        ]
+    }
+}

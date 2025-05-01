@@ -1,0 +1,188 @@
+{
+    "title": "BESSY II",
+    "info": "Lattice extracted from Databook",
+    "parameters": {
+        "energy_GeV": 1.7,
+        "superperiodicity": -8,
+        "horizontal_tune": 17.825,
+        "vertical_tune": 6.724,
+        "momentum_compaction": 0.000732,
+        "emittance_nm_rad": 5.16,
+        "natural_chromaticity_x": -52.66,
+        "natural_chromaticity_y": -26.7,
+        "rf_frequency_MHz": 499.7,
+        "rf_voltage_kV": 2000.0
+    },
+    "variables":{
+
+    },
+    "elements": {
+        "Q1": {
+            "type": "quadrupole",
+            "length": 0.5,
+            "k1": 1.405
+        },
+        "Q2": {
+            "type": "quadrupole",
+            "length": 0.25,
+            "k1": -2.0149
+        },
+        "Q3": {
+            "type": "quadrupole",
+            "length": 0.2,
+            "k1": -1.8975
+        },
+        "Q4": {
+            "type": "quadrupole",
+            "length": 0.25,
+            "k1": 2.4519
+        },
+        "Q5": {
+            "type": "quadrupole",
+            "length": 0.25,
+            "k1": -2.4632
+        },
+        "Q6": {
+            "type": "quadrupole",
+            "length": 0.5,
+            "k1": 2.6208
+        },
+        "Q7": {
+            "type": "quadrupole",
+            "length": 0.2,
+            "k1": -2.6
+        },
+        "BB": {
+            "type": "dipole",
+            "length":0.855,
+            "angle": 0.19634954,
+            "e1": 0.09817477,
+            "e2" : 0.09817477
+        },
+        "S1": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "S2": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "S3": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "S4": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "S5": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "S6": {
+            "type": "sextupole",
+            "length": 0.0,
+            "k2": 0.0
+        },
+        "D1": {
+            "type": "drift",
+            "length": 2.886
+        },
+        "D2": {
+            "type": "drift",
+            "length": 0.233
+        },
+        "D3": {
+            "type": "drift",
+            "length": 0.42
+        },
+        "D4": {
+            "type": "drift",
+            "length": 0.42
+        },
+        "D5": {
+            "type": "drift",
+            "length": 0.387
+        },
+        "D6": {
+            "type": "drift",
+            "length": 0.368
+        },
+        "D7": {
+            "type": "drift",
+            "length": 0.265
+        },
+        "D8": {
+            "type": "drift",
+            "length": 2.453
+        },
+        "RF": {
+            "type": "rf_cavity",
+            "voltage_kV": 2000.0,
+            "harmonic_number": 400
+        }
+    },
+    "lattices": {
+        "DUB": [
+            "D1",
+            "S1",   
+            "D2",
+            "Q1",
+            "D2",
+            "S2",
+            "D2",
+            "Q2",
+            "D3"
+        ],
+        "TRI": [
+            "D3",
+            "Q5",
+            "D2",
+            "S6",
+            "D2",
+            "Q6",
+            "D2",
+            "S5",
+            "D2",
+            "Q7",
+            "D8"
+        ],
+        "ACH": [
+            "BB",
+            "D4",
+            "Q3",
+            "D5",
+            "S3",
+            "D6",
+            "Q4",
+            "D7",
+            "S4"
+        ],
+        "HAF": [
+            "DUB",
+            "ACH",
+            "-ACH",
+            "TRI"
+        ],
+        "CEL": [
+            "-HAF",
+            "HAF"
+        ],
+        "BE2": [
+            "CEL",
+            "CEL",
+            "CEL",
+            "CEL",
+            "CEL",
+            "CEL",
+            "CEL",
+            "CEL",
+            "RF"
+        ]
+    }
+}
