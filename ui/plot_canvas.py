@@ -12,19 +12,37 @@ colors = {
     "dispersion": ["#2ca02c", "#98df8a", "#006400"]
 }
 
-def on_click(event):
+def on_click(event,axes, data):
+    """This function handles click events on the plot.
+    Updates the respective canvas to have a marker line at the x position of the click event.
+    
+    ToDo: make the marker appear at the same position for all coordinate systems """
     if event.inaxes:
-        for line in event.inaxes.lines:
-            if getattr(line, "_is_marker", False):
-                line.remove()
+        x =event.xdata
+        values = {
+            
+        }
+        for ax in axes:
+            for line in ax.lines[:]:
+                if getattr(line, "_is_marker", False):
+                    line.remove()
 
-        marker = event.inaxes.axvline(x=event.xdata, color='black', linestyle='--', lw = 1 )
-        marker._is_marker = True  
-        event.canvas.draw()
+            marker = ax.axvline(x=x, color='black', linestyle='--', lw = 1 )
+            marker._is_marker = True  
+            event.canvas.draw()
+        s = data["s"]
+        functions = []
+        values = {name: np.interp(x,s,np.array(data[name])) for name in functions}
+
 
 def calculate_linear(section):
+    """This function calculates the data needed for the linear plot and table.
+    ToDo: Write the godamn function you moron and stop procrastenating"""
     pass
-def linear_plot(section, title= "Plot", x_label= "s[m]",y_label = "βₓ/βᵧ"):
+def linear_plot(section, title= "Plot", x_label= "s[m]",y_label = "βₓ/βᵧ",callback = None):
+    """Uses the data and creates a plot of betafunctions and dispersion.
+    Returns: Plot Canvas
+    ToDo: Move out the calculation part here"""
     figure = Figure(figsize=(6,4))
     gs = GridSpec(20,1,figure =figure)
     
@@ -32,6 +50,7 @@ def linear_plot(section, title= "Plot", x_label= "s[m]",y_label = "βₓ/βᵧ")
     ax1 = figure.add_subplot(gs[0:5,0])
     ax2 = figure.add_subplot(gs[5:17,0],sharex = ax1)
     ax3 = figure.add_subplot(gs[17:,0],sharex = ax1)
+    axes = [ax1,ax2,ax3]
     
     
 
@@ -65,6 +84,9 @@ def linear_plot(section, title= "Plot", x_label= "s[m]",y_label = "βₓ/βᵧ")
     return canvas
 
 def calculate_nonlin(lattice):
+    """This function calculates important nonlinear parameters for the nonlinear plots.
+    Returns. Data dictionary with the s-positions and Chromaticity and Momentum Compaction contributions.
+    ToDo: Kicker contributions and full curves and not just contributions"""
     lattice = lattice.slice(slices = 700)
     refpts = list(range(len(lattice)))
     _,_,elemdata = at.get_optics(lattice,refpts=refpts,get_w = True )
@@ -117,10 +139,13 @@ def calculate_nonlin(lattice):
     return data_dict
 
 def nonlinear_plot(data,function,lattice, y_label = " - "):
+    """This function uses the calculated data dictionary and creates a plot of the chosen function and section.
+    Returns: Figure Canvas"""
     figure = Figure(figsize=(6,4))
     gs = GridSpec(20,1,figure =figure)
     ax1 = figure.add_subplot(gs[0:19,0])
     ax2 = figure.add_subplot(gs[19:,0],sharex = ax1)
+    axes = [ax1,ax2]
 
     ax1.tick_params(labelbottom = False)
     ax1.set_xlabel("")
@@ -154,7 +179,7 @@ def nonlinear_plot(data,function,lattice, y_label = " - "):
 
 def plot_magnet_structure(ax, lattice):
     """
-    Zeichnet farbige Balken zur Darstellung der Magnetstruktur im übergebenen Axes-Objekt.
+    This function creates a visual representation of the magnet arrangement by colored bars on the given axes object.
     """
     color_map = {
         "drift": "#ffffff", 
@@ -183,6 +208,9 @@ def plot_magnet_structure(ax, lattice):
     ax.set_xlim(0, s_pos)
 
 def get_max_contribution(data,function,lattice,top_n=1):
+    """This function gets the top n magnets contributing to the given function.
+    Returns: Tuple of magnet name, contribution value, position, magnetic field value
+    ToDo: contributions for multiple functions or negative max values."""
     y = np.array(data[function][0][0])
     #z = np.array(data[function][0][1])
     s = np.array(data["s"])
@@ -207,7 +235,8 @@ def get_max_contribution(data,function,lattice,top_n=1):
     return results
 
 def find_magnet_at_s(lattice, s_pos):
-    """Findet das Magnet-Element im Lattice, das s_pos abdeckt."""
+    """This function finds the element, located at s_pos.
+    Returns: Element"""
     spos = np.cumsum([elem.Length for elem in lattice])
     start_spos = np.concatenate(([0], spos[:-1]))
     for elem, s_start, s_end in zip(lattice, start_spos, spos):

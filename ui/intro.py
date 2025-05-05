@@ -6,6 +6,7 @@ from PySide6.QtCore import Qt, QTimer
 class showVideo(QWidget):
 
     def __init__(self,video,callback,duration = 3000):
+        """This function starts the opening gif of the Programm."""
         super().__init__()
         self.setObjectName("gif")
         self.setWindowFlags(Qt.FramelessWindowHint| Qt.SplashScreen)
@@ -30,6 +31,7 @@ class showVideo(QWidget):
         self.callback = callback
 
     def finish(self):
+        """This function finishes the gif and closes the window."""
         self.movie.stop()
         self.callback()
         self.close()

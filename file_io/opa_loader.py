@@ -2,7 +2,7 @@ import math
 import re
 def resolve_param(val, parameters, _rec=0, _max_rec=10):
     """
-    Ermittelt Wert von 'val' rekursiv, inklusive einfacher Ausdrücke.
+    Finds the value of 'val' recursiv, inclusive simple expressions.
     """
     val = val.strip()
     try:
@@ -23,6 +23,8 @@ def resolve_param(val, parameters, _rec=0, _max_rec=10):
         return expr
 
 def load_opa(opa_path):
+    """This function reads an opa file and creates dictionary of the corresponding lattice and parameters.
+    Returns: data dictionary with, used elements, lattices, parameters and the title of the file"""
     with open(opa_path, "r") as file:
         lines = [line.strip() for line in file if line.strip()]
 

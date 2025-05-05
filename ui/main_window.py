@@ -14,7 +14,10 @@ def load_stylesheet(path):
 
 
 class MainWindow(QMainWindow):
+    
     def __init__(self):
+        """This function initializes the mainwindow of the GUI together with all variables for later use.
+        Contains a dictionary for all diffrent views of the programm."""
         super().__init__()
         self.setWindowTitle("OMA")
         self.setMinimumSize(1200,800)
@@ -41,10 +44,15 @@ class MainWindow(QMainWindow):
         self.saved_plots = []
         
         self.create_menu()
+
     def lattice_change(self):
+        """This function resets the marker, when the lattice was changed, so that the data from the cache has to
+        be recalculated."""
         self.needs_recalc = True
     
     def create_menu(self):
+        """This function creates the menu bar of the function. Furthemore it handles the actions triggered on
+        click and sets Shortcuts for special actions."""
         menu_bar = QMenuBar(self)
     #Menus
         file_menu = QMenu("&Datei", self)
@@ -120,7 +128,7 @@ class MainWindow(QMainWindow):
         self.setMenuBar(menu_bar)
 
     def create_lin_layout(self):
-        #Main Ansicht der Lineare Optik erstmal, vielleicht bessere erstansicht später
+        """This functions creates the layout of the linear plot view. """
         main_widget = QWidget()
         main_layout = QHBoxLayout()
 
@@ -178,9 +186,13 @@ class MainWindow(QMainWindow):
         return main_widget
 
     def create_lattice_layout(self):
+         """This function creates the layout for the view, where new lattices can be designed.
+         ToDo: Bro just start to write it."""
          pass
     
     def create_parameters_layout(self):
+        """This function creates the layout for the parameter view. Here an overview over special parameters 
+        shall be given and limits can be set and checked."""
         widget = QWidget()
         layout = QVBoxLayout()
         table = QTableWidget()
@@ -225,6 +237,9 @@ class MainWindow(QMainWindow):
     
 
     def check_limits(self, row, column):
+        """This function checks, whether the given lattice exceeds the limits set in the parameter view.
+        ToDo: Adjust so that the megnet strenghts are checked and the table is adjustable just in the right
+        entry fields."""
         if column != 2:
             return
         try:
@@ -247,6 +262,8 @@ class MainWindow(QMainWindow):
                 del self.limit_violations[name]
 
     def create_home_layout(self):
+        """This function creates the layout for the home view. There lattices can be loaded and will be shown.
+        ToDo: Change lattice expansion to switch between full and not expanded mode."""
         widget = QWidget()
         layout = QHBoxLayout()
         right_side = QVBoxLayout()
@@ -277,6 +294,8 @@ class MainWindow(QMainWindow):
 
 
     def create_nonlin_layout(self):
+        """This function creates the layout for the nonlinear view. Here the contributions to the chromaticity
+        and momentum compaction are shown in different plots."""
         widget = QWidget()
         layout = QVBoxLayout()
 
@@ -335,6 +354,8 @@ class MainWindow(QMainWindow):
         return widget
 
     def create_rdt_layout(self):
+        """This function creates the layout for the Resonance driving term (RDTs) view.
+        ToDo: replace the unicode"""
         widget = QWidget()
         layout = QHBoxLayout()
 
@@ -380,12 +401,17 @@ class MainWindow(QMainWindow):
         widget.setLayout(layout)
         return widget
     def create_magnetcon_layout(self):
+        """I dont know if this is still necessary but im t lazy to delete it."""
         pass
 
     def create_omaedit_layout(self):
+        """This function creates a diffrent layout, where a new lattice can be designed in an OPA related style.
+        ToDo: Well this function looks great so far just leave it as it is."""
         pass   
 
     def load_lattice_file(self):
+        """This function starts the loading of an lattice file. It opens the Dialogue window and updates the
+        lattice_data variable."""
         file_path, _ = QFileDialog.getOpenFileName(self,"Datei öffnen", "", "JSON Files (*.json);; OPA Files (*.opa)")
         if file_path:
             sections, meta, elements = load_file(file_path)
@@ -397,12 +423,16 @@ class MainWindow(QMainWindow):
             
 
     def switch_view(self,name:str):
+        """This function handles the view change."""
         if name in self.views:
             self.stacked.setCurrentWidget(self.views[name])
         else:
             print(f"Ansicht '{name}' nicht gefunden")
 
     def show_lattice(self,sections,meta):
+        """This function creates a table containing the sections of an loaded lattice:
+        ToDo: Prepare this boy for the introduction of multilatticing. Set a standard for cell selected to 
+        be the first of the sections."""
         table = self.lattice_table_widget
         table.clearContents()
         table.setRowCount(len(sections)//4 +1)
@@ -429,6 +459,8 @@ class MainWindow(QMainWindow):
             param_table.setItem(row, 0, item)
             
     def display_section_elements(self,row,col):
+        """This function shows lattice expansion in the bottom of the home view. It adds Tooltips to each
+        element showing their parameters."""
         item = self.lattice_table_widget.item(row,col)
         if not item:
             return
@@ -451,6 +483,8 @@ class MainWindow(QMainWindow):
             self.section_element_list.addItem(item)
 
     def create_chroma_layout(self):
+        """This function creates the layout for the chromaticity layout.
+        ToDo: replace the unicode here aswell."""
         widget = QWidget()
         layout = QHBoxLayout()
         Chroma_functions = QVBoxLayout()
@@ -483,9 +517,11 @@ class MainWindow(QMainWindow):
         return widget
     
     def plot_beta(self):
+        """This function plots the canvas of the linear functions and updates the linear cache.
+        ToDo: update the linear cache duhhh"""
         if self.lattice_data:
             elements = self.lattice_data["elements"].get(self.selected_section)
-            canvas = linear_plot(elements)
+            canvas = linear_plot(elements, callback= self.update_table)
             if isinstance(canvas.figure, Figure):
                 self.active_plot = canvas.figure
                 self.saved_plots.append({
@@ -501,6 +537,7 @@ class MainWindow(QMainWindow):
             #self.lattice_table = self.lattice_table.clearContents()
 
     def plot_nonlin(self,function):
+        """This funtion plots the canvas of the nonlinear functions and updates the nonlinear cache."""
         if not self.lattice_data or not self.selected_section:
             return
         section = self.selected_section
@@ -532,11 +569,14 @@ class MainWindow(QMainWindow):
 
 
     def on_section_cell_clicked(self,row,col):
+        """This function handles the selection of cells in the home layout used for the plotting."""
         item = self.lattice_table_widget.item(row,col)
         if item:
             self.selected_section = item.text()
 
     def export_active_plot(self):
+        """This function export the active plot as png or pdf.
+        ToDo: Other file types ?"""
         if hasattr(self, "active_plot") and self.active_plot:
             file_path, _ = QFileDialog.getSaveFileName(self, "Plot speichern", "", "PNG (*.png);;PDF (*.pdf)")
             if file_path:
@@ -545,6 +585,8 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Fehler", "Kein aktiver Plot vorhanden.")
 
     def export_all_plots(self):
+        """This function exports all generated plots in a seperated folder.
+        ToDo: png or pdf selection"""
         if not self.saved_plots:
             QMessageBox.warning(self, "Keine Plots", "Es wurden noch keine Plots generiert.")
             return
@@ -565,4 +607,11 @@ class MainWindow(QMainWindow):
 
         
     def clear_saved_plots(self):
+        """This function will clear the saved_plots variable if needed."""
         self.saved_plots.clear()
+
+    def update_table(self, x, values:dict):
+        for i, (name,val) in enumerate(values.items()):
+            item = QTableWidgetItem(f"{val:.4f}")
+            item.setFlags(Qt.ItemISEnabled)
+            self.function_table.setItem(i, 0 , item)

@@ -10,6 +10,8 @@ from file_io.py_loader import load_pyat
 # from core.elements import Drift, Quadrupole,Sextupole,Dipole
 
 def load_file(path):
+    """This function loads the given file and by getting the file type and using the dedicated loading function.
+    Returns: The lattice with metadata and elements for self.lattice_data"""
     _, ext = os.path.splitext(path)
 
     if ext.lower() == ".json":
@@ -29,6 +31,8 @@ def load_file(path):
     return sections,metadata, elements
 
 def build_element_objects(elements, lattices,energy):
+    """This function resolve the recursive construction of lattices in files.
+    Returns: pyAT lattices of the loaded file"""
     element_map = {}
     def resolve_element(name, reverse=False):
         # Ist es ein echtes Element?
