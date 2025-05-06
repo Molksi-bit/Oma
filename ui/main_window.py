@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QAction, QColor, QIcon
 from PySide6.QtCore import Qt
 from file_io.json_loader import load_file
-from ui.plot_canvas import linear_plot, nonlinear_plot, calculate_nonlin, get_max_contribution
+from ui.plot_canvas import linear_plot, nonlinear_plot, calculate_nonlin, get_max_contribution,calculate_linear
 from matplotlib.figure import Figure
 import os
 
@@ -124,6 +124,10 @@ class MainWindow(QMainWindow):
         # Shortcuts
         linopt_action.setShortcut("Ctrl+1")
         parameter_action.setShortcut("Ctrl+2")
+        nonlinopt_action.setShortcut("Ctrl+3")
+        open_action.setShortcut("Ctrl+l")
+        home_action.setShortcut("Ctrl+h")
+        save_plot_action.setShortcut("Ctrl+p")
 
         self.setMenuBar(menu_bar)
 
@@ -145,14 +149,14 @@ class MainWindow(QMainWindow):
                                                      "α", "Energy","Damp. Jₓ", "Damp. Jᵧ","E-loss", "E-Spread","εₓ", "εᵧ" ])
 
         self.function_table =QTableWidget()
-        self.function_table.setRowCount(7)
+        self.function_table.setRowCount(8)
         self.function_table.setColumnCount(1)
         self.function_table.horizontalHeader().setVisible(False)
         self.function_table.setSizePolicy(QSizePolicy.Fixed,QSizePolicy.Fixed)
         self.function_table.setFixedHeight(760)
         self.function_table.setFixedWidth(175)
         self.function_table.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.function_table.setVerticalHeaderLabels(["s [m]","βₓ [m]","αₓ","βᵧ [m]","αᵧ","Dₓ [m]","Dₓ' "])
+        self.function_table.setVerticalHeaderLabels(["s [m]","βₓ [m]","αₓ","βᵧ [m]","αᵧ","Dₓ [m]","Dₓ' ","Magnet"])
         
 
         self.plot_area  = QVBoxLayout()
@@ -331,12 +335,22 @@ class MainWindow(QMainWindow):
         self.bottom_frame = QFrame()
         self.bottom_layout = QHBoxLayout()
 
+        self.right_frame = QFrame()
+        self.right_layout = QVBoxLayout()
+        self.right_frame.setLayout(self.right_layout)
+
 
         self.nonlin_table = QTableWidget()
         self.nonlin_table.setColumnCount(1)
         self.nonlin_table.setRowCount(4)
         self.nonlin_table.horizontalHeader().setVisible(False)
         self.nonlin_table.setVerticalHeaderLabels(["Magnet","Value", "Position [m]", "Field"])
+        
+        self.nonlin_values_table = QTableWidget()
+        self.nonlin_values_table.setColumnCount(1)
+        self.nonlin_values_table.setRowCount(3)
+        self.nonlin_values_table.horizontalHeader().setVisible(False)
+        self.nonlin_values_table.setVerticalHeaderLabels(["s","2", "3"])
 
 
         self.nonlin_plot_area = QFrame()
@@ -344,8 +358,11 @@ class MainWindow(QMainWindow):
         self.nonlin_plot_layout = QVBoxLayout()
         self.nonlin_plot_area.setLayout(self.nonlin_plot_layout)
 
+        self.right_layout.addWidget(self.nonlin_table)
+        self.right_layout.addWidget(self.nonlin_values_table)
+
         self.bottom_layout.addWidget(self.nonlin_plot_area,5)
-        self.bottom_layout.addWidget(self.nonlin_table)
+        self.bottom_layout.addWidget(self.right_frame)
         self.bottom_frame.setLayout(self.bottom_layout)
 
         layout.addWidget(button_area,1)
@@ -452,6 +469,7 @@ class MainWindow(QMainWindow):
         "name", "energy_GeV", "emittance_m_rad", "horizontal_tune", "vertical_tune",
         "natural_chromaticity_x", "natural_chromaticity_y", "rf_frequency_MHz", "rf_voltage_kV"
         ]
+        self.lattice_table.setItem(0,0,QTableWidgetItem(meta.get("name")))
         for row, key in enumerate(fields):
             value = meta.get(key, "")
             item = QTableWidgetItem(str(value))
@@ -519,21 +537,38 @@ class MainWindow(QMainWindow):
     def plot_beta(self):
         """This function plots the canvas of the linear functions and updates the linear cache.
         ToDo: update the linear cache duhhh"""
-        if self.lattice_data:
-            elements = self.lattice_data["elements"].get(self.selected_section)
-            canvas = linear_plot(elements, callback= self.update_table)
-            if isinstance(canvas.figure, Figure):
-                self.active_plot = canvas.figure
-                self.saved_plots.append({
-                "figure": canvas.figure,  
-                "type": "linear",       
-                "section": self.selected_section 
-            })
-            for i in reversed(range(self.plot_canvas_layout.count())):
-                widget = self.plot_canvas_layout.itemAt(i).widget()
-                if widget:
-                    widget.setParent(None)
-            self.plot_canvas_layout.addWidget(canvas)
+        if not self.lattice_data or not self.selected_section:
+            return
+        section = self.selected_section
+        if section not in self.lin_cache or self.needs_recalc:
+            elements = self.lattice_data["elements"].get(section)
+            data = calculate_linear(elements)
+            self.lin_cache[section] = data
+            self.needs_recalc = False
+        else:
+            data = self.lin_cache[section]
+            elements = self.lattice_data["elements"].get(section)
+        canvas = linear_plot(data,elements, callback= self.update_lin_table)
+        self.lattice_table.setItem(0,1,QTableWidgetItem(str(round(max(data["s"]),3))))
+        self.lattice_table.setItem(0,2,QTableWidgetItem(str(round(data["angle"],3))))
+        self.lattice_table.setItem(0,3,QTableWidgetItem(str(round(data["abs_angle"],3))))
+        self.lattice_table.setItem(0,4,QTableWidgetItem(str(round(data["tunes"][0],3))))
+        self.lattice_table.setItem(0,5,QTableWidgetItem(str(round(data["tunes"][1],3))))
+        self.lattice_table.setItem(0,6,QTableWidgetItem(str(round(data["chroma"][0],3))))
+        self.lattice_table.setItem(0,7,QTableWidgetItem(str(round(data["chroma"][1],3))))
+                                   
+        if isinstance(canvas.figure, Figure):
+            self.active_plot = canvas.figure
+            self.saved_plots.append({
+            "figure": canvas.figure,  
+            "type": "linear",       
+            "section": self.selected_section 
+        })
+        for i in reversed(range(self.plot_canvas_layout.count())):
+            widget = self.plot_canvas_layout.itemAt(i).widget()
+            if widget:
+                widget.setParent(None)
+        self.plot_canvas_layout.addWidget(canvas)
             #self.lattice_table = self.lattice_table.clearContents()
 
     def plot_nonlin(self,function):
@@ -549,7 +584,7 @@ class MainWindow(QMainWindow):
         else:
             data = self.nonlin_cache[section]
             elements = self.lattice_data["elements"].get(section)
-        canvas = nonlinear_plot(data,function,elements)
+        canvas = nonlinear_plot(data,function,elements, callback=self.update_nonlin_table)
         if isinstance(canvas.figure, Figure):
             self.active_plot = canvas.figure
             self.saved_plots.append({
@@ -610,8 +645,29 @@ class MainWindow(QMainWindow):
         """This function will clear the saved_plots variable if needed."""
         self.saved_plots.clear()
 
-    def update_table(self, x, values:dict):
+    def update_lin_table(self, x, values:dict):
+        for i, (name,val) in enumerate(values.items()):
+            if isinstance(val,float):
+                item = QTableWidgetItem(f"{val:.4f}")
+            else:
+                item = QTableWidgetItem(val)
+            item.setFlags(Qt.ItemIsEnabled)
+            self.function_table.setItem(i, 0 , item)
+
+    def update_nonlin_table(self, x, values:dict, function):
+        functions = {
+                 "chrom1": ["X1ₓ","X1ᵧ"],
+                 "chrom1_sext": ["X1Sₓ","X1Sᵧ"],
+                 "chrom2":["X2ₓ","X2ᵧ"],
+                 "chrom2_sext":["X2Sₓ","X2Sᵧ"],
+                 "alpha0": ["α0"],
+                 "alpha1_1": ["α1 ds"],
+                 "alpha1_2": [ "α1 dE"]
+                 }
+        self.nonlin_values_table.setRowCount(len(functions[function])+1)
+        self.nonlin_values_table.setVerticalHeaderLabels(["s"]+functions[function])
         for i, (name,val) in enumerate(values.items()):
             item = QTableWidgetItem(f"{val:.4f}")
-            item.setFlags(Qt.ItemISEnabled)
-            self.function_table.setItem(i, 0 , item)
+            item.setFlags(Qt.ItemIsEnabled)
+            self.nonlin_values_table.setItem(i, 0 , item)
+            

@@ -12,37 +12,36 @@ colors = {
     "dispersion": ["#2ca02c", "#98df8a", "#006400"]
 }
 
-def on_click(event,axes, data):
-    """This function handles click events on the plot.
-    Updates the respective canvas to have a marker line at the x position of the click event.
-    
-    ToDo: make the marker appear at the same position for all coordinate systems """
-    if event.inaxes:
-        x =event.xdata
-        values = {
-            
-        }
-        for ax in axes:
-            for line in ax.lines[:]:
-                if getattr(line, "_is_marker", False):
-                    line.remove()
 
-            marker = ax.axvline(x=x, color='black', linestyle='--', lw = 1 )
-            marker._is_marker = True  
-            event.canvas.draw()
-        s = data["s"]
-        functions = []
-        values = {name: np.interp(x,s,np.array(data[name])) for name in functions}
 
 
 def calculate_linear(section):
     """This function calculates the data needed for the linear plot and table.
     ToDo: Write the godamn function you moron and stop procrastenating"""
-    pass
-def linear_plot(section, title= "Plot", x_label= "s[m]",y_label = "βₓ/βᵧ",callback = None):
+    angle = 0
+    abs_angle = 0
+    for elem in section:
+        if hasattr(elem,"BendingAngle"):
+            angle += np.rad2deg(elem.BendingAngle)
+            abs_angle += np.rad2deg(np.abs(elem.BendingAngle))
+    section = section.slice(slices= 700)
+    refpts = list(range(len(section)))
+    _,ringdata,twiss  = at.get_optics(section, refpts= refpts, get_chrom=True)
+    data_dict = {"s":twiss.s_pos,
+                 "beta": [[twiss.beta[:,0],twiss.beta[:,1]],["βₓ","βᵧ"]],
+                 "alpha": [[twiss.alpha[:,0],twiss.alpha[:,1]],["αₓ","αᵧ"]],
+                 "disp":[[twiss.dispersion[:,0],twiss.dispersion[:,1]],["Dₓ","Dₓ ds"]],
+                 "angle": angle,
+                 "abs_angle":abs_angle,
+                 "tunes" : ringdata.tune,
+                 "chroma":ringdata.chromaticity
+                 }
+    return data_dict
+
+
+def linear_plot(data,section, title= "Plot", x_label= "s[m]",y_label = "βₓ/βᵧ",callback = None):
     """Uses the data and creates a plot of betafunctions and dispersion.
-    Returns: Plot Canvas
-    ToDo: Move out the calculation part here"""
+    Returns: Plot Canvas"""
     figure = Figure(figsize=(6,4))
     gs = GridSpec(20,1,figure =figure)
     
@@ -54,32 +53,67 @@ def linear_plot(section, title= "Plot", x_label= "s[m]",y_label = "βₓ/βᵧ",
     
     
 
-    section = section.slice(slices= 700)
-    refpts = list(range(len(section)))
-    #calculation part
-    _,_,twiss  = at.get_optics(section, refpts= refpts, get_chrom=False)
+    
     #
     #ax1.set_title(title)
     ax1.tick_params(labelbottom = False)
     ax1.set_xlabel("")
-    ax1.plot(twiss.s_pos,twiss.dispersion[:,0], label = "Dₓ", color = colors["dispersion"][0])
+    ax1.plot(data["s"],data["disp"][0][0], label = data["disp"][1][0], color = colors["dispersion"][0])
     ax1.set_ylim(0)
+    ax1.set_xlim(0,max(data["s"]))
     ax1.legend()
     figure.subplots_adjust(left=0.07, right=0.98, top=0.96, bottom=0.05,hspace=0)
     ax2.set_xlabel("")
     ax2.set_ylabel(y_label)
-    ax2.set_xlim(0,max(twiss.s_pos))
     # ax2.set_ylim(min(min(twiss.betx),min(twiss.bety)),max(max(twiss.betx),max(twiss.bety)))
-    ax2.plot(twiss.s_pos,twiss.beta[:,0], label = "βₓ", color = colors["beta_x"][0])
-    ax2.plot(twiss.s_pos,twiss.beta[:,1], label = "βᵧ", color = colors["beta_y"][0])
+    ax2.plot(data["s"],data["beta"][0][0], label = data["beta"][1][0], color = colors["beta_x"][0])
+    ax2.plot(data["s"],data["beta"][0][1], label = data["beta"][1][1], color = colors["beta_y"][0])
     
-    plot_magnet_structure(ax3, section)
+    
     ax2.legend()
     ax3.get_xaxis().set_visible(False)
     ax3.get_yaxis().set_visible(False)
     ax3.set_frame_on(False)
 
+    plot_magnet_structure(ax3, section)
     canvas = FigureCanvas(figure)
+    def on_click(event):
+        """This function handles click events on the plot.
+        Updates the respective canvas to have a marker line at the x position of the click event.
+        
+        ToDo: make the marker appear at the same position for all coordinate systems """
+        if event.inaxes:
+            x =event.xdata
+            magnet = find_magnet_at_s(section,x)
+            magnet_name = getattr(magnet, "FamName")
+            values = {
+                
+                "s": x,
+                "βₓ": np.interp(x, data["s"], data["beta"][0][0]),
+                "αₓ": np.interp(x, data["s"], data["alpha"][0][0]),
+                "βᵧ": np.interp(x, data["s"], data["beta"][0][1]),
+                "αᵧ": np.interp(x, data["s"], data["alpha"][0][1]),
+                "Dₓ":np.interp(x, data["s"], data["disp"][0][0]),
+                "Dₓ'":np.interp(x, data["s"], data["disp"][0][1]),
+                "magnet": magnet_name,
+            }
+            if callback:
+                callback(x, values)
+            for ax in axes[:-1]:
+                for line in ax.lines[:]:
+                    if getattr(line, "_is_marker", False):
+                        line.remove()
+                if event.button != 3:
+                    marker = ax.axvline(x=x, color='black', linestyle='--', lw = 1 )
+                    marker._is_marker = True  
+            for line in axes[-1].lines[:]:
+                    if getattr(line, "_is_marker", False):
+                        line.remove()
+            if event.button != 3:
+                marker = axes[-1].axvline(x=x,ymin=0,ymax=0.6, color='black', linestyle='--', lw = 1 )
+                marker._is_marker = True 
+            canvas.draw()
+            
     canvas.mpl_connect("button_press_event", on_click)
     return canvas
 
@@ -138,7 +172,7 @@ def calculate_nonlin(lattice):
                  }
     return data_dict
 
-def nonlinear_plot(data,function,lattice, y_label = " - "):
+def nonlinear_plot(data,function,lattice, y_label = " - ",callback =None):
     """This function uses the calculated data dictionary and creates a plot of the chosen function and section.
     Returns: Figure Canvas"""
     figure = Figure(figsize=(6,4))
@@ -170,7 +204,26 @@ def nonlinear_plot(data,function,lattice, y_label = " - "):
         ax1.text(0.5, 0.5, "Keine Daten", ha="center", va="center", transform=ax1.transAxes)
     plot_magnet_structure(ax2, lattice)
     canvas = FigureCanvas(figure)
-    
+    def on_click(event):
+        """This function handles click events on the plot.
+        Updates the respective canvas to have a marker line at the x position of the click event.
+        
+        ToDo: make the marker appear at the same position for all coordinate systems """
+        if event.inaxes:
+            x =event.xdata
+            values = {"s":x}
+            for i in range(len(data[function][0])):
+                values[data[function][1][i]] = np.interp(x, data["s"], data[function][0][i])
+            if callback:
+                callback(x, values,function)
+            for ax in axes:
+                for line in ax.lines[:]:
+                    if getattr(line, "_is_marker", False):
+                        line.remove()
+
+                marker = ax.axvline(x=x, color='black', linestyle='--', lw = 1 )
+                marker._is_marker = True  
+                canvas.draw()
     canvas.mpl_connect("button_press_event", on_click)
     return canvas
 
@@ -205,7 +258,7 @@ def plot_magnet_structure(ax, lattice):
         ax.add_patch(rect)
 
         s_pos += length
-    ax.set_xlim(0, s_pos)
+    
 
 def get_max_contribution(data,function,lattice,top_n=1):
     """This function gets the top n magnets contributing to the given function.
