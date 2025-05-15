@@ -1,0 +1,18 @@
+QWidget {
+    background-color: #000000;
+    color: #FFFF00;
+    font-weight: bold;
+}
+
+QPushButton {
+    background-color: #000000;
+    color: #FFFF00;
+    border: 2px solid #FFFF00;
+    padding: 6px;
+}
+
+QTableWidget, QListWidget, QLineEdit {
+    background-color: #000000;
+    color: #FFFF00;
+    border: 1px solid #FFFF00;
+}

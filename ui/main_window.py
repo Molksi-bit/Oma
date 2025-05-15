@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QMainWindow, QWidget,QHBoxLayout,QVBoxLayout,QTableWidget,QTableWidgetItem,QMenuBar,QMenu,QFrame,QStackedWidget, QSizePolicy, QFileDialog,QLabel,QListWidget, QListWidgetItem,QMessageBox,
-    QPushButton)
+    QPushButton,QApplication)
 from PySide6.QtGui import QAction, QColor, QIcon
 from PySide6.QtCore import Qt
 from file_io.json_loader import load_file
@@ -30,7 +30,8 @@ class MainWindow(QMainWindow):
             "parameters" : self.create_parameters_layout(),
             "rdt": self.create_rdt_layout(),
             "chroma": self.create_chroma_layout(),
-            "nonlin": self.create_nonlin_layout()
+            "nonlin": self.create_nonlin_layout(),
+            "mag_con": self.create_magnetcon_layout()
             
         }
         for view in self.views.values():
@@ -57,9 +58,9 @@ class MainWindow(QMainWindow):
     #Menus
         file_menu = QMenu("&Datei", self)
         lattice_menu = QMenu("Lattice", self)
-        linear_menu = QMenu("linear", self)
-        nonlinear_menu = QMenu("nonlinear", self)
-        settings_menu = QMenu("Settings",self)
+        linear_menu = QMenu("Linear", self)
+        nonlinear_menu = QMenu("Nonlinear", self)
+        theme_menu = QMenu("Theme",self)
         plot_menu = QMenu("Plot", self)
     #Menu-actions
         home_action = QAction(QIcon("assets/icons/haus.png"),"",self)
@@ -88,10 +89,22 @@ class MainWindow(QMainWindow):
         rdts_action = QAction("RDTs",self)
         rdts_action.triggered.connect(lambda: self.switch_view("rdt"))
         magnet_contribution_action = QAction("Magnet contribution",self)
+        magnet_contribution_action.triggered.connect(lambda:self.switch_view("mag_con"))
+        magnet_contribution_action.triggered.connect(lambda:self.show_mag_contribution())
         chroma_action = QAction("Chromaticity", self)
         chroma_action.triggered.connect(lambda: self.switch_view("chroma"))
 
-        theme_action = QAction("change theme", self)
+        light_action = QAction("Lightmode", self)
+        light_action.triggered.connect(lambda: self.switch_theme("light"))
+        dark_action = QAction("Darkmode", self)
+        dark_action.triggered.connect(lambda: self.switch_theme("dark"))
+        sepia_action = QAction("Sepiamode", self)
+        sepia_action.triggered.connect(lambda: self.switch_theme("sepia"))
+        highcon_action = QAction("High contrast", self)
+        highcon_action.triggered.connect(lambda: self.switch_theme("highcon"))
+        developer_action = QAction("Developer", self)
+        developer_action.triggered.connect(lambda: self.switch_theme("developer"))
+
 
         save_plot_action = QAction("Save Plot",self)
         save_plot_action.triggered.connect(lambda: self.export_active_plot())
@@ -109,7 +122,7 @@ class MainWindow(QMainWindow):
 
         nonlinear_menu.addActions([nonlinopt_action, rdts_action,magnet_contribution_action,chroma_action])
 
-        settings_menu.addActions([theme_action])
+        theme_menu.addActions([light_action,dark_action,sepia_action,developer_action,highcon_action])
 
         plot_menu.addActions([save_plot_action, save_all_plots_action])
 
@@ -118,7 +131,7 @@ class MainWindow(QMainWindow):
         menu_bar.addMenu(lattice_menu)
         menu_bar.addMenu(linear_menu)
         menu_bar.addMenu(nonlinear_menu)
-        menu_bar.addMenu(settings_menu)
+        menu_bar.addMenu(theme_menu)
         menu_bar.addMenu(plot_menu)
 
         # Shortcuts
@@ -128,6 +141,7 @@ class MainWindow(QMainWindow):
         open_action.setShortcut("Ctrl+l")
         home_action.setShortcut("Ctrl+h")
         save_plot_action.setShortcut("Ctrl+p")
+        save_all_plots_action.setShortcut("Ctrl+shift+p")
 
         self.setMenuBar(menu_bar)
 
@@ -136,17 +150,18 @@ class MainWindow(QMainWindow):
         main_widget = QWidget()
         main_layout = QHBoxLayout()
 
+        fields = ["Name", "Lenght", "Angle", "Abs. Angle", "Qₓ", "Qᵧ","χₓ","χᵧ"] #"α", "Energy","Damp. Jₓ", "Damp. Jᵧ","E-loss", "E-Spread","εₓ", "εᵧ" ]
         self.lattice_table = QTableWidget()
         self.lattice_table.setContentsMargins(0,0,0,0)
-        self.lattice_table.setRowCount(16)
+        self.lattice_table.setRowCount(len(fields))
         self.lattice_table.setColumnCount(1)
         self.lattice_table.setSizePolicy(QSizePolicy.Fixed,QSizePolicy.Fixed)
         self.lattice_table.setFixedHeight(760)
         self.lattice_table.setFixedWidth(187)
         self.lattice_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.lattice_table.horizontalHeader().setVisible(False)
-        self.lattice_table.setVerticalHeaderLabels(["Name", "Lenght", "Angle", "Abs. Angle", "Qₓ", "Qᵧ","χₓ","χᵧ",
-                                                     "α", "Energy","Damp. Jₓ", "Damp. Jᵧ","E-loss", "E-Spread","εₓ", "εᵧ" ])
+        self.lattice_table.setVerticalHeaderLabels(fields)
+                                                     
 
         self.function_table =QTableWidget()
         self.function_table.setRowCount(8)
@@ -198,20 +213,23 @@ class MainWindow(QMainWindow):
         """This function creates the layout for the parameter view. Here an overview over special parameters 
         shall be given and limits can be set and checked."""
         widget = QWidget()
-        layout = QVBoxLayout()
+        layout = QHBoxLayout()
+        text_field = QFrame()
+        text_field_layout = QVBoxLayout()
+        commentary = QLabel("Comments")
         table = QTableWidget()
         table.setColumnCount(4)
-        table.setHorizontalHeaderLabels(["Parameter", "Limit", "Wert", "Status"])
+        table.setHorizontalHeaderLabels(["Parameter", "Limit", "Value", "Status"])
         table.setRowCount(8)
 
-        self.limit_table = table  # falls du später darauf zugreifen willst
+        self.limit_table = table
 
         self.limit_parameters = [
             {"name": "Energy", "limit": 2.5},
             {"name": "Dipolstrength", "limit": 1},
             {"name": "Quadrupolstrength", "limit": 80},
             {"name": "Sextupolestrength", "limit": 240},
-            {"name": "Magnetlength", "limit": 10},
+            {"name": "Magnetlength", "limit": 0.1},
             {"name": "Emittance", "limit": 0.100},
             {"name": "Mom. Comp.", "limit": 0.0001},
             {"name": "Total Length", "limit": 365}
@@ -223,8 +241,8 @@ class MainWindow(QMainWindow):
             name_item = QTableWidgetItem(param["name"])
             name_item.setFlags(Qt.ItemIsEnabled)
             limit_item = QTableWidgetItem(str(param["limit"]))
-            limit_item.setFlags(Qt.ItemIsEnabled)
             value_item = QTableWidgetItem("")
+            value_item.setFlags(Qt.ItemIsEnabled)
             status_item = QTableWidgetItem("-")
             status_item.setFlags(Qt.ItemIsEnabled)
 
@@ -235,7 +253,10 @@ class MainWindow(QMainWindow):
 
         table.cellChanged.connect(self.check_limits)
 
+        text_field_layout.addWidget(commentary)
+        text_field.setLayout(text_field_layout)
         layout.addWidget(table)
+        layout.addWidget(text_field)
         widget.setLayout(layout)
         return widget
     
@@ -417,9 +438,21 @@ class MainWindow(QMainWindow):
 
         widget.setLayout(layout)
         return widget
+
+
     def create_magnetcon_layout(self):
         """I dont know if this is still necessary but im t lazy to delete it."""
-        pass
+        wrapper_frame = QFrame()
+        wrapper_layout = QVBoxLayout()
+        view_label = QLabel("Magnet Contribution")
+
+
+
+        wrapper_layout.addWidget(view_label, alignment= Qt.AlignLeft |Qt.AlignTop)
+        wrapper_frame.setLayout(wrapper_layout)
+
+
+        return wrapper_frame
 
     def create_omaedit_layout(self):
         """This function creates a diffrent layout, where a new lattice can be designed in an OPA related style.
@@ -646,6 +679,7 @@ class MainWindow(QMainWindow):
         self.saved_plots.clear()
 
     def update_lin_table(self, x, values:dict):
+        """This function handles the updating of the values in the table of the linear plot."""
         for i, (name,val) in enumerate(values.items()):
             if isinstance(val,float):
                 item = QTableWidgetItem(f"{val:.4f}")
@@ -655,6 +689,7 @@ class MainWindow(QMainWindow):
             self.function_table.setItem(i, 0 , item)
 
     def update_nonlin_table(self, x, values:dict, function):
+        """This function handles the updating of the values in the nonlinear function table."""
         functions = {
                  "chrom1": ["X1ₓ","X1ᵧ"],
                  "chrom1_sext": ["X1Sₓ","X1Sᵧ"],
@@ -671,3 +706,23 @@ class MainWindow(QMainWindow):
             item.setFlags(Qt.ItemIsEnabled)
             self.nonlin_values_table.setItem(i, 0 , item)
             
+    def show_mag_contribution(self):
+        """This function creates the Tables for presentation in the Magnet contribution view."""
+        if not self.selected_section:
+            return
+        for section, elems in self.selected_section.items():
+            table = QTableWidget()
+            table.setHorizontalHeaderLabels(["X1","X2"])#weiter ausführen, wenn code aktualisiert.
+        
+
+    def switch_theme(self,mode):
+        """This function handles the switch of themes, which are present in the assets folder."""
+        themes = {"light":"assets/lightmode.qss",
+                  "dark":"assets/darkmode.qss" ,
+                  "developer":"assets/developer.qss",
+                  "sepia":"assets/sepiamode.qss",
+                  "highcon":"assets/high_contrast.qss"}
+        
+        with open(themes[mode], "r") as file:
+            style= file.read()
+            QApplication.instance().setStyleSheet(style)

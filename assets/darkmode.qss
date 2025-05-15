@@ -2,13 +2,16 @@
     font-family: "DejaVu Sans",
 }
 
+QLabel {
+    font-weight: bold;
+}
+
 QMainWindow {
     background-color: #2b2b2b;
 }
 QWidget
 {
 	background-color: #1e1e1e;
-    border: 4px;
 }
 QMenuBar, QMenu {
     background-color: #333;
@@ -80,4 +83,13 @@ QPushButton {
 }
 QPushButton:hover {
     background-color: #444;
+}
+QToolTip {
+    background-color: #222;
+    color: #eee;
+    border: 1px solid #555;
+    padding: 6px;
+    border-radius: 6px;
+    font-size: 11pt;
+    font-family: "Fira Sans";
 }

@@ -3,40 +3,40 @@
 > Diese Tabelle enthält alle geplaten und implementierten Funktionen inklusive ihrer Verfügbarkeit, und geschätzten Laufzeit.  
 > Bitte bei Änderungen im Projekt diese Tabelle aktuell halten. Pull Requests willkommen 😊
 
-| Funktion                      | Verfügbar   | Laufzeit (Opa) | Laufzeit (pyAT)  |numerical acceptance| Letztes Update | Kommentar                        |
+| Function                      | Availability| Runtime (Opa)  | Runtime (pyAT)   |numerical acceptance| Letztes Update | Kommentar                        |
 |-------------------------------|-------------|----------------|------------------|--------------------|----------------|----------------------------------|
-| Betafunctions calculation     |  Ja         | -              | -                |-                   | -              |                                  |
-| Dispersion calculation        |  Nein       | –              | –                |-                   | –              |                                  |
-| Tune calculation              |  Ja         | -              | -                |-                   | -              |                                  |
-| Angle calculation             |  nein       | -              | -                |-                   | -              |                                  |
-| Momentum comp. calculation    |  Nein       | –              | –                |-                   | –              |                                  |
-| Energyloss calculation        |  Nein       | –              | –                |-                   | –              |                                  |
-| Emittance calculation         |  Nein       | –              | –                |-                   | –              |                                  |
-| Energyspread calculation      |  Nein       | –              | –                |-                   | –              |                                  |
-| Damping times calculation     |  Nein       | –              | –                |-                   | –              |                                  |
-| Chromaticity calculation      |  Nein       | –              | –                |-                   | –              |                                  |
-| Higher Order Chromaticity     |  Nein       | –              | –                |-                   | –              |                                  |
-| RDTs calculation              |  Nein       | –              | –                |-                   | –              |                                  |
-| Off momentum tuneshift        |  Nein       | –              | –                |-                   | –              |                                  |
-| Off Momentum Beta             |  Nein       | –              | –                |-                   | –              |                                  |
-| Off Momentum dispersion       |  Nein       | –              | –                |-                   | –              |                                  |
-| Off Momentum Damping numbers  |  Nein       | –              | –                |-                   | –              |                                  |
-| Off Momentum Emittance        |  Nein       | –              | –                |-                   | –              |                                  |
-| Off Momentum Energy loss      |  Nein       | –              | –                |-                   | –              |                                  |
-| Off Momentum Energy Spread    |  Nein       | –              | –                |-                   | –              |                                  |
-| Chromaticity Matching         |  Nein       | –              | –                |-                   | –              |                                  |
-| Tune Matching                 |  Nein       | –              | –                |-                   | –              |                                  |
-| Beta Matching                 |  Nein       | –              | –                |-                   | –              |                                  |
-| Multi Lattice plotting        |  Nein       | –              | –                |-                   | –              |                                  |
-| HO Chromaticity calc          |  Nein       | –              | –                |-                   | –              |                                  |
-| HO alpha calc                 |  Nein       | –              | –                |-                   | –              |                                  |
-| Plot export                   |  Nein       | –              | –                |-                   | –              |                                  |
-| Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
-| Magnet contribution           |  Nein       | –              | –                |-                   | –              |                                  |
-| file I/O opa                  |  Nein       | –              | –                |-                   | –              |                                  |
-| file I/O pyat                 |  Nein       | –              | –                |-                   | –              |                                  |
-| file I/O madx                 |  Nein       | –              | –                |-                   | –              |                                  |
-| file I/O ...                  |  Nein       | –              | –                |-                   | –              |                                  |
+| Betafunctions calculation     |  Yes        | -              | -                |-                   | -              |                                  |
+| Dispersion calculation        |  Yes        | –              | –                |-                   | –              |                                  |
+| Tune calculation              |  Yes        | -              | -                |-                   | -              |                                  |
+| Angle calculation             |  Yes        | -              | -                |-                   | -              |                                  |
+| Momentum comp. calculation    |  Yes        | –              | –                |-                   | –              |                                  |
+| Energyloss calculation        |  Yes        | –              | –                |-                   | –              |                                  |
+| Emittance calculation         |  Yes        | –              | –                |-                   | –              |                                  |
+| Energyspread calculation      |  Yes        | –              | –                |-                   | –              |                                  |
+| Damping times calculation     |  Yes        | –              | –                |-                   | –              |                                  |
+| Chromaticity calculation      |  Yes        | –              | –                |-                   | –              |                                  |
+| Higher Order Chromaticity     |  Yes        | –              | –                |-                   | –              |                                  |
+| RDTs calculation              |  Yes        | –              | –                |-                   | –              |                                  |
+| Off momentum tuneshift        |  Yes        | –              | –                |-                   | –              |                                  |
+| Off Momentum Beta             |  Yes        | –              | –                |-                   | –              |                                  |
+| Off Momentum dispersion       |  Yes        | –              | –                |-                   | –              |                                  |
+| Off Momentum Damping numbers  |  Yes        | –              | –                |-                   | –              |                                  |
+| Off Momentum Emittance        |  Yes        | –              | –                |-                   | –              |                                  |
+| Off Momentum Energy loss      |  Yes        | –              | –                |-                   | –              |                                  |
+| Off Momentum Energy Spread    |  Yes        | –              | –                |-                   | –              |                                  |
+| Chromaticity Matching         |  Yes        | –              | –                |-                   | –              |                                  |
+| Tune Matching                 |  Yes        | –              | –                |-                   | –              |                                  |
+| Beta Matching                 |  Yes        | –              | –                |-                   | –              |                                  |
+| Multi Lattice plotting        |  No         | –              | –                |-                   | –              |                                  |
+| HO Chromaticity contributions |  No         | –              | –                |-                   | –              |                                  |
+| HO alpha contributions        |  No         | –              | –                |-                   | –              |                                  |
+| Plot export                   |  Yes        | –              | –                |-                   | –              |                                  |
+| Tooltips                      |  No         | –              | –                |-                   | –              |                                  |
+| Magnet contribution           |  No         | –              | –                |-                   | –              |                                  |
+| file I/O opa                  |  No         | –              | –                |-                   | –              |                                  |
+| file I/O pyat                 |  No         | –              | –                |-                   | –              |                                  |
+| file I/O madx                 |  No         | –              | –                |-                   | –              |                                  |
+| file I/O ...                  |  No         | –              | –                |-                   | –              |                                  |
 | Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
 | Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
 | Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
