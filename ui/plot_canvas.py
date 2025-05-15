@@ -39,7 +39,7 @@ def calculate_linear(section):
     return data_dict
 
 
-def linear_plot(data,section, title= "Plot", x_label= "s[m]",y_label = "βₓ/βᵧ",callback = None):
+def linear_plot(data_list,section_list,labels=None, title= "Plot", x_label= "s[m]",y_label = "βₓ/βᵧ",callback = None):
     """Uses the data and creates a plot of betafunctions and dispersion.
     Returns: Plot Canvas"""
     figure = Figure(figsize=(6,4))
@@ -53,48 +53,45 @@ def linear_plot(data,section, title= "Plot", x_label= "s[m]",y_label = "βₓ/β
     
     
 
-    
-    #
-    #ax1.set_title(title)
     ax1.tick_params(labelbottom = False)
-    ax1.set_xlabel("")
-    ax1.plot(data["s"],data["disp"][0][0], label = data["disp"][1][0], color = colors["dispersion"][0])
-    ax1.set_ylim(0)
-    ax1.set_xlim(0,max(data["s"]))
-    ax1.legend()
-    figure.subplots_adjust(left=0.07, right=0.98, top=0.96, bottom=0.05,hspace=0)
-    ax2.set_xlabel("")
     ax2.set_ylabel(y_label)
-    # ax2.set_ylim(min(min(twiss.betx),min(twiss.bety)),max(max(twiss.betx),max(twiss.bety)))
-    ax2.plot(data["s"],data["beta"][0][0], label = data["beta"][1][0], color = colors["beta_x"][0])
-    ax2.plot(data["s"],data["beta"][0][1], label = data["beta"][1][1], color = colors["beta_y"][0])
-    
-    
-    ax2.legend()
     ax3.get_xaxis().set_visible(False)
     ax3.get_yaxis().set_visible(False)
     ax3.set_frame_on(False)
+    figure.subplots_adjust(left=0.07, right=0.98, top=0.96, bottom=0.05,hspace=0)
 
-    plot_magnet_structure(ax3, section)
+    for i,data in enumerate(data_list):
+        label = labels[i] if labels else f"Lattice {i+1}"
+        ax1.plot(data["s"],data["disp"][0][0], label = label+ data["disp"][1][0], color = colors["dispersion"][i% len(colors["dispersion"])])
+        ax2.plot(data["s"],data["beta"][0][0], label = label+ data["beta"][1][0], color = colors["beta_x"][i% len(colors["dispersion"])])
+        ax2.plot(data["s"],data["beta"][0][1], label = label+ data["beta"][1][1], color = colors["beta_y"][i% len(colors["dispersion"])])
+    ax1.set_ylim(bottom=0)
+    ax2.set_ylim(bottom=0)
+    max_s = max(data["s"][-1] for data in data_list)
+    ax1.set_xlim(0, max_s)
+    ax1.legend()
+    ax2.legend()
+    
+    
+    plot_magnet_structure(ax3, section_list)
     canvas = FigureCanvas(figure)
     def on_click(event):
         """This function handles click events on the plot.
         Updates the respective canvas to have a marker line at the x position of the click event.
-        
-        ToDo: make the marker appear at the same position for all coordinate systems """
+        """
         if event.inaxes:
             x =event.xdata
-            magnet = find_magnet_at_s(section,x)
+            magnet = find_magnet_at_s(section_list[0],x)
             magnet_name = getattr(magnet, "FamName")
             values = {
                 
                 "s": x,
-                "βₓ": np.interp(x, data["s"], data["beta"][0][0]),
-                "αₓ": np.interp(x, data["s"], data["alpha"][0][0]),
-                "βᵧ": np.interp(x, data["s"], data["beta"][0][1]),
-                "αᵧ": np.interp(x, data["s"], data["alpha"][0][1]),
-                "Dₓ":np.interp(x, data["s"], data["disp"][0][0]),
-                "Dₓ'":np.interp(x, data["s"], data["disp"][0][1]),
+                "βₓ": np.interp(x, data_list[0]["s"], data_list[0]["beta"][0][0]),
+                "αₓ": np.interp(x, data_list[0]["s"], data_list[0]["alpha"][0][0]),
+                "βᵧ": np.interp(x, data_list[0]["s"], data_list[0]["beta"][0][1]),
+                "αᵧ": np.interp(x, data_list[0]["s"], data_list[0]["alpha"][0][1]),
+                "Dₓ":np.interp(x, data_list[0]["s"], data_list[0]["disp"][0][0]),
+                "Dₓ'":np.interp(x, data_list[0]["s"], data_list[0]["disp"][0][1]),
                 "magnet": magnet_name,
             }
             if callback:
@@ -110,7 +107,7 @@ def linear_plot(data,section, title= "Plot", x_label= "s[m]",y_label = "βₓ/β
                     if getattr(line, "_is_marker", False):
                         line.remove()
             if event.button != 3:
-                marker = axes[-1].axvline(x=x,ymin=0,ymax=0.6, color='black', linestyle='--', lw = 1 )
+                marker = axes[-1].axvline(x=x,ymin=0,ymax=len(data_list)*0.3+0.2, color='black', linestyle='--', lw = 1 )
                 marker._is_marker = True 
             canvas.draw()
             
@@ -144,6 +141,7 @@ def calculate_nonlin(lattice):
             k2_array[i] = getattr(elem,"H", 0.0)
         elif elem.__class__.__name__ == "Dipole":
             bend_array[i] = getattr(elem, "BendingAngle", 0.0)
+            k1_array[i] = getattr(elem,"K", 0.0)
 
     chrom1_x = k1_array*beta_x
     chrom1_y = k1_array*beta_y
@@ -172,43 +170,36 @@ def calculate_nonlin(lattice):
                  }
     return data_dict
 
-def nonlinear_plot(data,function,lattice, y_label = " - ",callback =None):
+def nonlinear_plot(data_list,function,section_list,labels, y_label = " - ",callback =None):
     """This function uses the calculated data dictionary and creates a plot of the chosen function and section.
     Returns: Figure Canvas"""
     figure = Figure(figsize=(6,4))
     gs = GridSpec(20,1,figure =figure)
-    ax1 = figure.add_subplot(gs[0:19,0])
-    ax2 = figure.add_subplot(gs[19:,0],sharex = ax1)
+    ax1 = figure.add_subplot(gs[0:18,0])
+    ax2 = figure.add_subplot(gs[18:,0],sharex = ax1)
     axes = [ax1,ax2]
 
     ax1.tick_params(labelbottom = False)
-    ax1.set_xlabel("")
     ax1.set_ylabel(y_label)
-
-    s = data.get("s", [])
-
-    if len(s) > 1:
-        ax1.set_xlim(0, max(s))
-    else:
-        ax1.set_xlim(0, 1)
-
     figure.subplots_adjust(left=0.07, right=0.98, top=0.96, bottom=0.02,hspace=0)
     ax2.get_xaxis().set_visible(False)
     ax2.get_yaxis().set_visible(False)
     ax2.set_frame_on(False)
-    if len(s) > 1:
-        for i in range(len(data[function][0])):
-            ax1.plot(s, data[function][0][i], label=data[function][1][i])
+
+    for i,data in enumerate(data_list):
+        s = data.get("s", [])
+        label = labels[i] if labels else f"Lattice {i+1}" 
+        for k in range(len(data[function][0])):
+            ax1.plot(s, data[function][0][k], label=label +data[function][1][k])
         ax1.legend()
-    else:
-        ax1.text(0.5, 0.5, "Keine Daten", ha="center", va="center", transform=ax1.transAxes)
-    plot_magnet_structure(ax2, lattice)
+    max_s = max(data["s"][-1] for data in data_list)
+    ax1.set_xlim(0, max_s)
+    plot_magnet_structure(ax2, section_list)
     canvas = FigureCanvas(figure)
     def on_click(event):
         """This function handles click events on the plot.
         Updates the respective canvas to have a marker line at the x position of the click event.
-        
-        ToDo: make the marker appear at the same position for all coordinate systems """
+        """
         if event.inaxes:
             x =event.xdata
             values = {"s":x}
@@ -216,21 +207,27 @@ def nonlinear_plot(data,function,lattice, y_label = " - ",callback =None):
                 values[data[function][1][i]] = np.interp(x, data["s"], data[function][0][i])
             if callback:
                 callback(x, values,function)
-            for ax in axes:
+            for ax in axes[:-1]:
                 for line in ax.lines[:]:
                     if getattr(line, "_is_marker", False):
                         line.remove()
-
-                marker = ax.axvline(x=x, color='black', linestyle='--', lw = 1 )
-                marker._is_marker = True  
-                canvas.draw()
+                if event.button != 3:
+                    marker = ax.axvline(x=x, color='black', linestyle='--', lw = 1 )
+                    marker._is_marker = True  
+            for line in axes[-1].lines[:]:
+                    if getattr(line, "_is_marker", False):
+                        line.remove()
+            if event.button != 3:
+                marker = axes[-1].axvline(x=x,ymin=0,ymax=len(data_list)*0.3+ 0.2, color='black', linestyle='--', lw = 1 )
+                marker._is_marker = True 
+            canvas.draw()
     canvas.mpl_connect("button_press_event", on_click)
     return canvas
 
 
 
 
-def plot_magnet_structure(ax, lattice):
+def plot_magnet_structure(ax, lattices):
     """
     This function creates a visual representation of the magnet arrangement by colored bars on the given axes object.
     """
@@ -246,18 +243,20 @@ def plot_magnet_structure(ax, lattice):
     y_base = 0.2 
 
     s_pos = 0.0  
+    for lattice in lattices:
+        for elem in lattice:
+            length = getattr(elem, "Length", 0.0)
+            elem_type = elem.__class__.__name__.lower()
 
-    for elem in lattice:
-        length = getattr(elem, "Length", 0.0)
-        elem_type = elem.__class__.__name__.lower()
+            color = color_map.get(elem_type, "#95a5a6")   # fallback: grau
+            height = 0.2
 
-        color = color_map.get(elem_type, "#95a5a6")   # fallback: grau
-        height = 0.2
+            rect = Rectangle((s_pos, y_base), length, height, color=color)
+            ax.add_patch(rect)
 
-        rect = Rectangle((s_pos, y_base), length, height, color=color)
-        ax.add_patch(rect)
-
-        s_pos += length
+            s_pos += length
+        s_pos = 0.0
+        y_base += 0.3
     
 
 def get_max_contribution(data,function,lattice,top_n=1):

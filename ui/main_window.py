@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QMainWindow, QWidget,QHBoxLayout,QVBoxLayout,QTableWidget,QTableWidgetItem,QMenuBar,QMenu,QFrame,QStackedWidget, QSizePolicy, QFileDialog,QLabel,QListWidget, QListWidgetItem,QMessageBox,
-    QPushButton,QApplication)
+    QPushButton,QApplication,QPushButton,QScrollArea)
 from PySide6.QtGui import QAction, QColor, QIcon
 from PySide6.QtCore import Qt
 from file_io.json_loader import load_file
@@ -36,13 +36,16 @@ class MainWindow(QMainWindow):
         }
         for view in self.views.values():
             self.stacked.addWidget(view)
-        self.lattice_data = None
-        self.selected_section = None
+        self.lattices = {}
+        self.selected_sections = {}
         self.nonlin_cache = {}
         self.lin_cache = {}
         self.needs_recalc = True
         self.active_plot = None
         self.saved_plots = []
+        self.lattice_tables = {}  
+        self.section_lists = {} 
+        self.lattice_widgets = {}
         
         self.create_menu()
 
@@ -289,31 +292,21 @@ class MainWindow(QMainWindow):
     def create_home_layout(self):
         """This function creates the layout for the home view. There lattices can be loaded and will be shown.
         ToDo: Change lattice expansion to switch between full and not expanded mode."""
+    
         widget = QWidget()
         layout = QHBoxLayout()
-        right_side = QVBoxLayout()
-        self.param_table = QTableWidget()
-        self.param_table.setColumnCount(1)
-        parameters = ["Name","Energy", "ε","Qₓ", "Qᵧ","χₓ", "χᵧ", "f", "U" ]
-        self.param_table.setRowCount(len(parameters))
-        self.param_table.setVerticalHeaderLabels(parameters)
-        self.param_table.horizontalHeader().setVisible(False)
-
-        self.lattice_table_widget = QTableWidget()
-        self.lattice_table_widget.setColumnCount(4)
-        self.lattice_table_widget.setRowCount(1)
-        self.lattice_table_widget.horizontalHeader().setVisible(False)
-        self.lattice_table_widget.verticalHeader().setVisible(False)
-        self.lattice_table_widget.cellClicked.connect(self.display_section_elements)
-        self.lattice_table_widget.cellClicked.connect(self.on_section_cell_clicked)
-        self.section_element_list = QListWidget()
-        self.section_element_list.setFlow(QListWidget.LeftToRight)
-        self.section_element_list.setWrapping(True)
+        layout.setContentsMargins(0,0,0,0)
         
-        right_side.addWidget(self.lattice_table_widget,3)
-        right_side.addWidget(self.section_element_list,1)
-        layout.addWidget(self.param_table,1)
-        layout.addLayout(right_side,3)
+        self.lattice_container_widget = QWidget()
+        self.lattice_container_layout = QVBoxLayout()
+        self.lattice_container_widget.setLayout(self.lattice_container_layout)
+
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setWidget(self.lattice_container_widget)
+
+        layout.addWidget(scroll_area)
+
         widget.setLayout(layout)
         return widget
 
@@ -465,11 +458,12 @@ class MainWindow(QMainWindow):
         file_path, _ = QFileDialog.getOpenFileName(self,"Datei öffnen", "", "JSON Files (*.json);; OPA Files (*.opa)")
         if file_path:
             sections, meta, elements = load_file(file_path)
+            name = os.path.splitext(os.path.basename(file_path))[0]
 
-        self.lattice_data = {"sections": sections,
+        self.lattices[name] = {"sections": sections,
                              "meta": meta,
                              "elements": elements}
-        self.show_lattice(sections,meta)
+        self.show_lattice(name,sections,meta)
             
 
     def switch_view(self,name:str):
@@ -479,46 +473,102 @@ class MainWindow(QMainWindow):
         else:
             print(f"Ansicht '{name}' nicht gefunden")
 
-    def show_lattice(self,sections,meta):
+    def show_lattice(self,name,sections,meta):
         """This function creates a table containing the sections of an loaded lattice:
         ToDo: Prepare this boy for the introduction of multilatticing. Set a standard for cell selected to 
         be the first of the sections."""
-        table = self.lattice_table_widget
-        table.clearContents()
-        table.setRowCount(len(sections)//4 +1)
-        section_names = sections.keys()
-        for index,section in enumerate(section_names):
-            row =index//4
-            col = index %4
-            name_item = QTableWidgetItem(section)
-            name_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
 
-            table.setItem(row,col,name_item)
+        wrapper_frame = QFrame()
+        wrapper_layout = QVBoxLayout()
+        wrapper_layout.setContentsMargins(0,0,0,0)
 
+        header = QHBoxLayout()
+        title = QLabel(f"Lattice: {name}")
+        wrapper_layout.addWidget(title)
+        delete_btn = QPushButton("X")
+        delete_btn.setFixedSize(45, 24)
+        delete_btn.setToolTip("Lattice löschen")
+        delete_btn.clicked.connect(lambda: self.remove_lattice_frame(name))
 
-        param_table = self.param_table
-        param_table.clearContents()
-        fields = [
-        "name", "energy_GeV", "emittance_m_rad", "horizontal_tune", "vertical_tune",
-        "natural_chromaticity_x", "natural_chromaticity_y", "rf_frequency_MHz", "rf_voltage_kV"
-        ]
-        self.lattice_table.setItem(0,0,QTableWidgetItem(meta.get("name")))
+        header.addWidget(title)
+        header.addStretch()
+        header.addWidget(delete_btn)
+        wrapper_layout.addLayout(header)
+
+        
+        content_layout = QHBoxLayout()
+
+        
+        param_table = QTableWidget()
+        fields = ["name", "energy_GeV", "emittance_m_rad", "horizontal_tune", "vertical_tune",
+                "natural_chromaticity_x", "natural_chromaticity_y", "rf_frequency_MHz", "rf_voltage_kV"]
+        param_table.setColumnCount(1)
+        param_table.setRowCount(len(fields))
+        param_table.setVerticalHeaderLabels(fields)
+        param_table.horizontalHeader().setVisible(False)
         for row, key in enumerate(fields):
             value = meta.get(key, "")
             item = QTableWidgetItem(str(value))
             item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
             param_table.setItem(row, 0, item)
-            
-    def display_section_elements(self,row,col):
+
+        
+        section_layout = QVBoxLayout()
+        section_table = QTableWidget()
+        section_table.setColumnCount(4)
+        section_table.setRowCount(len(sections) // 4 + 1)
+        section_table.horizontalHeader().setVisible(False)
+        section_table.verticalHeader().setVisible(False)
+        
+        for index, section in enumerate(sections.keys()):
+            row = index // 4
+            col = index % 4
+            item = QTableWidgetItem(section)
+            item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+            section_table.setItem(row, col, item)
+
+        expansion_list = QListWidget()
+        expansion_list.setFlow(QListWidget.LeftToRight)
+        expansion_list.setWrapping(True)
+        expansion_list.setFixedHeight(80)
+
+        section_layout.addWidget(section_table, 3)
+        section_layout.addWidget(expansion_list, 1)
+
+        
+        content_layout.addWidget(param_table, 1)
+        content_layout.addLayout(section_layout, 3)
+        wrapper_layout.addLayout(content_layout)
+        wrapper_frame.setLayout(wrapper_layout)
+
+        
+        self.lattice_tables[name] = section_table
+        self.section_lists[name] = expansion_list
+        self.lattice_widgets[name] = wrapper_frame
+        section_table.cellClicked.connect(lambda r, c, ln=name: self.display_section_elements(r, c, ln))
+        section_table.cellClicked.connect(lambda row, col,name = name:self.on_section_cell_clicked(row,col,name))
+
+        
+        self.lattice_container_layout.addWidget(wrapper_frame)
+
+    def remove_lattice_frame(self, name):
+        frame = self.lattice_widgets.pop(name, None)
+        if frame:
+            frame.setParent(None)
+        self.lattices.pop(name,None)
+    def display_section_elements(self,row,col, lattice_name):
         """This function shows lattice expansion in the bottom of the home view. It adds Tooltips to each
         element showing their parameters."""
-        item = self.lattice_table_widget.item(row,col)
+        table = self.lattice_tables[lattice_name]
+        item = table.item(row,col)
         if not item:
             return
         
         section_name = item.text()
-        section_elements = self.lattice_data["elements"].get(section_name, [])
-        self.section_element_list.clear()
+        section_elements = self.lattices[lattice_name]["elements"].get(section_name, [])
+        list_widget = self.section_lists[lattice_name]
+        list_widget	.clear()
+
         for element in section_elements:
 
             tooltip = f"Typ: {element.__class__.__name__}\nLänge: {element.Length:.3f} m"
@@ -528,10 +578,11 @@ class MainWindow(QMainWindow):
                 tooltip += f"\nk2: {element.H:.3f}"
             if hasattr(element,"BendingAngle"):
                 tooltip += f"\nangle: {element.BendingAngle:.3f}"
+
             item = QListWidgetItem(element.FamName)
             item.setToolTip(tooltip)
             item.setData(Qt.UserRole, element)
-            self.section_element_list.addItem(item)
+            list_widget.addItem(item)
 
     def create_chroma_layout(self):
         """This function creates the layout for the chromaticity layout.
@@ -570,18 +621,30 @@ class MainWindow(QMainWindow):
     def plot_beta(self):
         """This function plots the canvas of the linear functions and updates the linear cache.
         ToDo: update the linear cache duhhh"""
-        if not self.lattice_data or not self.selected_section:
+        data_list = []
+        elements_list =[]
+        labels= []
+        if not self.lattices or not self.selected_sections:
+            print(self.selected_sections)
             return
-        section = self.selected_section
-        if section not in self.lin_cache or self.needs_recalc:
-            elements = self.lattice_data["elements"].get(section)
-            data = calculate_linear(elements)
-            self.lin_cache[section] = data
-            self.needs_recalc = False
-        else:
-            data = self.lin_cache[section]
-            elements = self.lattice_data["elements"].get(section)
-        canvas = linear_plot(data,elements, callback= self.update_lin_table)
+        for lattice_name,lattice_data in self.lattices.items():
+            section = self.selected_sections.get(lattice_name)
+            if not section:
+                continue
+            if lattice_name not in self.lin_cache:
+                self.lin_cache[lattice_name] = {}
+            if section not in self.lin_cache[lattice_name] or self.needs_recalc:
+                elements = self.lattices[lattice_name]["elements"].get(section)
+                data = calculate_linear(elements)
+                self.lin_cache[lattice_name][section] = data
+                self.needs_recalc = False
+            else:
+                data = self.lin_cache[lattice_name][section]
+                elements = self.lattices[lattice_name]["elements"].get(section)
+            data_list.append(data)
+            elements_list.append(elements)
+            labels.append(lattice_name)
+        canvas = linear_plot(data_list,elements_list,labels=labels, callback= self.update_lin_table)
         self.lattice_table.setItem(0,1,QTableWidgetItem(str(round(max(data["s"]),3))))
         self.lattice_table.setItem(0,2,QTableWidgetItem(str(round(data["angle"],3))))
         self.lattice_table.setItem(0,3,QTableWidgetItem(str(round(data["abs_angle"],3))))
@@ -595,35 +658,46 @@ class MainWindow(QMainWindow):
             self.saved_plots.append({
             "figure": canvas.figure,  
             "type": "linear",       
-            "section": self.selected_section 
+            "section": labels
         })
         for i in reversed(range(self.plot_canvas_layout.count())):
             widget = self.plot_canvas_layout.itemAt(i).widget()
             if widget:
                 widget.setParent(None)
         self.plot_canvas_layout.addWidget(canvas)
-            #self.lattice_table = self.lattice_table.clearContents()
+            
 
     def plot_nonlin(self,function):
         """This funtion plots the canvas of the nonlinear functions and updates the nonlinear cache."""
-        if not self.lattice_data or not self.selected_section:
+        if not self.lattices or not self.selected_sections:
             return
-        section = self.selected_section
-        if section not in self.nonlin_cache or self.needs_recalc:
-            elements = self.lattice_data["elements"].get(section)
-            data = calculate_nonlin(elements)
-            self.nonlin_cache[section] = data
-            self.needs_recalc =False
-        else:
-            data = self.nonlin_cache[section]
-            elements = self.lattice_data["elements"].get(section)
-        canvas = nonlinear_plot(data,function,elements, callback=self.update_nonlin_table)
+        data_list = []
+        elements_list =[]
+        labels= []
+        for lattice_name,lattice_data in self.lattices.items():
+            section = self.selected_sections.get(lattice_name)
+            if not section:
+                continue
+            if lattice_name not in self.nonlin_cache:
+                self.nonlin_cache[lattice_name] = {}
+            if section not in self.nonlin_cache or self.needs_recalc:
+                elements = self.lattices[lattice_name]["elements"].get(section)
+                data = calculate_nonlin(elements)
+                self.nonlin_cache[lattice_name][section] = data
+                self.needs_recalc =False
+            else:
+                data = self.nonlin_cache[lattice_name][section]
+                elements = self.lattices[lattice_name]["elements"].get(section)
+            data_list.append(data)
+            elements_list.append(elements)
+            labels.append(lattice_name)
+        canvas = nonlinear_plot(data_list,function,elements_list,labels, callback=self.update_nonlin_table)
         if isinstance(canvas.figure, Figure):
             self.active_plot = canvas.figure
             self.saved_plots.append({
                 "figure": canvas.figure,  
                 "type": function,       
-                "section": self.selected_section 
+                "section": self.selected_sections
             })
         magnets = get_max_contribution(data, function,elements)
         for i,value in enumerate(magnets[0]):
@@ -636,11 +710,15 @@ class MainWindow(QMainWindow):
         self.nonlin_plot_layout.addWidget(canvas)
 
 
-    def on_section_cell_clicked(self,row,col):
+    def on_section_cell_clicked(self,row,col,name):
         """This function handles the selection of cells in the home layout used for the plotting."""
-        item = self.lattice_table_widget.item(row,col)
-        if item:
-            self.selected_section = item.text()
+        item = self.lattice_tables[name].item(row,col)
+        if not item:
+            return
+        
+        self.selected_sections[name] = item.text()
+        print(f"Clicked cell in lattice: {name}, row {row}, col {col}")
+        
 
     def export_active_plot(self):
         """This function export the active plot as png or pdf.
