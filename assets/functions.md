@@ -1,60 +1,59 @@
-# 🧠 Funktionsübersicht
+# 🧠 Function overview
 
-> Diese Tabelle enthält alle geplaten und implementierten Funktionen inklusive ihrer Verfügbarkeit, und geschätzten Laufzeit.  
-> Bitte bei Änderungen im Projekt diese Tabelle aktuell halten. Pull Requests willkommen 😊
+> This table contains all planned and implemented functions including their availability and estimated runtime.  
+> Please keep this table up to date in case of changes in the project. Pull requests welcome 😊
 
-| Funktion                      | Verfügbar   | Laufzeit (Opa) | Laufzeit (pyAT)  |numerical acceptance| Letztes Update | Kommentar                        |
-|-------------------------------|-------------|----------------|------------------|--------------------|----------------|----------------------------------|
-| Betafunctions calculation     |  Ja         | -              | -                |-                   | -              |                                  |
-| Dispersion calculation        |  Nein       | –              | –                |-                   | –              |                                  |
-| Tune calculation              |  Ja         | -              | -                |-                   | -              |                                  |
-| Angle calculation             |  nein       | -              | -                |-                   | -              |                                  |
-| Momentum comp. calculation    |  Nein       | –              | –                |-                   | –              |                                  |
-| Energyloss calculation        |  Nein       | –              | –                |-                   | –              |                                  |
-| Emittance calculation         |  Nein       | –              | –                |-                   | –              |                                  |
-| Energyspread calculation      |  Nein       | –              | –                |-                   | –              |                                  |
-| Damping times calculation     |  Nein       | –              | –                |-                   | –              |                                  |
-| Chromaticity calculation      |  Nein       | –              | –                |-                   | –              |                                  |
-| Higher Order Chromaticity     |  Nein       | –              | –                |-                   | –              |                                  |
-| RDTs calculation              |  Nein       | –              | –                |-                   | –              |                                  |
-| Off momentum tuneshift        |  Nein       | –              | –                |-                   | –              |                                  |
-| Off Momentum Beta             |  Nein       | –              | –                |-                   | –              |                                  |
-| Off Momentum dispersion       |  Nein       | –              | –                |-                   | –              |                                  |
-| Off Momentum Damping numbers  |  Nein       | –              | –                |-                   | –              |                                  |
-| Off Momentum Emittance        |  Nein       | –              | –                |-                   | –              |                                  |
-| Off Momentum Energy loss      |  Nein       | –              | –                |-                   | –              |                                  |
-| Off Momentum Energy Spread    |  Nein       | –              | –                |-                   | –              |                                  |
-| Chromaticity Matching         |  Nein       | –              | –                |-                   | –              |                                  |
-| Tune Matching                 |  Nein       | –              | –                |-                   | –              |                                  |
-| Beta Matching                 |  Nein       | –              | –                |-                   | –              |                                  |
-| Multi Lattice plotting        |  Nein       | –              | –                |-                   | –              |                                  |
-| HO Chromaticity calc          |  Nein       | –              | –                |-                   | –              |                                  |
-| HO alpha calc                 |  Nein       | –              | –                |-                   | –              |                                  |
-| Plot export                   |  Nein       | –              | –                |-                   | –              |                                  |
-| Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
-| Magnet contribution           |  Nein       | –              | –                |-                   | –              |                                  |
-| file I/O opa                  |  Nein       | –              | –                |-                   | –              |                                  |
-| file I/O pyat                 |  Nein       | –              | –                |-                   | –              |                                  |
-| file I/O madx                 |  Nein       | –              | –                |-                   | –              |                                  |
-| file I/O ...                  |  Nein       | –              | –                |-                   | –              |                                  |
-| Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
-| Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
-| Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
-| Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
-| Tooltips                      |  Nein       | –              | –                |-                   | –              |                                  |
+| Function                      | Available   | Runtime (Opa)  | Runtime (pyAT)   |numerical acceptance|test lattice    | last Update    | comments                         |
+|-------------------------------|-------------|----------------|------------------|--------------------|----------------|----------------|----------------------------------|
+| Betafunctions calculation     |             | -              | -                |-                   | -              | -              |                                  |
+| Dispersion calculation        |             | –              | –                |-                   | -              | –              |                                  |
+| Tune calculation              | Yes         | -              | -                |-                   | -              | -              |                                  |
+| Angle calculation             |             | -              | -                |-                   | -              | -              |                                  |
+| Momentum comp. calculation    |             | –              | –                |-                   | -              | –              |                                  |
+| Energyloss calculation        |             | –              | –                |-                   | -              | –              |                                  |
+| Emittance calculation         |             | –              | –                |-                   | -              | –              |                                  |
+| Energyspread calculation      |             | –              | –                |-                   | -              | –              |                                  |
+| Damping times calculation     |             | –              | –                |-                   | -              | –              |                                  |
+| Chromaticity calculation      |             | –              | –                |-                   | -              | –              |                                  |
+| Higher Order Chromaticity     |             | –              | –                |-                   | -              | –              |                                  |
+| RDTs calculation              |             | –              | –                |-                   | -              | –              |                                  |
+| Off momentum tuneshift        |             | –              | –                |-                   | -              | –              |                                  |
+| Off Momentum Beta             |             | –              | –                |-                   | -              | –              |                                  |
+| Off Momentum dispersion       |             | –              | –                |-                   | -              | –              |                                  |
+| Off Momentum Damping numbers  |             | –              | –                |-                   | -              | –              |                                  |
+| Off Momentum Emittance        |             | –              | –                |-                   | -              | –              |                                  |
+| Off Momentum Energy loss      |             | –              | –                |-                   | -              | –              |                                  |
+| Off Momentum Energy Spread    |             | –              | –                |-                   | -              | –              |                                  |
+| Chromaticity Matching         |             | –              | –                |-                   | -              | –              |                                  |
+| Tune Matching                 |             | –              | –                |-                   | -              | –              |                                  |
+| Beta Matching                 |             | –              | –                |-                   | -              | –              |                                  |
+| Multi Lattice plotting        |             | –              | –                |-                   | -              | –              |                                  |
+| HO Chromaticity calc          |             | –              | –                |-                   | -              | –              |                                  |
+| HO alpha calc                 |             | –              | –                |-                   | -              | –              |                                  |
+| Plot export                   |             | –              | –                |-                   | -              | –              |                                  |
+| Tooltips                      |             | –              | –                |-                   | -              | –              |                                  |
+| Magnet contribution           |             | –              | –                |-                   | -              | –              |                                  |
+| file I/O opa                  |             | –              | –                |-                   | -              | –              |                                  |
+| file I/O pyat                 |             | –              | –                |-                   | -              | –              |                                  |
+| file I/O madx                 |             | –              | –                |-                   | -              | –              |                                  |
+| file I/O ...                  |             | –              | –                |-                   | -              | –              |                                  |
+| Tooltips                      |             | –              | –                |-                   | -              | –              |                                  |
+| Tooltips                      |             | –              | –                |-                   | -              | –              |                                  |
+| Tooltips                      |             | –              | –                |-                   | -              | –              |                                  |
+| Tooltips                      |             | –              | –                |-                   | -              | –              |                                  |
+| Tooltips                      |             | –              | –                |-                   | -              | –              |                                  |
 
 ---
 
-## 📋 Legende
+## 📋 Legend
 
-- **Verfügbar**:
-  -  Ja → Funktion ist entweder in OPA oder PyAT bereits enthalten
-  -  Nein → Noch nicht vorhanden
-  -  Teilweise → Teilimplementierung, noch nicht stabil oder komplett
-- **Verantwortlich**: Name der Person, die die Funktion implementiert oder betreut
-- **Laufzeit**: grober Schätzwert bei normaler Datenmenge
-- **Letztes Update**: Datum, wann zuletzt an dieser Funktion gearbeitet wurde
-- **Kommentar**: Freitextfeld für Hinweise, Probleme, TODOs
+- **Available**:
+  - Yes → Function is already included in either OPA or PyAT
+  - No → Not yet available
+  - Partial → Partial implementation, not yet stable or complete
+- **Runtime**: rough estimate with normal amount of data
+- **Last update**: Date when this function was last worked on
+- **Comment**: Free text field for notes, problems, TODOs
 
 ---
 
