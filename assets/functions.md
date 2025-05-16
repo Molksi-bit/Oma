@@ -5,16 +5,16 @@
 
 | Function                      | Available   | Runtime (Opa)  | Runtime (pyAT)   |numerical acceptance|test lattice    | last Update    | comments                         |
 |-------------------------------|-------------|----------------|------------------|--------------------|----------------|----------------|----------------------------------|
-| Betafunctions calculation     |             | -              | -                |-                   | -              | -              |                                  |
-| Dispersion calculation        |             | –              | –                |-                   | -              | –              |                                  |
+| Betafunctions calculation     | Yes         | -              | -                |-                   | -              | -              |                                  |
+| Dispersion calculation        | Yes         | –              | –                |-                   | -              | –              |                                  |
 | Tune calculation              | Yes         | -              | -                |-                   | -              | -              |                                  |
-| Angle calculation             |             | -              | -                |-                   | -              | -              |                                  |
-| Momentum comp. calculation    |             | –              | –                |-                   | -              | –              |                                  |
-| Energyloss calculation        |             | –              | –                |-                   | -              | –              |                                  |
-| Emittance calculation         |             | –              | –                |-                   | -              | –              |                                  |
-| Energyspread calculation      |             | –              | –                |-                   | -              | –              |                                  |
-| Damping times calculation     |             | –              | –                |-                   | -              | –              |                                  |
-| Chromaticity calculation      |             | –              | –                |-                   | -              | –              |                                  |
+| Angle calculation             | Yes         | -              | -                |-                   | -              | -              |                                  |
+| Momentum comp. calculation    | -           | –              | –                |-                   | -              | –              |                                  |
+| Energyloss calculation        | -           | –              | –                |-                   | -              | –              |                                  |
+| Emittance calculation         | -           | –              | –                |-                   | -              | –              |                                  |
+| Energyspread calculation      | -           | –              | –                |-                   | -              | –              |                                  |
+| Damping times calculation     | -           | –              | –                |-                   | -              | –              |                                  |
+| Chromaticity calculation      | -           | –              | –                |-                   | -              | –              |                                  |
 | Higher Order Chromaticity     |             | –              | –                |-                   | -              | –              |                                  |
 | RDTs calculation              |             | –              | –                |-                   | -              | –              |                                  |
 | Off momentum tuneshift        |             | –              | –                |-                   | -              | –              |                                  |
@@ -27,7 +27,7 @@
 | Chromaticity Matching         |             | –              | –                |-                   | -              | –              |                                  |
 | Tune Matching                 |             | –              | –                |-                   | -              | –              |                                  |
 | Beta Matching                 |             | –              | –                |-                   | -              | –              |                                  |
-| Multi Lattice plotting        |             | –              | –                |-                   | -              | –              |                                  |
+| Multi Lattice plotting        | No          | –              | –                |-                   | -              | –              |                                  |
 | HO Chromaticity calc          |             | –              | –                |-                   | -              | –              |                                  |
 | HO alpha calc                 |             | –              | –                |-                   | -              | –              |                                  |
 | Plot export                   |             | –              | –                |-                   | -              | –              |                                  |
