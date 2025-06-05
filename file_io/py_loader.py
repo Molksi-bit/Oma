@@ -19,4 +19,4 @@ def load_pyat(path):
 
     return sections, metadata, elements
 
-load_pyat("testing/test_lattices/full_types/full_type.py")
+#load_pyat("testing/test_lattices/full_types/full_type.py")
