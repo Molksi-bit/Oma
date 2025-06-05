@@ -19,4 +19,8 @@ def load_pyat(path):
 
     return sections, metadata, elements
 
+<<<<<<< HEAD
 #load_pyat("testing/test_lattices/full_types/full_type.py")
+=======
+#load_pyat("testing/test_lattices/full_types/full_type.py")
+>>>>>>> e8b1c1e7eda2b9327c3eaadf2f647164046ec816
