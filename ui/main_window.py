@@ -4,9 +4,10 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QAction, QColor, QIcon
 from PySide6.QtCore import Qt
 from file_io.json_loader import load_file
-from ui.plot_canvas import linear_plot, nonlinear_plot, calculate_nonlin, get_max_contribution,calculate_linear
+from ui.plot_canvas import linear_plot, nonlinear_plot, calculate_nonlin, get_max_contribution,calculate_linear#, calculate_rdts
 from matplotlib.figure import Figure
 import os
+import at
 
 def load_stylesheet(path):
         with open(path,"r") as file :
@@ -317,30 +318,44 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         layout = QVBoxLayout()
 
+        layout.setContentsMargins(0,0,0,0)
+
         button_area =QFrame()
         button_area.setObjectName("nonlinButtonArea")
         button_layout = QHBoxLayout()
+        button_layout.setContentsMargins(0,0,0,0)
         self.chroma1_button = QPushButton("X1")
         self.chroma1_button.clicked.connect(lambda: self.plot_nonlin("chrom1"))
-        self.chroma1_sext_button = QPushButton("X1 + Sext")
+        self.chroma1_quad_button = QPushButton("X1 | Quad")
+        self.chroma1_quad_button.clicked.connect(lambda: self.plot_nonlin("chrom1_quad"))
+        self.chroma1_sext_button = QPushButton("X1 | Sext")
         self.chroma1_sext_button.clicked.connect(lambda: self.plot_nonlin("chrom1_sext"))
-        self.chroma1_button.setToolTip("Plots the first order Chromaticity without Sextupoles")
         self.chroma2_button = QPushButton("X2")
         self.chroma2_button.clicked.connect(lambda: self.plot_nonlin("chrom2"))
-        self.chroma2_sext_button = QPushButton("X2 + Sext")
+        self.chroma2_quad_button = QPushButton("X2 | Quad")
+        self.chroma2_quad_button.clicked.connect(lambda: self.plot_nonlin("chrom2_quad"))
+        self.chroma2_sext_button = QPushButton("X2 | Sext")
         self.chroma2_sext_button.clicked.connect(lambda: self.plot_nonlin("chrom2_sext"))
+        self.chroma2_oct_button = QPushButton("X2 | Oct")
+        self.chroma2_oct_button.clicked.connect(lambda: self.plot_nonlin("chrom2_oct"))
         self.alpha0_button = QPushButton("α0")
         self.alpha0_button.clicked.connect(lambda: self.plot_nonlin("alpha0"))
+        self.alpha1_button = QPushButton("α1")
+        self.alpha1_button.clicked.connect(lambda: self.plot_nonlin("alpha1"))
         self.alpha1_1_button = QPushButton("α1_1")
         self.alpha1_1_button.clicked.connect(lambda: self.plot_nonlin("alpha1_1"))
         self.alpha1_2_button = QPushButton("α1_2")
         self.alpha1_2_button.clicked.connect(lambda: self.plot_nonlin("alpha1_2"))
 
         button_layout.addWidget(self.chroma1_button)
+        button_layout.addWidget(self.chroma1_quad_button)
         button_layout.addWidget(self.chroma1_sext_button)
         button_layout.addWidget(self.chroma2_button)
+        button_layout.addWidget(self.chroma2_quad_button)
         button_layout.addWidget(self.chroma2_sext_button)
+        button_layout.addWidget(self.chroma2_oct_button)
         button_layout.addWidget(self.alpha0_button)
+        button_layout.addWidget(self.alpha1_button)
         button_layout.addWidget(self.alpha1_1_button)
         button_layout.addWidget(self.alpha1_2_button)
         button_layout.setSpacing(20)
@@ -348,17 +363,22 @@ class MainWindow(QMainWindow):
 
         self.bottom_frame = QFrame()
         self.bottom_layout = QHBoxLayout()
+        self.bottom_layout.setContentsMargins(0,0,0,0)
 
         self.right_frame = QFrame()
         self.right_layout = QVBoxLayout()
+        self.right_frame.setContentsMargins(0,0,0,0)
+
         self.right_frame.setLayout(self.right_layout)
+        
 
-
+        fields = ["X1_totx","X1_toty","α","Magnet","Value", "Position [m]", "Field"]
         self.nonlin_table = QTableWidget()
+        self.nonlin_table.setContentsMargins(0,0,0,0)
         self.nonlin_table.setColumnCount(1)
-        self.nonlin_table.setRowCount(4)
+        self.nonlin_table.setRowCount(len(fields))
         self.nonlin_table.horizontalHeader().setVisible(False)
-        self.nonlin_table.setVerticalHeaderLabels(["Magnet","Value", "Position [m]", "Field"])
+        self.nonlin_table.setVerticalHeaderLabels(fields)
         
         self.nonlin_values_table = QTableWidget()
         self.nonlin_values_table.setColumnCount(1)
@@ -370,6 +390,7 @@ class MainWindow(QMainWindow):
         self.nonlin_plot_area = QFrame()
         self.nonlin_plot_area.setObjectName("nonlinPlotArea")
         self.nonlin_plot_layout = QVBoxLayout()
+        self.nonlin_plot_layout.setContentsMargins(0,0,0,0)
         self.nonlin_plot_area.setLayout(self.nonlin_plot_layout)
 
         self.right_layout.addWidget(self.nonlin_table)
@@ -392,34 +413,29 @@ class MainWindow(QMainWindow):
 
         tables = QVBoxLayout()
         layout.addLayout(tables,1)
-        #numbers referring to orders
-        rdt_label1 = QLabel("1st Order RDTs")
+        
+        rdt_label1 = QLabel("1st Order Chromatic RDTs")
         self.rdt_table1 = QTableWidget()
-        self.rdt_table1.setRowCount(8)
+        self.rdt_table1.setRowCount(5)
         self.rdt_table1.setColumnCount(1)
         self.rdt_table1.horizontalHeader().setVisible(False)
-        self.rdt_table1.setVerticalHeaderLabels(["H\u2082\u2081\u2080\u2080\u2080",
+        self.rdt_table1.setVerticalHeaderLabels(["H\u2081\u2081\u2080\u2080\u2081",
+                                                 "H\u2080\u2080\u2081\u2081\u2081",
+                                                 "H\u2082\u2080\u2080\u2080\u2081",
+                                                 "H\u2080\u2080\u2082\u2080\u2081",
+                                                 "H\u2081\u2080\u2080\u2080\u2082"
+                                                 ])
+        self.rdt_table1.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        rdt_label2 = QLabel("1st Order geometric RDTs")
+        self.rdt_table2 = QTableWidget()
+        self.rdt_table2.setRowCount(5)
+        self.rdt_table2.setColumnCount(1)
+        self.rdt_table2.horizontalHeader().setVisible(False)
+        self.rdt_table2.setVerticalHeaderLabels(["H\u2082\u2081\u2080\u2080\u2080",
                                                  "H\u2083\u2080\u2080\u2080\u2080",
                                                  "H\u2081\u2080\u2081\u2081\u2080",
                                                  "H\u2081\u2080\u2080\u2082\u2080",
-                                                 "H\u2081\u2080\u2082\u2080\u2080",
-                                                 "H\u2082\u2080\u2080\u2080\u2081",
-                                                 "H\u2080\u2080\u2082\u2080\u2081",
-                                                 "H\u2081\u2080\u2080\u2080\u2082"])
-        self.rdt_table1.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        rdt_label2 = QLabel("2nd Order RDTs")
-        self.rdt_table2 = QTableWidget()
-        self.rdt_table2.setRowCount(8)
-        self.rdt_table2.setColumnCount(1)
-        self.rdt_table2.horizontalHeader().setVisible(False)
-        self.rdt_table2.setVerticalHeaderLabels(["H\u2083\u2081\u2080\u2080\u2080",
-                                                 "H\u2084\u2080\u2080\u2080\u2080",
-                                                 "H\u2082\u2080\u2081\u2081\u2080",
-                                                 "H\u2081\u2081\u2082\u2080\u2080",
-                                                 "H\u2082\u2080\u2080\u2082\u2080",
-                                                 "H\u2082\u2080\u2082\u2080\u2080",
-                                                 "H\u2080\u2080\u2083\u2081\u2080",
-                                                 "H\u2080\u2080\u2084\u2080\u2080"])
+                                                 "H\u2081\u2080\u2082\u2080\u2080"])
         self.rdt_table2.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
         plot = QFrame()
@@ -435,17 +451,28 @@ class MainWindow(QMainWindow):
 
     def create_magnetcon_layout(self):
         """I dont know if this is still necessary but im t lazy to delete it."""
-        wrapper_frame = QFrame()
+        wrapper = QWidget()
         wrapper_layout = QVBoxLayout()
+        wrapper_layout.setContentsMargins(0,0,0,0)
+
+        self.magnetcon_container = QWidget()
+        self.magnetcon_container_layout = QVBoxLayout()
+        self.magnetcon_container_layout.setContentsMargins(0,0,0,0)
+        self.magnetcon_container.setLayout(self.magnetcon_container_layout)
+
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setWidget(self.magnetcon_container)
         view_label = QLabel("Magnet Contribution")
 
 
 
-        wrapper_layout.addWidget(view_label, alignment= Qt.AlignLeft |Qt.AlignTop)
-        wrapper_frame.setLayout(wrapper_layout)
+        wrapper_layout.addWidget(view_label)
+        wrapper_layout.addWidget(scroll_area)
+        wrapper.setLayout(wrapper_layout)
 
 
-        return wrapper_frame
+        return wrapper
 
     def create_omaedit_layout(self):
         """This function creates a diffrent layout, where a new lattice can be designed in an OPA related style.
@@ -645,13 +672,13 @@ class MainWindow(QMainWindow):
             elements_list.append(elements)
             labels.append(lattice_name)
         canvas = linear_plot(data_list,elements_list,labels=labels, callback= self.update_lin_table)
-        self.lattice_table.setItem(0,1,QTableWidgetItem(str(round(max(data["s"]),3))))
-        self.lattice_table.setItem(0,2,QTableWidgetItem(str(round(data["angle"],3))))
-        self.lattice_table.setItem(0,3,QTableWidgetItem(str(round(data["abs_angle"],3))))
-        self.lattice_table.setItem(0,4,QTableWidgetItem(str(round(data["tunes"][0],3))))
-        self.lattice_table.setItem(0,5,QTableWidgetItem(str(round(data["tunes"][1],3))))
-        self.lattice_table.setItem(0,6,QTableWidgetItem(str(round(data["chroma"][0],3))))
-        self.lattice_table.setItem(0,7,QTableWidgetItem(str(round(data["chroma"][1],3))))
+        self.lattice_table.setItem(1,0,QTableWidgetItem(str(round(max(data["s"]),3))))
+        self.lattice_table.setItem(2,0,QTableWidgetItem(str(round(data["angle"],3))))
+        self.lattice_table.setItem(3,0,QTableWidgetItem(str(round(data["abs_angle"],3))))
+        self.lattice_table.setItem(4,0,QTableWidgetItem(str(round(data["tunes"][0],3))))
+        self.lattice_table.setItem(5,0,QTableWidgetItem(str(round(data["tunes"][1],3))))
+        self.lattice_table.setItem(6,0,QTableWidgetItem(str(round(data["chroma"][0],3))))
+        self.lattice_table.setItem(7,0,QTableWidgetItem(str(round(data["chroma"][1],3))))
                                    
         if isinstance(canvas.figure, Figure):
             self.active_plot = canvas.figure
@@ -702,6 +729,10 @@ class MainWindow(QMainWindow):
         magnets = get_max_contribution(data, function,elements)
         for i,value in enumerate(magnets[0]):
             item = QTableWidgetItem(str(value))
+            self.nonlin_table.setItem(i+3,0,item)
+        Values = data_list[0]["chrom1_tot"][0]+data_list[0]["alpha1_tot"][0]
+        for i,value in enumerate(Values):
+            item = QTableWidgetItem(str(value))
             self.nonlin_table.setItem(i,0,item)
         for i in reversed(range(self.nonlin_plot_layout.count())):
             widget = self.nonlin_plot_layout.itemAt(i).widget()
@@ -717,7 +748,6 @@ class MainWindow(QMainWindow):
             return
         
         self.selected_sections[name] = item.text()
-        print(f"Clicked cell in lattice: {name}, row {row}, col {col}")
         
 
     def export_active_plot(self):
@@ -770,10 +800,14 @@ class MainWindow(QMainWindow):
         """This function handles the updating of the values in the nonlinear function table."""
         functions = {
                  "chrom1": ["X1ₓ","X1ᵧ"],
+                 "chrom1_quad": ["X1Qₓ","X1Qᵧ"],
                  "chrom1_sext": ["X1Sₓ","X1Sᵧ"],
                  "chrom2":["X2ₓ","X2ᵧ"],
+                 "chrom2_quad":["X2Qₓ","X2Qᵧ"],
                  "chrom2_sext":["X2Sₓ","X2Sᵧ"],
+                 "chrom2_oct":["X2Oₓ","X2Oᵧ"],
                  "alpha0": ["α0"],
+                 "alpha1": ["α1"],
                  "alpha1_1": ["α1 ds"],
                  "alpha1_2": [ "α1 dE"]
                  }
@@ -786,12 +820,37 @@ class MainWindow(QMainWindow):
             
     def show_mag_contribution(self):
         """This function creates the Tables for presentation in the Magnet contribution view."""
-        if not self.selected_section:
+        if not self.selected_sections:
             return
-        for section, elems in self.selected_section.items():
-            table = QTableWidget()
-            table.setHorizontalHeaderLabels(["X1","X2"])#weiter ausführen, wenn code aktualisiert.
+        self.clear_layout(self.magnetcon_container_layout)
+        wrapper_frame = QFrame()
+        wrapper_layout = QVBoxLayout()
+        wrapper_layout.setContentsMargins(0,0,0,0)
+
+        fields = ["X1","X1S","X2", "X2S","A0","A11", "A12"]
         
+        
+
+        for lattice_name, section_name in self.selected_sections.items():
+            title = QLabel(f"Lattice: {lattice_name} | Section: {section_name}")
+            wrapper_layout.addWidget(title)
+            table = QTableWidget()
+            table.setColumnCount(len(fields))
+            table.setHorizontalHeaderLabels(fields)
+            elements = self.lattices[lattice_name]["elements"][section_name]
+            header_labels =[]
+            for element in elements:
+                if not isinstance(element,at.Drift):
+                    header_labels.append(element.FamName)
+            table.setRowCount(len(header_labels))
+            table.setVerticalHeaderLabels(header_labels)
+            wrapper_layout.addWidget(table)
+
+            #calculate_rdts(elements)
+        wrapper_frame.setLayout	(wrapper_layout)
+        self.magnetcon_container_layout.addWidget(wrapper_frame)
+
+
 
     def switch_theme(self,mode):
         """This function handles the switch of themes, which are present in the assets folder."""
@@ -804,3 +863,19 @@ class MainWindow(QMainWindow):
         with open(themes[mode], "r") as file:
             style= file.read()
             QApplication.instance().setStyleSheet(style)
+
+    def clear_layout(self,layout):
+
+        while layout.count():
+            item = layout.takeAt(0)
+            widget = item.widget()
+            child_layout = item.layout()
+
+            if widget is not None:
+                widget.setParent(None)
+            elif child_layout is not None:
+                self.clear_layout(child_layout)
+
+
+    def plot_rdts(self,lattice):
+        pass

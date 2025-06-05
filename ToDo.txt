@@ -1,8 +1,32 @@
+OMA:
+
 pyload einbauen
-layouts für andere slots
-darkmode und lightmode verbessern
 code absichern
-Homemenu visuell verfeinern
-Home button
-lattice in lattice handling
-aus tabbelen raustabben farbanpassung
+aus tabellen raustabben farbanpassung
+tabellen markierte elemente hervorheben
+tabellen, schreibbar und nicht schreibbar
+check lattice function
+save data
+magnet contribution: inhalte
+RDT research pyat: redesign main view, finish calculate function
+total chroma in opa checken und vergleichen 
+longitudinal momentum acceptance
+unterelimits parameter
+turn off magnets ( sextupoles practically)
+downloadable application
+
+Hybrid lattice:
+
+Harmonische Sextupole rauswerfen
+tune finden
+emittanz verbessern
+
+
+45 lattice:
+4.5 grad machen
+Änderung der Werte ansehen
+
+
+
+opppenheimer
+kalaschniko

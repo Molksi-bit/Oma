@@ -6,8 +6,7 @@ import at
 from file_io.elegant_loader import load_elegant
 from file_io.opa_loader import load_opa
 from file_io.madx_loader import load_madx
-from file_io.py_loader import load_pyat
-# from core.elements import Drift, Quadrupole,Sextupole,Dipole
+#from file_io.py_loader import load_pyat
 
 def load_file(path):
     """This function loads the given file and by getting the file type and using the dedicated loading function.
@@ -21,8 +20,8 @@ def load_file(path):
         data = load_opa(path)
     elif ext.lower() == ".madx":
         data = load_madx(path)
-    elif ext.lower() == ".py":
-        data = load_pyat(path)
+    # elif ext.lower() == ".py":
+    #     data = load_pyat(path)
     sections = data.get("lattices",{})
     metadata = data.get("parameters", {})
     metadata["name"] = data.get("title")
