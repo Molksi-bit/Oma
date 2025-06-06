@@ -864,7 +864,6 @@ class MainWindow(QMainWindow):
             style= file.read()
             QApplication.instance().setStyleSheet(style)
 
-<<<<<<< HEAD
     def create_magnet_controller(self,magnet):
         widget = QWidget()
         layout = QVBoxLayout()
@@ -885,7 +884,7 @@ class MainWindow(QMainWindow):
 
         widget.setLayout(layout)
         return widget
-=======
+    
     def clear_layout(self,layout):
 
         while layout.count():
@@ -901,4 +900,3 @@ class MainWindow(QMainWindow):
 
     def plot_rdts(self,lattice):
         pass
->>>>>>> e8b1c1e7eda2b9327c3eaadf2f647164046ec816
