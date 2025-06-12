@@ -93,3 +93,12 @@ QToolTip {
     font-size: 11pt;
     font-family: "Fira Sans";
 }
+QLineEdit {
+    color: black;
+    font-size: 14px;
+}
+
+QLineEdit:!focus:placeholder {
+    color: gray;  
+    font-style: italic;
+}

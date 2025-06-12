@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QMainWindow, QWidget,QHBoxLayout,QVBoxLayout,QTableWidget,QTableWidgetItem,QMenuBar,QMenu,QFrame,QStackedWidget, QSizePolicy, QFileDialog,QLabel,QListWidget, QListWidgetItem,QMessageBox,
-    QPushButton,QApplication,QPushButton,QScrollArea)
+    QPushButton,QApplication,QPushButton,QScrollArea, QLineEdit, QScrollBar)
 from PySide6.QtGui import QAction, QColor, QIcon
 from PySide6.QtCore import Qt
 from file_io.json_loader import load_file
@@ -32,7 +32,8 @@ class MainWindow(QMainWindow):
             "rdt": self.create_rdt_layout(),
             "chroma": self.create_chroma_layout(),
             "nonlin": self.create_nonlin_layout(),
-            "mag_con": self.create_magnetcon_layout()
+            "mag_con": self.create_magnetcon_layout(),
+            "editor" : self.create_lattice_layout()
             
         }
         for view in self.views.values():
@@ -78,8 +79,8 @@ class MainWindow(QMainWindow):
         saveas_action = QAction("Save as...", self)
         export_action = QAction("Export",self)
 
-        edit_action  =QAction("Editor(txt)", self)
-        oma_edit_action = QAction("Editor(Oma)",self)
+        edit_action  =QAction("Editor", self)
+        edit_action.triggered.connect(lambda: self.switch_view("editor"))
         parameter_action = QAction("parameters", self)
         parameter_action.triggered.connect(lambda: self.switch_view("parameters"))
 
@@ -120,7 +121,7 @@ class MainWindow(QMainWindow):
 
         file_menu.addActions([open_action,save_action,saveas_action,export_action])
         
-        lattice_menu.addActions([edit_action,oma_edit_action,parameter_action])
+        lattice_menu.addActions([edit_action,parameter_action])
 
         linear_menu.addActions([linopt_action])
 
@@ -211,7 +212,47 @@ class MainWindow(QMainWindow):
     def create_lattice_layout(self):
          """This function creates the layout for the view, where new lattices can be designed.
          ToDo: Bro just start to write it."""
-         pass
+         main_widget = QWidget()
+         main_layout = QVBoxLayout()
+        
+         energy_widget = QWidget()
+         energy_layout = QHBoxLayout()
+         energy_label = QLabel("Energy = ")
+         energy_entry = QLineEdit()
+         xbutton = QPushButton("X")
+         xbutton.clicked.connect(lambda: self.switch_view("home"))
+         energy_entry.setPlaceholderText("E in GeV")
+
+         adapting_widget = QWidget()
+         adapting_layout = QHBoxLayout()
+         adapting_widget.setLayout(adapting_layout)
+
+         self.elements_widget = QFrame()
+         self.elements_layout = QVBoxLayout()
+         self.elements_widget.setLayout(self.elements_layout)
+
+         self.segment_widget = QFrame()
+         self.segment_layout = QVBoxLayout()
+         self.segment_widget.setLayout(self.segment_layout)
+
+
+         adapting_layout.addWidget(self.elements_widget)
+         adapting_layout.addWidget(self.segment_widget)
+         adapting_widget.setLayout(adapting_layout)
+
+         energy_layout.addWidget(energy_label)
+         energy_layout.addWidget(energy_entry)
+         energy_layout.addWidget(xbutton)
+         energy_widget.setLayout(energy_layout)
+
+
+         main_layout.addWidget(energy_widget,1)
+         main_layout.addWidget(adapting_widget,19)
+
+
+         main_widget.setLayout(main_layout)
+
+         return main_widget
     
     def create_parameters_layout(self):
         """This function creates the layout for the parameter view. Here an overview over special parameters 
@@ -876,6 +917,33 @@ class MainWindow(QMainWindow):
             elif child_layout is not None:
                 self.clear_layout(child_layout)
 
+    def load_editor(self):
+        for element in self.lattices[0]:
+            label = QWidget()
+
+
+
 
     def plot_rdts(self,lattice):
         pass
+
+    def create_magnet_overview(self,magnet):
+        main_widget = QWidget()
+        main_layout = QVBoxLayout()
+
+
+        topper_widget = QWidget()
+        topper_layout = QHBoxLayout()
+
+        label = QLabel(magnet.FamName)
+        xbutton = QPushButton("X")
+
+        topper_layout.addWidget(label,8)
+        topper_layout.addWidget(xbutton,2)
+
+        scrollbar = QScrollBar(Qt.Horizontal)
+        value_label = QLabel("strength")
+        stepsize = QLineEdit("stepsize")
+
+
+        return main_widget
