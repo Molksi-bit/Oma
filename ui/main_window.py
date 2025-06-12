@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QMainWindow, QWidget,QHBoxLayout,QVBoxLayout,QTableWidget,QTableWidgetItem,QMenuBar,QMenu,QFrame,QStackedWidget, QSizePolicy, QFileDialog,QLabel,QListWidget, QListWidgetItem,QMessageBox,
-    QPushButton,QApplication,QPushButton,QScrollArea, QLineEdit, QScrollBar)
+    QPushButton,QApplication,QScrollArea, QLineEdit, QScrollBar)
 from PySide6.QtGui import QAction, QColor, QIcon
 from PySide6.QtCore import Qt
 from file_io.json_loader import load_file
@@ -905,6 +905,27 @@ class MainWindow(QMainWindow):
             style= file.read()
             QApplication.instance().setStyleSheet(style)
 
+    def create_magnet_controller(self,magnet):
+        widget = QWidget()
+        layout = QVBoxLayout()
+
+        label = QLabel(magnet.FamName)
+        controller = QScrollBar(Qt.Horizontal)
+        controller.setMinimum()
+        controller.setMaximum()
+        controller.setValue()
+        controller.valueChanged.connect(self.magnet_changed())
+        value = QWidget()
+
+        layout.addWidget(label)
+        layout.addWidget(controller)
+        layout.addWidget(value)
+
+        x_button = QPushButton("X")
+
+        widget.setLayout(layout)
+        return widget
+    
     def clear_layout(self,layout):
 
         while layout.count():
