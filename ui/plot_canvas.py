@@ -31,7 +31,7 @@ def calculate_linear(section):
     data_dict = {"s":twiss.s_pos,
                  "beta": [[twiss.beta[:,0],twiss.beta[:,1]],["βₓ","βᵧ"]],
                  "alpha": [[twiss.alpha[:,0],twiss.alpha[:,1]],["αₓ","αᵧ"]],
-                 "disp":[[twiss.dispersion[:,0],twiss.dispersion[:,1]],["Dₓ","Dₓ ds"]],
+                 "disp":[[twiss.dispersion[:,1],twiss.dispersion[:,1]],["Dₓ","Dₓ ds"]],
                  "angle": angle,
                  "abs_angle":abs_angle,
                  "tunes" : ringdata.tune,
@@ -93,7 +93,8 @@ def linear_plot(data_list,section_list,labels=None, title= "Plot", x_label= "s[m
                 "αᵧ": np.interp(x, data_list[0]["s"], data_list[0]["alpha"][0][1]),
                 "Dₓ":np.interp(x, data_list[0]["s"], data_list[0]["disp"][0][0]),
                 "Dₓ'":np.interp(x, data_list[0]["s"], data_list[0]["disp"][0][1]),
-                "magnet": magnet_name,
+                "magnet_name": magnet_name,
+                "magnet" : magnet
             }
             if callback:
                 callback(x, values)

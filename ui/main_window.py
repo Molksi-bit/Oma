@@ -191,11 +191,13 @@ class MainWindow(QMainWindow):
         self.placeholder.setObjectName("placeholder")
         self.plot_canvas_layout.addWidget(self.placeholder)
 
-        self.knob_frame = QFrame()
+        self.knob_widget = QWidget()
+        self.knob_layout = QHBoxLayout()
+        self.knob_widget.setLayout(self.knob_layout)
 
         self.plot_area.setContentsMargins(0, 0, 0, 0)
         self.plot_area.addWidget(self.plot_canvas_frame, 4)
-        self.plot_area.addWidget(self.knob_frame, 1) 
+        self.plot_area.addWidget(self.knob_widget, 1) 
         
         self.placeholder_frame = QFrame()
         self.placeholder_frame.setLayout(self.plot_area)
@@ -829,6 +831,8 @@ class MainWindow(QMainWindow):
 
     def update_lin_table(self, x, values:dict):
         """This function handles the updating of the values in the table of the linear plot."""
+        magnet = values["magnet"]
+        values = {k: v for k, v in values.items() if k != "magnet"}
         for i, (name,val) in enumerate(values.items()):
             if isinstance(val,float):
                 item = QTableWidgetItem(f"{val:.4f}")
@@ -836,6 +840,9 @@ class MainWindow(QMainWindow):
                 item = QTableWidgetItem(val)
             item.setFlags(Qt.ItemIsEnabled)
             self.function_table.setItem(i, 0 , item)
+        magnet_view = self.create_magnet_overview(magnet)
+        self.knob_layout.addWidget(magnet_view)
+        
 
     def update_nonlin_table(self, x, values:dict, function):
         """This function handles the updating of the values in the nonlinear function table."""
@@ -905,26 +912,6 @@ class MainWindow(QMainWindow):
             style= file.read()
             QApplication.instance().setStyleSheet(style)
 
-    def create_magnet_controller(self,magnet):
-        widget = QWidget()
-        layout = QVBoxLayout()
-
-        label = QLabel(magnet.FamName)
-        controller = QScrollBar(Qt.Horizontal)
-        controller.setMinimum()
-        controller.setMaximum()
-        controller.setValue()
-        controller.valueChanged.connect(self.magnet_changed())
-        value = QWidget()
-
-        layout.addWidget(label)
-        layout.addWidget(controller)
-        layout.addWidget(value)
-
-        x_button = QPushButton("X")
-
-        widget.setLayout(layout)
-        return widget
     
     def clear_layout(self,layout):
 
@@ -949,22 +936,37 @@ class MainWindow(QMainWindow):
         pass
 
     def create_magnet_overview(self,magnet):
-        main_widget = QWidget()
+        main_widget = QFrame()
         main_layout = QVBoxLayout()
+        main_layout.setContentsMargins(0, 0, 0, 0)
 
 
         topper_widget = QWidget()
-        topper_layout = QHBoxLayout()
+        topper_layout = QHBoxLayout(topper_widget)
+        topper_layout.setContentsMargins(0, 0, 0, 0)
 
         label = QLabel(magnet.FamName)
         xbutton = QPushButton("X")
+        xbutton.setFixedWidth(25)
+        xbutton.clicked.connect(lambda: self.remove_overview(main_widget))
 
-        topper_layout.addWidget(label,8)
-        topper_layout.addWidget(xbutton,2)
+        topper_layout.addWidget(label)
+        topper_layout.addWidget(xbutton)
 
         scrollbar = QScrollBar(Qt.Horizontal)
-        value_label = QLabel("strength")
-        stepsize = QLineEdit("stepsize")
+        value_label = QLabel(f"{magnet.Length:.3f}")
+        stepsize = QLineEdit("0.01")
 
+        main_layout.addWidget(topper_widget)
+        main_layout.addWidget(scrollbar)
+        main_layout.addWidget(value_label)
+        main_layout.addWidget(stepsize)
+
+
+        main_widget.setLayout(main_layout)
 
         return main_widget
+    
+    def remove_overview(self, widget):
+        self.knob_layout.removeWidget(widget)
+        widget.deleteLater()
