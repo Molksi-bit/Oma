@@ -31,7 +31,7 @@ def calculate_linear(section):
     data_dict = {"s":twiss.s_pos,
                  "beta": [[twiss.beta[:,0],twiss.beta[:,1]],["βₓ","βᵧ"]],
                  "alpha": [[twiss.alpha[:,0],twiss.alpha[:,1]],["αₓ","αᵧ"]],
-                 "disp":[[twiss.dispersion[:,1],twiss.dispersion[:,1]],["Dₓ","Dₓ ds"]],
+                 "disp":[[twiss.dispersion[:,0],twiss.dispersion[:,1]],["Dₓ","Dₓ ds"]],
                  "angle": angle,
                  "abs_angle":abs_angle,
                  "tunes" : ringdata.tune,

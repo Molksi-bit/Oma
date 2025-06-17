@@ -13,7 +13,11 @@ total chroma in opa checken und vergleichen
 longitudinal momentum acceptance
 unterelimits parameter
 turn off magnets ( sextupoles practically)
-downloadable application
+name cell connect label change 
+bibliothek erstellen
+KI verknüpfung erstellen
+unstable ring lösung
+aufblitzen verhindern
 
 Hybrid lattice:
 

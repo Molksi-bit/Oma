@@ -8,6 +8,8 @@ from ui.plot_canvas import linear_plot, nonlinear_plot, calculate_nonlin, get_ma
 from matplotlib.figure import Figure
 import os
 import at
+from at import Drift, Quadrupole, Sextupole, Dipole
+import numpy as np
 
 def load_stylesheet(path):
         with open(path,"r") as file :
@@ -48,6 +50,8 @@ class MainWindow(QMainWindow):
         self.lattice_tables = {}  
         self.section_lists = {} 
         self.lattice_widgets = {}
+        self.active_cell = None
+        self.active_magnets = []
         
         self.create_menu()
 
@@ -67,6 +71,7 @@ class MainWindow(QMainWindow):
         nonlinear_menu = QMenu("Nonlinear", self)
         theme_menu = QMenu("Theme",self)
         plot_menu = QMenu("Plot", self)
+        theory_menu = QMenu("Theory", self)
     #Menu-actions
         home_action = QAction(QIcon("assets/icons/haus.png"),"",self)
         home_action.setShortcut("Ctrl+H")
@@ -115,6 +120,10 @@ class MainWindow(QMainWindow):
         save_plot_action.triggered.connect(lambda: self.export_active_plot())
         save_all_plots_action = QAction("Save all Plots", self)
         save_all_plots_action.triggered.connect(lambda: self.export_all_plots())
+
+        look_up_action = QAction("Look up", self)
+        book_action = QAction("Book", self)
+        research_action = QAction("Research", self)
 
         
     #Adding everything
@@ -947,15 +956,17 @@ class MainWindow(QMainWindow):
 
         label = QLabel(magnet.FamName)
         xbutton = QPushButton("X")
-        xbutton.setFixedWidth(25)
+        xbutton.setFixedWidth(40)
         xbutton.clicked.connect(lambda: self.remove_overview(main_widget))
 
         topper_layout.addWidget(label)
         topper_layout.addWidget(xbutton)
 
+
         scrollbar = QScrollBar(Qt.Horizontal)
-        value_label = QLabel(f"{magnet.Length:.3f}")
+        value_label = QLineEdit()
         stepsize = QLineEdit("0.01")
+        stepsize.setFixedWidth(80)
 
         main_layout.addWidget(topper_widget)
         main_layout.addWidget(scrollbar)
@@ -964,9 +975,84 @@ class MainWindow(QMainWindow):
 
 
         main_widget.setLayout(main_layout)
+        scale = lambda x: x
 
+        if isinstance(magnet, Dipole):
+            raw_value = getattr(magnet, "BendingAngle", 0.0)
+            initial_value = np.degrees(raw_value)
+            attr_name = "BendingAngle"
+            value_range = (-45, 45)
+        
+        elif isinstance(magnet, Quadrupole):
+            initial_value = getattr(magnet, "K", 0.0)
+            attr_name = "K"
+            value_range = (-10, 10)
+
+        elif isinstance(magnet, Sextupole):
+            initial_value = getattr(magnet, "H", 0.0)
+            attr_name = "H"
+            value_range = (-100, 100)
+
+        elif isinstance(magnet, Drift):
+            initial_value = getattr(magnet, "Length", 0.0)
+            attr_name = "Length"
+            value_range = (0.01, 20)
+        else:
+            value_label.setText("–")
+            value_label.setEnabled(False)
+            scrollbar.setEnabled(False)
+            stepsize.setEnabled(False)
+            return main_widget
+        value_label.setText(f"{initial_value:.3f}")
+        step_init = float(stepsize.text())
+        scrollbar.setMinimum(int((value_range[0] - initial_value) / step_init))
+        scrollbar.setMaximum(int((value_range[1] - initial_value) / step_init))
+
+
+        def on_scroll(value):
+            try:
+                step = float(stepsize.text())
+            except ValueError:
+                stepsize.setText("0.01")
+                step = 0.01
+            new_val = initial_value + value * step
+            value_label.setText(f"{new_val:.4f}")
+            setattr(magnet, attr_name, scale(new_val))
+            self.needs_recalc =True
+            self.plot_beta()
+        def on_edit():
+            try:
+                val = float(value_input.text())
+            except ValueError:
+                return
+            setattr(magnet, attr_name, scale(val))
+            self.needs_recalc = True
+            self.plot_beta()
+        scrollbar.valueChanged.connect(on_scroll)
+        value_label.editingFinished.connect(on_edit)
         return main_widget
     
     def remove_overview(self, widget):
         self.knob_layout.removeWidget(widget)
         widget.deleteLater()
+
+    def create_value_input(self,magnet):
+        if  isinstance(magnet, Dipole):
+            angle_deg = magnet.t * (180 / 3.141592653589793)
+            lineedit = QLineEdit(f"{angle_deg:.4f}")
+            lineedit.setToolTip("Biegewinkel in Grad")
+        elif isinstance(magnet, Quadrupole):
+            lineedit = QLineEdit(f"{magnet.K:.4f}")
+            lineedit.setToolTip("Quadrupol-Stärke K1")
+        elif isinstance(magnet, Sextupole):
+            lineedit = QLineEdit(f"{magnet.H:.4f}")
+            lineedit.setToolTip("Sextupol-Stärke K2")
+        elif isinstance(magnet, Drift):
+            lineedit = QLineEdit(f"{magnet.Length:.4f}")
+            lineedit.setToolTip("Driftlänge")
+        else:
+            lineedit = QLineEdit("–")
+            lineedit.setEnabled(False)
+
+        lineedit.setFixedWidth(80)
+        return lineedit

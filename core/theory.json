@@ -1,0 +1,37 @@
+{
+    "Dipole":{
+        "calculations":[],
+        "values":[],
+        "description":[]
+    },
+    "Quadrupole":{
+        "calculations":[],
+        "values":[],
+        "description":[]
+    },
+    "Sextupole":{
+        "calculations":[],
+        "values":[],
+        "description":[]
+    },
+    "Octupole":{
+        "calculations":[],
+        "values":[],
+        "description":[]
+    },
+    "Dispersion":{
+        "calculations":[],
+        "values":[],
+        "description":[]
+    },
+    "Betafunction":{
+        "calculations":[],
+        "values":[],
+        "description":[]
+    },
+    "Emittance":{
+        "calculations":[],
+        "values":[],
+        "description":[]
+    }
+}
