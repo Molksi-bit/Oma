@@ -4,6 +4,8 @@ from matplotlib.gridspec import GridSpec
 from matplotlib.patches import Rectangle
 import at
 import numpy as np
+from at import RFCavity
+from numpy import allclose
 #from at.physics.rdt import get_rdts, RDTType
 
 
@@ -19,6 +21,7 @@ colors = {
 def calculate_linear(section):
     """This function calculates the data needed for the linear plot and table.
     ToDo: Write the godamn function you moron and stop procrastenating"""
+    section = ensure_rf_and_radiation(section)
     angle = 0
     abs_angle = 0
     for elem in section:
@@ -28,6 +31,8 @@ def calculate_linear(section):
     section = section.slice(slices= 500)
     refpts = list(range(len(section)))
     _,ringdata,twiss  = at.get_optics(section, refpts= refpts, get_chrom=True)
+    beamdata, emit = at.ohmi_envelope(section)
+    alpha_p = at.get_mcf(section)
     data_dict = {"s":twiss.s_pos,
                  "beta": [[twiss.beta[:,0],twiss.beta[:,1]],["βₓ","βᵧ"]],
                  "alpha": [[twiss.alpha[:,0],twiss.alpha[:,1]],["αₓ","αᵧ"]],
@@ -35,7 +40,9 @@ def calculate_linear(section):
                  "angle": angle,
                  "abs_angle":abs_angle,
                  "tunes" : ringdata.tune,
-                 "chroma":ringdata.chromaticity
+                 "chroma":ringdata.chromaticity,
+                 "alpha_p": alpha_p,
+                 "emittance": emit
                  }
     return data_dict
 
@@ -386,4 +393,32 @@ def calculate_magnet_contribution(data, elements):
         data_dict[element.FamName] = [[X1,X1/data["X1_tot"]],[X1_Quad],[X1_Sext],[X2],[X2_Quad],[X2_Sext],[X2_Oct],[alpha_0],[alpha_1],[alpha_1_1],[alpha_1_2]]
     
     return data_dict
+
+def calculate_rad_int():
+    pass
     
+
+
+def ensure_rf_and_radiation(ring, voltage=3e6, harmonic_number=360):
+    """
+    Stellt sicher, dass das Lattice eine RF-Kavität und Radiation aktiviert hat.
+    Falls keine RF-Kavität vorhanden ist, wird eine standardmäßig ergänzt.
+    """
+    has_rf = any(isinstance(e, RFCavity) for e in ring)
+
+    if not has_rf:
+        energy = ring.energy 
+        circumference = ring.get_s_pos()[-1]
+        frequency = harmonic_number * 299792458 / circumference
+
+        rf = RFCavity('RF', length=0, voltage=voltage,frequency=frequency, harmonic_number=harmonic_number,energy=energy)
+
+        ring.append(rf)
+        print("[info] RF-Kavität automatisch ergänzt.")
+
+    # Radiation aktivieren (nur für Bending-Elemente)
+    for elem in ring:
+        if hasattr(elem, 'BendingAngle') and not getattr(elem, 'Radiation', False):
+            elem.Radiation = True
+
+    return ring

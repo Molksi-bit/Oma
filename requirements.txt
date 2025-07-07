@@ -3,3 +3,4 @@ matplotlib>=3.7
 numpy>=1.24
 git+https://github.com/atcollab/at.git
 scipy>=1.10
+arxiv>=2.2

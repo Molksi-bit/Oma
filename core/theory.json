@@ -1,37 +1,75 @@
 {
     "Dipole":{
-        "calculations":[],
-        "values":[],
-        "description":[]
+        "field": ["linear","magnets"] ,
+        "calculations":{"strength": "\\frac{1}{R} = \\frac{e}{p} B_0 = \\frac{e \\mu_0}{p} \\frac{n I}{h}",
+                        "Energy":"\\rho = \\frac{E}{0.3 B}",
+                        "Emittance":"\\epsilon ~ \\frac{1}{N_D^3}" },
+        "values":["B ~ 1T", "\\rho: 0-5°"],
+        "description":["Main function: bend the beam onto the circular path", "Creates and increases Dispersion"],
+        "links":[]
     },
     "Quadrupole":{
-        "calculations":[],
-        "values":[],
-        "description":[]
+        "field": ["linear","magnets"] ,
+        "calculations":{"strength":"g = \\frac{2 \\mu_0 n I}{a^2}",
+                        "Matrix":" \\begin{bmatrix} \\cos(\\sqrt{k}L) & \\frac{1}{\\sqrt{k}}\\sin(\\sqrt{k}L) \\\\ -\\sqrt{k}\\sin(\\sqrt{k}L) & \\cos(\\sqrt{k}L) \\end{bmatrix}"},
+        "values":["B ~ 1T", "k: 0-10"],
+        "description":["Focussing beam","Decrease dispersion","Reducing Betafunctions","Creates and increases Chromaticity"],
+        "links":[]
     },
     "Sextupole":{
-        "calculations":[],
-        "values":[],
-        "description":[]
+        "field": ["nonlinear","magnets"] ,
+        "calculations":{"strength" :"\\frac{\\partial^2 B_z}{\\partial x^2} = 6 \\mu_0 \\frac{n I}{a^3}"},
+        "values":["B ~ 1T","k_2: 0-240"],
+        "description":["Reduce chromaticity"],
+        "links":[]
     },
     "Octupole":{
-        "calculations":[],
+        "field": ["nonlinear","magnets"] ,
+        "calculations":{},
         "values":[],
-        "description":[]
+        "description":[],
+        "links":[]
     },
     "Dispersion":{
-        "calculations":[],
-        "values":[],
-        "description":[]
+        "field": ["linear"] ,
+        "calculations":{},
+        "values":["0-1mm"],
+        "description":["Spatial, Energy dependend seperation of particles", "Dipole induced", "Quadrupole compensated"],
+        "links":[]
     },
     "Betafunction":{
-        "calculations":[],
-        "values":[],
-        "description":[]
+        "field": ["linear"] ,
+        "calculations":{},
+        "values":["0-30m"],
+        "description":["scaled beam enveloping function"],
+        "links":[]
     },
     "Emittance":{
-        "calculations":[],
+        "field": [] ,
+        "calculations":{"Value":"\\epsilon = \\frac{55}{32\\sqrt{3} \\frac{h\\gamma}{mc}\\frac{I_3}{2I_2+I_4}"},
+        "values":["10-1000 nmrad"],
+        "description":[],
+        "links":[]
+    },
+    "Momentum Compaction":{
+        "field": [] ,
+        "calculations":{"Value":"\\alpha = \\frac{I_1}{C}"},
+        "values":["10e-6-10e-3"],
+        "description":["Describes the pathlengthening for off momentum particles"],
+        "links":[]
+    },
+    "Damping partition":{
+        "field": [] ,
+        "calculations":{"x-Dimensional": "J_x = 1-\\frac{I_4}{I_2}", "z-Dimensional": "J_z = 2+\\frac{I_4}{I_2}" },
+        "values":["10-1000 nmrad"],
+        "description":[],
+        "links":[]
+    },
+    "Radiation Integrals":{
+        "field": [] ,
+        "calculations":{},
         "values":[],
-        "description":[]
+        "description":["Useful Integrals for further calculations, determined by the dipole radiation"],
+        "links":[]
     }
 }

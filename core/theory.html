@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <script>
+          window.MathJax = {
+            tex: {
+              inlineMath: [['$', '$'], ['\\(', '\\)']],
+              displayMath: [['$$','$$'], ['\\[','\\]']]
+            },
+            svg: {
+              fontCache: 'global'
+            }
+          };
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" defer></script>
+        <link rel="stylesheet" href="style.css" />
+      </head>
+      
+<body>
+    <div class="section" id="abschnitt1">
+        <h2>Einleitung</h2>
+        <p>Dies ist die Einleitung mit Formel: $E = mc^2$</p>
+    </div>
+    <div class="section" id="abschnitt2">
+        <h2>Hauptteil</h2>
+        <p>Inline: \\( E = mc^2 \\)</p>
+        <p>Display: $$\int_a^b f(x)\,dx = F(b) - F(a)$$</p>
+    </div>
+</body>
+</html>

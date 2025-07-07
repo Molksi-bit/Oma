@@ -6,6 +6,8 @@ from PySide6.QtCore import Qt
 from file_io.json_loader import load_file
 from ui.plot_canvas import linear_plot, nonlinear_plot, calculate_nonlin, get_max_contribution,calculate_linear#, calculate_rdts
 from matplotlib.figure import Figure
+from ui.Theory	import TheoryWindow
+from ui.research import ResearchWindow
 import os
 import at
 from at import Drift, Quadrupole, Sextupole, Dipole
@@ -23,7 +25,7 @@ class MainWindow(QMainWindow):
         Contains a dictionary for all diffrent views of the programm."""
         super().__init__()
         self.setWindowTitle("OMA")
-        self.setMinimumSize(1200,800)
+        self.setMinimumSize(1000,600)
 
         self.stacked = QStackedWidget()
         self.setCentralWidget(self.stacked)
@@ -52,6 +54,7 @@ class MainWindow(QMainWindow):
         self.lattice_widgets = {}
         self.active_cell = None
         self.active_magnets = []
+        self.limit_violations = {}
         
         self.create_menu()
 
@@ -123,7 +126,9 @@ class MainWindow(QMainWindow):
 
         look_up_action = QAction("Look up", self)
         book_action = QAction("Book", self)
+        book_action.triggered.connect(lambda: self.open_theory_view(self.active_cell))
         research_action = QAction("Research", self)
+        research_action.triggered.connect(lambda: self.open_research_view())
 
         
     #Adding everything
@@ -140,6 +145,8 @@ class MainWindow(QMainWindow):
 
         plot_menu.addActions([save_plot_action, save_all_plots_action])
 
+        theory_menu.addActions([look_up_action,book_action,research_action])
+
         menu_bar.addAction(home_action)
         menu_bar.addMenu(file_menu)
         menu_bar.addMenu(lattice_menu)
@@ -147,6 +154,7 @@ class MainWindow(QMainWindow):
         menu_bar.addMenu(nonlinear_menu)
         menu_bar.addMenu(theme_menu)
         menu_bar.addMenu(plot_menu)
+        menu_bar.addMenu(theory_menu)
 
         # Shortcuts
         linopt_action.setShortcut("Ctrl+1")
@@ -165,6 +173,7 @@ class MainWindow(QMainWindow):
         main_layout = QHBoxLayout()
 
         fields = ["Name", "Lenght", "Angle", "Abs. Angle", "Qₓ", "Qᵧ","χₓ","χᵧ"] #"α", "Energy","Damp. Jₓ", "Damp. Jᵧ","E-loss", "E-Spread","εₓ", "εᵧ" ]
+        section_ids = [None,None,None,None,"Tune","Tune","Chroma","Chroma"]
         self.lattice_table = QTableWidget()
         self.lattice_table.setContentsMargins(0,0,0,0)
         self.lattice_table.setRowCount(len(fields))
@@ -175,6 +184,9 @@ class MainWindow(QMainWindow):
         self.lattice_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.lattice_table.horizontalHeader().setVisible(False)
         self.lattice_table.setVerticalHeaderLabels(fields)
+
+        self.enable_table_tracking(self.lattice_table,section_ids)
+        
                                                      
 
         self.function_table =QTableWidget()
@@ -186,8 +198,8 @@ class MainWindow(QMainWindow):
         self.function_table.setFixedWidth(175)
         self.function_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.function_table.setVerticalHeaderLabels(["s [m]","βₓ [m]","αₓ","βᵧ [m]","αᵧ","Dₓ [m]","Dₓ' ","Magnet"])
-        
-
+        sections_ids = [None,"Betafunction","alphafunction","Betafunction","alphafunction","Dispersion","Disperion","Magnets"]
+        self.enable_table_tracking(self.function_table,sections_ids)
         self.plot_area  = QVBoxLayout()
 
         self.plot_canvas_frame = QFrame()
@@ -274,41 +286,46 @@ class MainWindow(QMainWindow):
         text_field_layout = QVBoxLayout()
         commentary = QLabel("Comments")
         table = QTableWidget()
-        table.setColumnCount(4)
-        table.setHorizontalHeaderLabels(["Parameter", "Limit", "Value", "Status"])
+        Hor_Headers = ["Parameter", "Lower Limit", "Value","Upper Limit", "Status"]
+        table.setColumnCount(len(Hor_Headers))
+        table.setHorizontalHeaderLabels(Hor_Headers)
         table.setRowCount(8)
+        table.verticalHeader().setVisible(False)
 
         self.limit_table = table
 
         self.limit_parameters = [
-            {"name": "Energy", "limit": 2.5},
-            {"name": "Dipolstrength", "limit": 1},
-            {"name": "Quadrupolstrength", "limit": 80},
-            {"name": "Sextupolestrength", "limit": 240},
-            {"name": "Magnetlength", "limit": 0.1},
-            {"name": "Emittance", "limit": 0.100},
-            {"name": "Mom. Comp.", "limit": 0.0001},
-            {"name": "Total Length", "limit": 365}
-            
-            
+            {"name": "Energy [GeV]", "lower limit": 2.5, "upper limit": 3.5},
+            {"name": "Dipolstrength", "lower limit": 0, "upper limit": 1},
+            {"name": "Quadrupolstrength", "lower limit": 0, "upper limit": 10},
+            {"name": "Sextupolestrength", "lower limit": 0, "upper limit": 240},
+            {"name": "Magnetlength", "lower limit": 0.1, "upper limit": 20},
+            {"name": "Emittance [nmrad]", "lower limit": 0.0, "upper limit": 0.3},
+            {"name": "Mom. Comp.", "lower limit": 0.000001, "upper limit": 0.0001},
+            {"name": "Total Length [m]", "lower limit": 0, "upper limit": 3000},
+            {"name": "TSWM [%]", "lower limit": 0, "upper limit": 3}
         ]
-
+        section_ids = ["Energy","Dipole","Quadrupole","Sextupole","Magnets","Emittance","Momentum Compaction",None]
+        self.enable_table_tracking(self.limit_table,section_ids)
         for row, param in enumerate(self.limit_parameters):
             name_item = QTableWidgetItem(param["name"])
             name_item.setFlags(Qt.ItemIsEnabled)
-            limit_item = QTableWidgetItem(str(param["limit"]))
+            low_limit_item = QTableWidgetItem(str(param["lower limit"]))
+            up_limit_item = QTableWidgetItem(str(param["upper limit"]))
             value_item = QTableWidgetItem("")
             value_item.setFlags(Qt.ItemIsEnabled)
             status_item = QTableWidgetItem("-")
             status_item.setFlags(Qt.ItemIsEnabled)
 
             table.setItem(row, 0, name_item)
-            table.setItem(row, 1, limit_item)
+            table.setItem(row, 1, low_limit_item)
             table.setItem(row, 2, value_item)
-            table.setItem(row, 3, status_item)
+            table.setItem(row, 3, up_limit_item)
+            table.setItem(row, 4, status_item)
 
         table.cellChanged.connect(self.check_limits)
-
+        table.resizeColumnToContents(0)
+        table.resizeColumnToContents(4)
         text_field_layout.addWidget(commentary)
         text_field.setLayout(text_field_layout)
         layout.addWidget(table)
@@ -321,26 +338,103 @@ class MainWindow(QMainWindow):
         """This function checks, whether the given lattice exceeds the limits set in the parameter view.
         ToDo: Adjust so that the megnet strenghts are checked and the table is adjustable just in the right
         entry fields."""
-        if column != 2:
-            return
         try:
-            value = float(self.limit_table.item(row, 2).text())
-        except ValueError:
+            raw_value = self.limit_table.item(row, 2).text()
+            if "=" in raw_value:
+                raw_value= raw_value.split("=")[1]
+            value = max(map(float, eval(raw_value))) if raw_value.startswith("[") else float(raw_value)
+        except Exception as e:
+            print(e)
+            return
+        
+        name = self.limit_table.item(row, 0).text()
+        low_limit = float(self.limit_table.item(row, 1).text())
+        up_limit = float(self.limit_table.item(row, 3).text())
+        status_item = self.limit_table.item(row, 4)
+        if status_item is None:
             return
 
-        name = self.limit_table.item(row, 0).text()
-        limit = float(self.limit_table.item(row, 1).text())
-        status_item = self.limit_table.item(row, 3)
-
-        if value > limit:
+        if low_limit > value or value > up_limit:
             status_item.setText("❌")
             status_item.setForeground(QColor("red"))
-            self.limit_violations[name] = {"value": value, "limit": limit}
+            self.limit_violations[name] = {"value": value, "limit": (low_limit, up_limit)}
         else:
             status_item.setText("✅")
             status_item.setForeground(QColor("green"))
             if name in self.limit_violations:
                 del self.limit_violations[name]
+
+
+    def update_limits(self,data):
+        config = {"Energy": 0,
+                  "Dipolstrength":1,
+                  "Quadrupolestrength":2,
+                  "Sextupolestrength":3,
+                  "Magnetlength":4,
+                  "Emittance":5,
+                  "Mom. Comp.":6,
+                  "Total length":7}
+        
+        for key, value in data.items():
+            row = config.get(key)
+            if row is not None:
+                if isinstance(value, list):
+                    try:
+                        max_entry = max(value, key=lambda x: x[1])
+                        name, max_val = max_entry
+                        display = f"{name} = {max_val:.3f}"
+                    except ValueError:
+                        display = ""
+                else:
+                    display = f"{value:.3f}" if isinstance(value, float) else str(value)
+                item = QTableWidgetItem(display)
+                self.limit_table.setItem(row, 2, item)
+        self.limit_table.resizeColumnToContents(2)
+
+    def determine_magnets(self):
+        for lattice_name in self.selected_sections:
+            section = self.selected_sections.get(lattice_name)
+            segment = self.lattices[lattice_name]["elements"].get(section)
+        bends = []
+        quads = []
+        sexts = []
+        octs = []
+        lengths = []
+        for magnet in segment:
+            name, length = self.check_neighbour(magnet,segment,magnet.Length)
+            lengths.append((name,length))
+            if hasattr(magnet, "K"):
+                quads.append((magnet.FamName,magnet.K))
+            if hasattr(magnet,"BendingAngle"):
+                bends.append((magnet.FamName,magnet.BendingAngle))
+            if hasattr(magnet,"H") and magnet.__class__.__name__ == "Sextupole":
+                sexts.append((magnet.FamName,magnet.H))
+            if hasattr(magnet,"OCt"):
+                octs.append((magnet.FamName,magnet.Oct))
+        return_dict = {"Dipolstrength":bends,
+                  "Quadrupolestrength":quads,
+                  "Sextupolestrength":sexts,
+                  "Magnetlength":lengths}
+        return return_dict
+
+
+
+    def check_neighbour(self, element, segment, length, name = None):
+        if name == None:
+            name = element.FamName
+        type_ = element.__class__.__name__
+        idx = segment.index(element)
+
+        if idx + 1 < len(segment):
+            neighbour = segment[idx + 1]
+            if type_ == neighbour.__class__.__name__:
+                new_length = length + neighbour.Length
+                new_name = f"{name} {neighbour.FamName}"
+                return self.check_neighbour(neighbour, segment, new_length, new_name)
+
+        return name, length
+
+
 
     def create_home_layout(self):
         """This function creates the layout for the home view. There lattices can be loaded and will be shown.
@@ -425,13 +519,15 @@ class MainWindow(QMainWindow):
         
 
         fields = ["X1_totx","X1_toty","α","Magnet","Value", "Position [m]", "Field"]
+        section_ids = ["Chroma", "Chroma", "Momentum Compaction", "Magnets", None,None,None]
         self.nonlin_table = QTableWidget()
         self.nonlin_table.setContentsMargins(0,0,0,0)
         self.nonlin_table.setColumnCount(1)
         self.nonlin_table.setRowCount(len(fields))
         self.nonlin_table.horizontalHeader().setVisible(False)
         self.nonlin_table.setVerticalHeaderLabels(fields)
-        
+        self.enable_table_tracking(self.nonlin_table,section_ids)
+
         self.nonlin_values_table = QTableWidget()
         self.nonlin_values_table.setColumnCount(1)
         self.nonlin_values_table.setRowCount(3)
@@ -478,6 +574,7 @@ class MainWindow(QMainWindow):
                                                  "H\u2081\u2080\u2080\u2080\u2082"
                                                  ])
         self.rdt_table1.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        section_ids = ["Resonance driving Terms","Resonance driving Terms","Resonance driving Terms","Resonance driving Terms","Resonance driving Terms"]
         rdt_label2 = QLabel("1st Order geometric RDTs")
         self.rdt_table2 = QTableWidget()
         self.rdt_table2.setRowCount(5)
@@ -489,7 +586,8 @@ class MainWindow(QMainWindow):
                                                  "H\u2081\u2080\u2080\u2082\u2080",
                                                  "H\u2081\u2080\u2082\u2080\u2080"])
         self.rdt_table2.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
+        self.enable_table_tracking(self.rdt_table1,section_ids)
+        self.enable_table_tracking(self.rdt_table2,section_ids)
         plot = QFrame()
         layout.addWidget(plot,3)
         tables.addWidget(rdt_label1)
@@ -581,6 +679,7 @@ class MainWindow(QMainWindow):
         param_table = QTableWidget()
         fields = ["name", "energy_GeV", "emittance_m_rad", "horizontal_tune", "vertical_tune",
                 "natural_chromaticity_x", "natural_chromaticity_y", "rf_frequency_MHz", "rf_voltage_kV"]
+        section_ids = [None,"Energy","Emittance", "Tune", "Tune", "Chroma", "Chroma", "RF Frequency", "RF Voltage"]
         param_table.setColumnCount(1)
         param_table.setRowCount(len(fields))
         param_table.setVerticalHeaderLabels(fields)
@@ -590,7 +689,7 @@ class MainWindow(QMainWindow):
             item = QTableWidgetItem(str(value))
             item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
             param_table.setItem(row, 0, item)
-
+        self.enable_table_tracking(param_table,section_ids)
         
         section_layout = QVBoxLayout()
         section_table = QTableWidget()
@@ -704,7 +803,6 @@ class MainWindow(QMainWindow):
         elements_list =[]
         labels= []
         if not self.lattices or not self.selected_sections:
-            print(self.selected_sections)
             return
         for lattice_name,lattice_data in self.lattices.items():
             section = self.selected_sections.get(lattice_name)
@@ -716,7 +814,6 @@ class MainWindow(QMainWindow):
                 elements = self.lattices[lattice_name]["elements"].get(section)
                 data = calculate_linear(elements)
                 self.lin_cache[lattice_name][section] = data
-                self.needs_recalc = False
             else:
                 data = self.lin_cache[lattice_name][section]
                 elements = self.lattices[lattice_name]["elements"].get(section)
@@ -744,6 +841,13 @@ class MainWindow(QMainWindow):
             if widget:
                 widget.setParent(None)
         self.plot_canvas_layout.addWidget(canvas)
+        data_check = {}
+        if self.needs_recalc:
+            data_check = self.determine_magnets()
+        data_check["Energy"] = elements.energy
+        data_check["Total length"] = str(round(max(data["s"])))
+        self.update_limits(data_check)
+        self.needs_recalc = False
             
 
     def plot_nonlin(self,function):
@@ -849,9 +953,11 @@ class MainWindow(QMainWindow):
                 item = QTableWidgetItem(val)
             item.setFlags(Qt.ItemIsEnabled)
             self.function_table.setItem(i, 0 , item)
+        
+        
+    def magnet_generation(self,magnet):
         magnet_view = self.create_magnet_overview(magnet)
         self.knob_layout.addWidget(magnet_view)
-        
 
     def update_nonlin_table(self, x, values:dict, function):
         """This function handles the updating of the values in the nonlinear function table."""
@@ -870,6 +976,7 @@ class MainWindow(QMainWindow):
                  }
         self.nonlin_values_table.setRowCount(len(functions[function])+1)
         self.nonlin_values_table.setVerticalHeaderLabels(["s"]+functions[function])
+
         for i, (name,val) in enumerate(values.items()):
             item = QTableWidgetItem(f"{val:.4f}")
             item.setFlags(Qt.ItemIsEnabled)
@@ -1022,7 +1129,7 @@ class MainWindow(QMainWindow):
             self.plot_beta()
         def on_edit():
             try:
-                val = float(value_input.text())
+                val = float(value_label.text())
             except ValueError:
                 return
             setattr(magnet, attr_name, scale(val))
@@ -1056,3 +1163,44 @@ class MainWindow(QMainWindow):
 
         lineedit.setFixedWidth(80)
         return lineedit
+    
+    def open_theory_view(self, section_id= None):
+        self.theory_window = TheoryWindow(section_id)
+        self.theory_window.show()
+
+    def open_research_view(self):
+        self.research_window = ResearchWindow()
+        self.research_window.show()
+
+   
+
+    def enable_table_tracking(self, table_widget, row_id_list=None,magnet = None):
+        #magnet = magnet.type()
+        table_widget.cellClicked.connect(
+            lambda row, col: self.handle_cell_click(table_widget, row, row_id_list,magnet))
+        table_widget.verticalHeader().sectionClicked.connect(
+            lambda row: self.handle_row_header_click(row, row_id_list,magnet))
+
+
+    def handle_cell_click(self, table, row, row_id_list,magnet):
+
+        item = table.item(row, 0)
+
+        if row_id_list:
+            if row_id_list[row] != "Magnets":
+                section_id = row_id_list[row]
+            else:
+                section_id = magnet
+        else:
+            section_id = item.data(Qt.UserRole)
+
+        self.active_cell = section_id
+
+
+    def handle_row_header_click(self, row, row_id_list,magnet):
+        if row_id_list:
+            if row_id_list[row] != "Magnets":
+                section_id = row_id_list[row]
+            else:
+                section_id = magnet
+            self.active_cell = section_id

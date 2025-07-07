@@ -18,6 +18,9 @@ bibliothek erstellen
 KI verknüpfung erstellen
 unstable ring lösung
 aufblitzen verhindern
+linear linker rand größer
+magnet just if on 3 axis
+per default erste Zelle + Wunschzelle nach Vorne/ often used
 
 Hybrid lattice:
 
