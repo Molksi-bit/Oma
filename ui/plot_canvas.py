@@ -21,7 +21,7 @@ colors = {
 def calculate_linear(section):
     """This function calculates the data needed for the linear plot and table.
     ToDo: Write the godamn function you moron and stop procrastenating"""
-    section = ensure_rf_and_radiation(section)
+    #section = ensure_rf_and_radiation(section)
     angle = 0
     abs_angle = 0
     for elem in section:
@@ -30,9 +30,12 @@ def calculate_linear(section):
             abs_angle += np.rad2deg(np.abs(elem.BendingAngle))
     section = section.slice(slices= 500)
     refpts = list(range(len(section)))
+    #beamdata, emit = at.ohmi_envelope(section)
     _,ringdata,twiss  = at.get_optics(section, refpts= refpts, get_chrom=True)
-    beamdata, emit = at.ohmi_envelope(section)
-    alpha_p = at.get_mcf(section)
+    try:
+        alpha_p = at.get_mcf(section)
+    except:
+        alpha_p = 0
     data_dict = {"s":twiss.s_pos,
                  "beta": [[twiss.beta[:,0],twiss.beta[:,1]],["βₓ","βᵧ"]],
                  "alpha": [[twiss.alpha[:,0],twiss.alpha[:,1]],["αₓ","αᵧ"]],
@@ -42,7 +45,7 @@ def calculate_linear(section):
                  "tunes" : ringdata.tune,
                  "chroma":ringdata.chromaticity,
                  "alpha_p": alpha_p,
-                 "emittance": emit
+                 #"emittance": emit
                  }
     return data_dict
 
@@ -399,7 +402,7 @@ def calculate_rad_int():
     
 
 
-def ensure_rf_and_radiation(ring, voltage=3e6, harmonic_number=360):
+def ensure_rf_and_radiation(ring, voltage=5e6, harmonic_number=360):
     """
     Stellt sicher, dass das Lattice eine RF-Kavität und Radiation aktiviert hat.
     Falls keine RF-Kavität vorhanden ist, wird eine standardmäßig ergänzt.
@@ -416,9 +419,9 @@ def ensure_rf_and_radiation(ring, voltage=3e6, harmonic_number=360):
         ring.append(rf)
         print("[info] RF-Kavität automatisch ergänzt.")
 
-    # Radiation aktivieren (nur für Bending-Elemente)
     for elem in ring:
-        if hasattr(elem, 'BendingAngle') and not getattr(elem, 'Radiation', False):
+        if hasattr(elem, 'BendingAngle'):
             elem.Radiation = True
+    ring.radiation_on() 
 
     return ring

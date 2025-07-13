@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QMainWindow, QWidget,QHBoxLayout,QVBoxLayout,QTableWidget,QTableWidgetItem,QMenuBar,QMenu,QFrame,QStackedWidget, QSizePolicy, QFileDialog,QLabel,QListWidget, QListWidgetItem,QMessageBox,
-    QPushButton,QApplication,QScrollArea, QLineEdit, QScrollBar)
+    QPushButton,QApplication,QScrollArea, QLineEdit, QScrollBar, QGridLayout)
 from PySide6.QtGui import QAction, QColor, QIcon
 from PySide6.QtCore import Qt
 from file_io.json_loader import load_file
@@ -12,6 +12,7 @@ import os
 import at
 from at import Drift, Quadrupole, Sextupole, Dipole
 import numpy as np
+from file_io.user_data import UserDataManager
 
 def load_stylesheet(path):
         with open(path,"r") as file :
@@ -55,6 +56,8 @@ class MainWindow(QMainWindow):
         self.active_cell = None
         self.active_magnets = []
         self.limit_violations = {}
+        self.user_data = UserDataManager()
+        self.viewed_magnet = None
         
         self.create_menu()
 
@@ -76,7 +79,7 @@ class MainWindow(QMainWindow):
         plot_menu = QMenu("Plot", self)
         theory_menu = QMenu("Theory", self)
     #Menu-actions
-        home_action = QAction(QIcon("assets/icons/haus.png"),"",self)
+        home_action = QAction(QIcon("assets/icons/home.svg"),"",self)
         home_action.setShortcut("Ctrl+H")
         home_action.setIconText("")
         home_action.triggered.connect(lambda: self.switch_view("home"))
@@ -125,8 +128,8 @@ class MainWindow(QMainWindow):
         save_all_plots_action.triggered.connect(lambda: self.export_all_plots())
 
         look_up_action = QAction("Look up", self)
+        look_up_action.triggered.connect(lambda: self.open_theory_view(self.active_cell))
         book_action = QAction("Book", self)
-        book_action.triggered.connect(lambda: self.open_theory_view(self.active_cell))
         research_action = QAction("Research", self)
         research_action.triggered.connect(lambda: self.open_research_view())
 
@@ -145,7 +148,7 @@ class MainWindow(QMainWindow):
 
         plot_menu.addActions([save_plot_action, save_all_plots_action])
 
-        theory_menu.addActions([look_up_action,book_action,research_action])
+        theory_menu.addActions([look_up_action,research_action])#,book_action
 
         menu_bar.addAction(home_action)
         menu_bar.addMenu(file_menu)
@@ -164,6 +167,8 @@ class MainWindow(QMainWindow):
         home_action.setShortcut("Ctrl+h")
         save_plot_action.setShortcut("Ctrl+p")
         save_all_plots_action.setShortcut("Ctrl+shift+p")
+        research_action.setShortcut("Ctrl+r")
+        look_up_action.setShortcut("Ctrl+u")
 
         self.setMenuBar(menu_bar)
 
@@ -172,18 +177,18 @@ class MainWindow(QMainWindow):
         main_widget = QWidget()
         main_layout = QHBoxLayout()
 
-        fields = ["Name", "Lenght", "Angle", "Abs. Angle", "Qₓ", "Qᵧ","χₓ","χᵧ"] #"α", "Energy","Damp. Jₓ", "Damp. Jᵧ","E-loss", "E-Spread","εₓ", "εᵧ" ]
-        section_ids = [None,None,None,None,"Tune","Tune","Chroma","Chroma"]
+        fields = ["Name", "Lenght", "Angle", "Abs. Angle", "Qₓ", "Qᵧ","χₓ","χᵧ","α"] #, "Energy","Damp. Jₓ", "Damp. Jᵧ","E-loss", "E-Spread","εₓ", "εᵧ" ]
+        section_ids = [None,None,None,None,"Tune","Tune","Chroma","Chroma", "Mom. Comp."]
         self.lattice_table = QTableWidget()
         self.lattice_table.setContentsMargins(0,0,0,0)
         self.lattice_table.setRowCount(len(fields))
         self.lattice_table.setColumnCount(1)
-        self.lattice_table.setSizePolicy(QSizePolicy.Fixed,QSizePolicy.Fixed)
-        self.lattice_table.setFixedHeight(760)
-        self.lattice_table.setFixedWidth(187)
+        
         self.lattice_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.lattice_table.horizontalHeader().setVisible(False)
         self.lattice_table.setVerticalHeaderLabels(fields)
+        self.lattice_table.setSizePolicy(QSizePolicy.Fixed,QSizePolicy.Fixed)
+        self.lattice_table.setFixedWidth(self.lattice_table.sizeHint().width())
 
         self.enable_table_tracking(self.lattice_table,section_ids)
         
@@ -193,19 +198,16 @@ class MainWindow(QMainWindow):
         self.function_table.setRowCount(8)
         self.function_table.setColumnCount(1)
         self.function_table.horizontalHeader().setVisible(False)
-        self.function_table.setSizePolicy(QSizePolicy.Fixed,QSizePolicy.Fixed)
-        self.function_table.setFixedHeight(760)
-        self.function_table.setFixedWidth(175)
         self.function_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.function_table.setVerticalHeaderLabels(["s [m]","βₓ [m]","αₓ","βᵧ [m]","αᵧ","Dₓ [m]","Dₓ' ","Magnet"])
         sections_ids = [None,"Betafunction","alphafunction","Betafunction","alphafunction","Dispersion","Disperion","Magnets"]
         self.enable_table_tracking(self.function_table,sections_ids)
         self.plot_area  = QVBoxLayout()
 
-        self.plot_canvas_frame = QFrame()
+        self.plot_canvas_widget = QWidget()
         self.plot_canvas_layout = QVBoxLayout()
         self.plot_canvas_layout.setContentsMargins(0, 0, 0, 0)
-        self.plot_canvas_frame.setLayout(self.plot_canvas_layout)
+        self.plot_canvas_widget.setLayout(self.plot_canvas_layout)
         
         self.placeholder = QLabel("No Lattice loaded")
         self.placeholder.setAlignment(Qt.AlignCenter)
@@ -217,16 +219,39 @@ class MainWindow(QMainWindow):
         self.knob_widget.setLayout(self.knob_layout)
 
         self.plot_area.setContentsMargins(0, 0, 0, 0)
-        self.plot_area.addWidget(self.plot_canvas_frame, 4)
-        self.plot_area.addWidget(self.knob_widget, 1) 
+        self.plot_area.addWidget(self.plot_canvas_widget, 4)
+        self.plot_area.addWidget(self.knob_widget, 1)
         
-        self.placeholder_frame = QFrame()
+        self.button_area = QWidget()
+        self.button_layout = QGridLayout()
+        self.button_area.setLayout(self.button_layout)
+        self.button1 = QPushButton("Turn off Sext.")
+        self.button2 = QPushButton("write OM")
+        self.button3 = QPushButton("Matching")
+        self.button4 = QPushButton("Button4 ")
+
+        self.button_layout.addWidget(self.button1, 0, 0)
+        self.button_layout.addWidget(self.button2, 0, 1)
+        self.button_layout.addWidget(self.button3, 1, 0)
+        self.button_layout.addWidget(self.button4, 1, 1)
+        
+        self.placeholder_frame = QWidget()
         self.placeholder_frame.setLayout(self.plot_area)
         self.placeholder_frame.setContentsMargins(0, 0, 0, 0)
 
-        main_layout.addWidget(self.lattice_table, 1)
-        main_layout.addWidget(self.placeholder_frame, 5)
-        main_layout.addWidget(self.function_table, 1)
+        right_column_widget = QWidget()
+
+        right_column = QVBoxLayout()
+        right_column.setContentsMargins(0, 0, 0, 0)
+        right_column.addWidget(self.function_table)
+        right_column.addWidget(self.button_area)
+        right_column_widget.setLayout(right_column)
+        right_column_widget.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        right_column_widget.setFixedWidth(self.function_table.sizeHint().width())
+
+        main_layout.addWidget(self.lattice_table)
+        main_layout.addWidget(self.placeholder_frame, 1)
+        main_layout.addWidget(right_column_widget)
 
         main_widget.setLayout(main_layout)
 
@@ -355,12 +380,18 @@ class MainWindow(QMainWindow):
             return
 
         if low_limit > value or value > up_limit:
-            status_item.setText("❌")
-            status_item.setForeground(QColor("red"))
+            label = QLabel()
+            pixmap = QIcon("assets/icons/Cancel.svg").pixmap(16, 16)
+            label.setPixmap(pixmap)
+            label.setStyleSheet("padding-left: 6px;")
+            self.limit_table.setCellWidget(row, 4, label)
             self.limit_violations[name] = {"value": value, "limit": (low_limit, up_limit)}
         else:
-            status_item.setText("✅")
-            status_item.setForeground(QColor("green"))
+            label = QLabel()
+            pixmap = QIcon("assets/icons/Check.svg").pixmap(16, 16)
+            label.setPixmap(pixmap)
+            label.setStyleSheet("padding-left: 6px;")
+            self.limit_table.setCellWidget(row, 4, label)
             if name in self.limit_violations:
                 del self.limit_violations[name]
 
@@ -632,8 +663,11 @@ class MainWindow(QMainWindow):
     def load_lattice_file(self):
         """This function starts the loading of an lattice file. It opens the Dialogue window and updates the
         lattice_data variable."""
-        file_path, _ = QFileDialog.getOpenFileName(self,"Datei öffnen", "", "JSON Files (*.json);; OPA Files (*.opa)")
+        last_path = self.user_data.get_last_file()
+        file_path, _ = QFileDialog.getOpenFileName(self,"Datei öffnen", last_path if last_path else "", "JSON Files (*.json);; OPA Files (*.opa)")
+        
         if file_path:
+            self.user_data.set_last_file(file_path)
             sections, meta, elements = load_file(file_path)
             name = os.path.splitext(os.path.basename(file_path))[0]
 
@@ -641,6 +675,10 @@ class MainWindow(QMainWindow):
                              "meta": meta,
                              "elements": elements}
         self.show_lattice(name,sections,meta)
+        auto_section = self.user_data.get_most_used_section(name)
+        if elements:
+            self.selected_sections[name] = auto_section
+        
             
 
     def switch_view(self,name:str):
@@ -661,14 +699,15 @@ class MainWindow(QMainWindow):
 
         header = QHBoxLayout()
         title = QLabel(f"Lattice: {name}")
-        wrapper_layout.addWidget(title)
-        delete_btn = QPushButton("X")
-        delete_btn.setFixedSize(45, 24)
+        delete_btn = QPushButton()
+        icon = QIcon("assets/icons/Close.svg")
+        delete_btn.setIcon(icon)
+        delete_btn.setFixedSize(40, 24)
         delete_btn.setToolTip("Lattice löschen")
         delete_btn.clicked.connect(lambda: self.remove_lattice_frame(name))
 
         header.addWidget(title)
-        header.addStretch()
+        #header.addStretch()
         header.addWidget(delete_btn)
         wrapper_layout.addLayout(header)
 
@@ -820,6 +859,7 @@ class MainWindow(QMainWindow):
             data_list.append(data)
             elements_list.append(elements)
             labels.append(lattice_name)
+        self.user_data.record_section_use(lattice_name, section)
         canvas = linear_plot(data_list,elements_list,labels=labels, callback= self.update_lin_table)
         self.lattice_table.setItem(1,0,QTableWidgetItem(str(round(max(data["s"]),3))))
         self.lattice_table.setItem(2,0,QTableWidgetItem(str(round(data["angle"],3))))
@@ -828,6 +868,7 @@ class MainWindow(QMainWindow):
         self.lattice_table.setItem(5,0,QTableWidgetItem(str(round(data["tunes"][1],3))))
         self.lattice_table.setItem(6,0,QTableWidgetItem(str(round(data["chroma"][0],3))))
         self.lattice_table.setItem(7,0,QTableWidgetItem(str(round(data["chroma"][1],3))))
+        self.lattice_table.setItem(8,0,QTableWidgetItem(str(round(data["alpha_p"],3))))
                                    
         if isinstance(canvas.figure, Figure):
             self.active_plot = canvas.figure
@@ -953,6 +994,7 @@ class MainWindow(QMainWindow):
                 item = QTableWidgetItem(val)
             item.setFlags(Qt.ItemIsEnabled)
             self.function_table.setItem(i, 0 , item)
+        self.viewed_magnet = magnet
         
         
     def magnet_generation(self,magnet):
@@ -1174,16 +1216,17 @@ class MainWindow(QMainWindow):
 
    
 
-    def enable_table_tracking(self, table_widget, row_id_list=None,magnet = None):
-        #magnet = magnet.type()
+    def enable_table_tracking(self, table_widget, row_id_list=None):
+        
+        
         table_widget.cellClicked.connect(
-            lambda row, col: self.handle_cell_click(table_widget, row, row_id_list,magnet))
+            lambda row, col: self.handle_cell_click(table_widget, row, row_id_list))
         table_widget.verticalHeader().sectionClicked.connect(
-            lambda row: self.handle_row_header_click(row, row_id_list,magnet))
+            lambda row: self.handle_row_header_click(row, row_id_list))
 
 
-    def handle_cell_click(self, table, row, row_id_list,magnet):
-
+    def handle_cell_click(self, table, row, row_id_list):
+        magnet = self.viewed_magnet.__class__.__name__ if self.viewed_magnet else None
         item = table.item(row, 0)
 
         if row_id_list:
@@ -1191,16 +1234,27 @@ class MainWindow(QMainWindow):
                 section_id = row_id_list[row]
             else:
                 section_id = magnet
+                
         else:
             section_id = item.data(Qt.UserRole)
 
         self.active_cell = section_id
 
 
-    def handle_row_header_click(self, row, row_id_list,magnet):
+    def handle_row_header_click(self, row, row_id_list):
+        magnet = self.viewed_magnet.__class__.__name__ if self.viewed_magnet else None
         if row_id_list:
             if row_id_list[row] != "Magnets":
                 section_id = row_id_list[row]
             else:
                 section_id = magnet
+                
             self.active_cell = section_id
+
+    def disable_sextupoles(ring):
+        new_ring = ring.copy()
+        for elem in new_ring:
+            if hasattr(elem, "PolynomB") and len(elem.PolynomB) > 2:
+                elem.PolynomB[2] = 0.0
+
+        return new_ring 
